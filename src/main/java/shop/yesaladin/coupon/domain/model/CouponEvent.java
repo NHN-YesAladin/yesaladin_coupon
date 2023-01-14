@@ -18,6 +18,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import shop.yesaladin.coupon.persistence.converter.CouponEventCodeConverter;
 
+/**
+ * 쿠폰 이벤트 엔터티 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @ToString

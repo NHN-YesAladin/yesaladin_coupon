@@ -18,6 +18,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * 발행 쿠폰 엔터티 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @ToString

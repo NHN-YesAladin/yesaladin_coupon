@@ -17,6 +17,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import shop.yesaladin.coupon.persistence.converter.CouponBoundCodeConverter;
 
+/**
+ * 쿠폰 범위 엔터티 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @ToString
