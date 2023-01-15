@@ -37,7 +37,7 @@ public class CouponIssuance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "coupon_code", nullable = false, length = 20)
+    @Column(name = "coupon_code", nullable = false, unique = true, columnDefinition = "CHAR(36)")
     private String couponCode;
 
     @Column(name = "created_datetime", nullable = false)
