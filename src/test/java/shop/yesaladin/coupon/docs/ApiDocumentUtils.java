@@ -12,7 +12,7 @@ public interface ApiDocumentUtils {
 
     static OperationRequestPreprocessor getDocumentRequest() {
         return preprocessRequest(modifyUris().scheme("https")
-                .host("api.yesaladin.shop")
+                .host("api.yesaladin.coupon")
                 .removePort(), prettyPrint());
     }
 
