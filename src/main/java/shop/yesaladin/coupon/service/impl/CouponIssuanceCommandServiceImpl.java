@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -16,6 +17,8 @@ import shop.yesaladin.coupon.domain.model.CouponCode;
 import shop.yesaladin.coupon.domain.repository.CouponIssuanceInsertRepository;
 import shop.yesaladin.coupon.domain.repository.CouponQueryRepository;
 import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
+import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
 import shop.yesaladin.coupon.service.inter.CouponIssuanceCommandService;
@@ -37,18 +40,23 @@ public class CouponIssuanceCommandServiceImpl implements CouponIssuanceCommandSe
 
     @Override
     @Transactional
-    public List<String> issueCoupon(long couponId) {
-        Coupon coupon = tryGetCouponById(couponId);
-        List<CouponIssuanceInsertDto> issuanceDataList = createIssuanceDataList(coupon);
+    public CouponIssuanceResponseDto issueCoupon(CouponIssuanceRequestDto requestDto) {
+        Coupon coupon = tryGetCouponById(requestDto.getCouponId());
+        List<CouponIssuanceInsertDto> issuanceDataList = createIssuanceDataList(
+                coupon,
+                requestDto.getQuantity()
+        );
+
         issuanceInsertRepository.insertCouponIssuance(issuanceDataList);
 
-        return issuanceDataList.stream()
-                .map(CouponIssuanceInsertDto::getCouponCode)
-                .collect(Collectors.toList());
+        return createResponse(issuanceDataList);
     }
 
-    private List<CouponIssuanceInsertDto> createIssuanceDataList(Coupon coupon) {
-        int issueQuantity = getCouponQuantityWillBeIssued(coupon);
+    private List<CouponIssuanceInsertDto> createIssuanceDataList(
+            Coupon coupon,
+            Integer requestedQuantity
+    ) {
+        int issueQuantity = getCouponQuantityWillBeIssued(coupon, requestedQuantity);
 
         List<CouponIssuanceInsertDto> issuanceDataList = new ArrayList<>();
         for (int count = 0; count < issueQuantity; count++) {
@@ -67,7 +75,10 @@ public class CouponIssuanceCommandServiceImpl implements CouponIssuanceCommandSe
                 .orElseThrow(() -> new CouponNotFoundException(couponId));
     }
 
-    private int getCouponQuantityWillBeIssued(Coupon coupon) {
+    private int getCouponQuantityWillBeIssued(Coupon coupon, Integer requestedQuantity) {
+        if (Objects.nonNull(requestedQuantity)) {
+            return requestedQuantity;
+        }
         int issueQuantity = coupon.getQuantity();
         if (issueQuantity == issuanceConfig.getUnlimitedFlag()) {
             return issuanceConfig.getUnlimitedCouponIssueSize();
@@ -84,5 +95,12 @@ public class CouponIssuanceCommandServiceImpl implements CouponIssuanceCommandSe
 
         return Optional.ofNullable(coupon.getExpirationDate())
                 .orElseThrow(() -> new InvalidCouponDataException(coupon.getId()));
+    }
+
+    private CouponIssuanceResponseDto createResponse(List<CouponIssuanceInsertDto> issuanceDataList) {
+        List<String> createdCouponCodes = issuanceDataList.stream()
+                .map(CouponIssuanceInsertDto::getCouponCode)
+                .collect(Collectors.toList());
+        return new CouponIssuanceResponseDto(createdCouponCodes);
     }
 }
