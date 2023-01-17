@@ -3,8 +3,3 @@ spring:
     name: yesaladin-coupon
   config:
     import: optional:configserver:localhost:8888
-
-coupon:
-  issue:
-    unlimited-coupon-issue-size: 100
-    unlimited-flag-value: -1
