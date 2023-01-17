@@ -9,7 +9,7 @@ import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
  * @author 김홍대
  * @since 1.0
  */
-public interface CouponIssuanceInsertRepository {
+public interface InsertCouponIssuanceRepository {
 
     /**
      * 쿠폰발급 테이블에 발급 정보를 저장하는 메서드입니다.

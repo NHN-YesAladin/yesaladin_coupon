@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="shop.yesaladin.coupon.persistence.CouponIssuanceInsertMapper">
+<mapper namespace="shop.yesaladin.coupon.persistence.MyBatisInsertCouponIssuanceMapper">
     <insert id="insertCouponIssuance">
         INSERT INTO coupon_issuances(coupon_id, coupon_code, created_datetime, is_given,
         expiration_date) VALUES

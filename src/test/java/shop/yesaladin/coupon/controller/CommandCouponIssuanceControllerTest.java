@@ -27,16 +27,16 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
-import shop.yesaladin.coupon.service.inter.CouponIssuanceCommandService;
+import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
 
-@WebMvcTest(CouponIssuanceCommandController.class)
+@WebMvcTest(CommandCouponIssuanceController.class)
 @AutoConfigureRestDocs
-class CouponIssuanceCommandControllerTest {
+class CommandCouponIssuanceControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CouponIssuanceCommandService service;
+    private CommandCouponIssuanceService service;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -61,7 +61,7 @@ class CouponIssuanceCommandControllerTest {
                 .thenReturn(new CouponIssuanceResponseDto(response));
 
         // when
-        ResultActions actual = mockMvc.perform(post("/v1/coupons/issuances").contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)));
 
         // then
@@ -96,7 +96,7 @@ class CouponIssuanceCommandControllerTest {
         requestBody.put("quantity", -1);
 
         // when
-        ResultActions actual = mockMvc.perform(post("/v1/coupons/issuances").contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)));
 
         // then

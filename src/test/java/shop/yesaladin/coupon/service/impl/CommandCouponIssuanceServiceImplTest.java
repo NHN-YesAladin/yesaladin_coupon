@@ -18,20 +18,20 @@ import org.mockito.Mockito;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.domain.repository.CouponIssuanceInsertRepository;
-import shop.yesaladin.coupon.domain.repository.CouponQueryRepository;
+import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
+import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
 import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
 import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
 
-class CouponIssuanceCommandServiceImplTest {
+class CommandCouponIssuanceServiceImplTest {
 
     private IssuanceConfiguration issuanceConfig;
-    private CouponQueryRepository couponQueryRepository;
-    private CouponIssuanceInsertRepository insertRepository;
-    private CouponIssuanceCommandServiceImpl service;
+    private QueryCouponRepository queryCouponRepository;
+    private InsertCouponIssuanceRepository insertRepository;
+    private CommandCouponIssuanceServiceImpl service;
     private final Clock clock = Clock.fixed(
             Instant.parse("2023-01-01T00:00:00.00Z"),
             ZoneId.of("UTC")
@@ -40,11 +40,11 @@ class CouponIssuanceCommandServiceImplTest {
     @BeforeEach
     void setUp() {
         issuanceConfig = Mockito.mock(IssuanceConfiguration.class);
-        couponQueryRepository = Mockito.mock(CouponQueryRepository.class);
-        insertRepository = Mockito.mock(CouponIssuanceInsertRepository.class);
-        service = new CouponIssuanceCommandServiceImpl(
+        queryCouponRepository = Mockito.mock(QueryCouponRepository.class);
+        insertRepository = Mockito.mock(InsertCouponIssuanceRepository.class);
+        service = new CommandCouponIssuanceServiceImpl(
                 issuanceConfig,
-                couponQueryRepository,
+                queryCouponRepository,
                 insertRepository,
                 clock
         );
@@ -74,7 +74,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId))
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
 
         // when
@@ -118,7 +118,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.set(requestDto, couponId);
         quantityField.set(requestDto, expectedQuantity);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId))
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
 
         // when
@@ -157,7 +157,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId))
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
         Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
         Mockito.when(issuanceConfig.getUnlimitedFlag()).thenReturn(-1);
@@ -185,7 +185,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId)).thenReturn(Optional.empty());
+        Mockito.when(queryCouponRepository.findCouponById(couponId)).thenReturn(Optional.empty());
 
         // when
         // then
@@ -217,7 +217,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId))
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
 
         // when
@@ -250,7 +250,7 @@ class CouponIssuanceCommandServiceImplTest {
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
 
-        Mockito.when(couponQueryRepository.findCouponById(couponId))
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
 
         // when

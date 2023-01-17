@@ -9,7 +9,7 @@ import shop.yesaladin.coupon.domain.model.Coupon;
  * @author 김홍대
  * @since 1.0
  */
-public interface CouponQueryRepository {
+public interface QueryCouponRepository {
 
     /**
      * 쿠폰의 PK로 쿠폰 정보를 가져오는 메서드입니다.
