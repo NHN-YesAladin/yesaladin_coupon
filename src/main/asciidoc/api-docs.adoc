@@ -1,0 +1,37 @@
+= Coupon Issuance
+
+=== 쿠폰 발행
+
+==== curl
+
+include::{snippets}/issue-coupon-success/curl-request.adoc[]
+
+==== request
+
+===== Body
+
+include::{snippets}/issue-coupon-success/request-fields.adoc[]
+
+===== Example
+
+include::{snippets}/issue-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/issue-coupon-success/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/issue-coupon-success/http-response.adoc[]
+
+==== response (Fail)
+
+===== Body
+
+include::{snippets}/issue-coupon-fail-cause-validation-fail/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/issue-coupon-fail-cause-validation-fail/http-response.adoc[]

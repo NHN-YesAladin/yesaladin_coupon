@@ -1,0 +1,262 @@
+package shop.yesaladin.coupon.service.impl;
+
+import java.lang.reflect.Field;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.ReflectionUtils;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import shop.yesaladin.coupon.config.IssuanceConfiguration;
+import shop.yesaladin.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.domain.model.CouponCode;
+import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
+import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
+import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
+import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
+import shop.yesaladin.coupon.exception.CouponNotFoundException;
+import shop.yesaladin.coupon.exception.InvalidCouponDataException;
+
+class CommandCouponIssuanceServiceImplTest {
+
+    private IssuanceConfiguration issuanceConfig;
+    private QueryCouponRepository queryCouponRepository;
+    private InsertCouponIssuanceRepository insertRepository;
+    private CommandCouponIssuanceServiceImpl service;
+    private final Clock clock = Clock.fixed(
+            Instant.parse("2023-01-01T00:00:00.00Z"),
+            ZoneId.of("UTC")
+    );
+
+    @BeforeEach
+    void setUp() {
+        issuanceConfig = Mockito.mock(IssuanceConfiguration.class);
+        queryCouponRepository = Mockito.mock(QueryCouponRepository.class);
+        insertRepository = Mockito.mock(InsertCouponIssuanceRepository.class);
+        service = new CommandCouponIssuanceServiceImpl(
+                issuanceConfig,
+                queryCouponRepository,
+                insertRepository,
+                clock
+        );
+    }
+
+    @Test
+    @DisplayName("수량 제한 쿠폰 발행에 성공한다.")
+    void issueLimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        Coupon coupon = Coupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .quantity(500)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(1000)
+                .discountAmount(1000)
+                .canBeOverlapped(false)
+                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .expirationDate(LocalDate.of(2023, 1, 4))
+                .couponTypeCode(CouponCode.POINT)
+                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .build();
+
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        couponIdField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
+                .thenReturn(Optional.of(coupon));
+
+        // when
+        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+
+        // then
+        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(coupon.getQuantity());
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertCouponIssuance(argumentCaptor.capture());
+        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+        Assertions.assertThat(actualArgs).hasSize(500);
+    }
+
+    @Test
+    @DisplayName("수량이 설정된 쿠폰이더라도 requestDto에 수량 값이 존재하면 그 수량만큼만 발급된다..")
+    void issueLimitedCouponWithQuantitySuccessTest()
+            throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        Coupon coupon = Coupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .quantity(500)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(1000)
+                .discountAmount(1000)
+                .canBeOverlapped(false)
+                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .expirationDate(LocalDate.of(2023, 1, 4))
+                .couponTypeCode(CouponCode.POINT)
+                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .build();
+
+        int expectedQuantity = 10;
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
+        couponIdField.setAccessible(true);
+        quantityField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+        quantityField.set(requestDto, expectedQuantity);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
+                .thenReturn(Optional.of(coupon));
+
+        // when
+        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+
+        // then
+        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(expectedQuantity);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertCouponIssuance(argumentCaptor.capture());
+        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+        Assertions.assertThat(actualArgs).hasSize(expectedQuantity);
+    }
+
+    @Test
+    @DisplayName("수량 무제한 쿠폰 발헹에 성공한다.")
+    void issueUnlimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        Coupon coupon = Coupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .quantity(-1)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(1000)
+                .discountAmount(1000)
+                .canBeOverlapped(false)
+                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .expirationDate(LocalDate.of(2023, 1, 4))
+                .couponTypeCode(CouponCode.POINT)
+                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .build();
+
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        couponIdField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
+                .thenReturn(Optional.of(coupon));
+        Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
+        Mockito.when(issuanceConfig.getUnlimitedFlag()).thenReturn(-1);
+
+        // when
+        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+
+        // then
+        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(100);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertCouponIssuance(argumentCaptor.capture());
+        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+        Assertions.assertThat(actualArgs).hasSize(100);
+    }
+
+    @Test
+    @DisplayName("쿠폰 데이터가 없어 쿠폰 발행에 실패한다")
+    void issueCouponFailCauseByCouponNotFound()
+            throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        couponIdField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId)).thenReturn(Optional.empty());
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
+                .isInstanceOf(CouponNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("기간 필드에 값이 없어 자동 지급 쿠폰 발행에 실패한다.")
+    void issueAutoIssuanceCouponFailCauseByDurationIsNull()
+            throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        Coupon coupon = Coupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .quantity(500)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(1000)
+                .discountAmount(1000)
+                .canBeOverlapped(false)
+                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .couponTypeCode(CouponCode.POINT)
+                .issuanceCode(CouponCode.AUTO_ISSUANCE)
+                .build();
+
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        couponIdField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
+                .thenReturn(Optional.of(coupon));
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
+                .isInstanceOf(InvalidCouponDataException.class);
+    }
+
+    @Test
+    @DisplayName("만료일 필드에 값이 없어 유저 다운로드 쿠폰 발행에 실패한다.")
+    void issueUserDownloadCouponFailCauseByExpirationDateIsNull()
+            throws NoSuchFieldException, IllegalAccessException {
+        // given
+        long couponId = 1L;
+        Coupon coupon = Coupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .quantity(500)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(1000)
+                .discountAmount(1000)
+                .canBeOverlapped(false)
+                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .couponTypeCode(CouponCode.POINT)
+                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .build();
+
+        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        couponIdField.setAccessible(true);
+        couponIdField.set(requestDto, couponId);
+
+        Mockito.when(queryCouponRepository.findCouponById(couponId))
+                .thenReturn(Optional.of(coupon));
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
+                .isInstanceOf(InvalidCouponDataException.class);
+    }
+
+}
