@@ -61,7 +61,7 @@ class CommandCouponIssuanceControllerTest {
                 .thenReturn(new CouponIssuanceResponseDto(response));
 
         // when
-        ResultActions actual = mockMvc.perform(post("/v1/coupons/issuances").contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)));
 
         // then
@@ -96,7 +96,7 @@ class CommandCouponIssuanceControllerTest {
         requestBody.put("quantity", -1);
 
         // when
-        ResultActions actual = mockMvc.perform(post("/v1/coupons/issuances").contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestBody)));
 
         // then
