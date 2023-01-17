@@ -20,7 +20,7 @@ import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/coupons/issuances")
+@RequestMapping("/v1/issuances")
 public class CommandCouponIssuanceController {
 
     private final CommandCouponIssuanceService issuanceCommandService;
