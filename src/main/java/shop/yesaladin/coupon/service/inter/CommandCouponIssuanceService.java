@@ -9,7 +9,7 @@ import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
  * @author 김홍대
  * @since 1.0
  */
-public interface CouponIssuanceCommandService {
+public interface CommandCouponIssuanceService {
 
     /**
      * 쿠폰 테이블에 있는 데이터를 바탕으로 쿠폰을 발행하는 메서드입니다.

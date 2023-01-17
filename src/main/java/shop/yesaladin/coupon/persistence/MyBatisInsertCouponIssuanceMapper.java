@@ -1,7 +1,7 @@
 package shop.yesaladin.coupon.persistence;
 
 import org.apache.ibatis.annotations.Mapper;
-import shop.yesaladin.coupon.domain.repository.CouponIssuanceInsertRepository;
+import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
 
 /**
  * MyBatis를 사용하여 쿠폰 발행 테이블에 데이터를 삽입하기 위한 Mapper 인터페이스입니다.
@@ -10,6 +10,6 @@ import shop.yesaladin.coupon.domain.repository.CouponIssuanceInsertRepository;
  * @since 1.0
  */
 @Mapper
-public interface CouponIssuanceInsertMapper extends CouponIssuanceInsertRepository {
+public interface MyBatisInsertCouponIssuanceMapper extends InsertCouponIssuanceRepository {
 
 }

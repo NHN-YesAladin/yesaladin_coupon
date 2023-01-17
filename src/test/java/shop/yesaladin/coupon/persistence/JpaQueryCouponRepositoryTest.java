@@ -1,29 +1,24 @@
 package shop.yesaladin.coupon.persistence;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
 
-@Transactional
-@SpringBootTest
-class CouponIssuanceInsertMapperTest {
+@DataJpaTest
+class JpaQueryCouponRepositoryTest {
 
     @Autowired
     private EntityManager em;
     @Autowired
-    private CouponIssuanceInsertMapper mapper;
+    private JpaQueryCouponRepository repository;
     private Coupon coupon;
 
     @BeforeEach
@@ -44,23 +39,12 @@ class CouponIssuanceInsertMapperTest {
     }
 
     @Test
-    @DisplayName("쿠폰 대량 등록에 성공한다.")
-    void couponIssuanceBulkInsertTest() {
-        // given
-        List<CouponIssuanceInsertDto> insertList = new ArrayList<>();
-        for (int i = 0; i < 500; i++) {
-            CouponIssuanceInsertDto couponIssuanceInsertDto = new CouponIssuanceInsertDto(
-                    coupon.getId(),
-                    UUID.randomUUID().toString().substring(0, 20),
-                    coupon.getOpenDatetime().plusDays(7).toLocalDate()
-            );
-            insertList.add(couponIssuanceInsertDto);
-        }
-
+    @DisplayName("ID로 쿠폰 정보 조회에 성공한다.")
+    void findCouponByIdTest() {
         // when
-        int actual = mapper.insertCouponIssuance(insertList);
+        Optional<Coupon> actual = repository.findCouponById(coupon.getId());
 
         // then
-        Assertions.assertThat(actual).isEqualTo(500);
+        Assertions.assertThat(actual).isNotEmpty().contains(coupon);
     }
 }

@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
 import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
-import shop.yesaladin.coupon.service.inter.CouponIssuanceCommandService;
+import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/coupons/issuances")
-public class CouponIssuanceCommandController {
+public class CommandCouponIssuanceController {
 
-    private final CouponIssuanceCommandService issuanceCommandService;
+    private final CommandCouponIssuanceService issuanceCommandService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

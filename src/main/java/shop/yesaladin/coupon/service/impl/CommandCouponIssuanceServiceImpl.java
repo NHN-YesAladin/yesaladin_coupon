@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.domain.repository.CouponIssuanceInsertRepository;
-import shop.yesaladin.coupon.domain.repository.CouponQueryRepository;
+import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
+import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
 import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
 import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
-import shop.yesaladin.coupon.service.inter.CouponIssuanceCommandService;
+import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
 
 /**
  * CouponIssuanceCommandService 인터페이스의 구현체입니다.
@@ -31,11 +31,11 @@ import shop.yesaladin.coupon.service.inter.CouponIssuanceCommandService;
  */
 @RequiredArgsConstructor
 @Service
-public class CouponIssuanceCommandServiceImpl implements CouponIssuanceCommandService {
+public class CommandCouponIssuanceServiceImpl implements CommandCouponIssuanceService {
 
     private final IssuanceConfiguration issuanceConfig;
-    private final CouponQueryRepository couponQueryRepository;
-    private final CouponIssuanceInsertRepository issuanceInsertRepository;
+    private final QueryCouponRepository queryCouponRepository;
+    private final InsertCouponIssuanceRepository issuanceInsertRepository;
     private final Clock clock;
 
     @Override
@@ -71,7 +71,7 @@ public class CouponIssuanceCommandServiceImpl implements CouponIssuanceCommandSe
     }
 
     private Coupon tryGetCouponById(long couponId) {
-        return couponQueryRepository.findCouponById(couponId)
+        return queryCouponRepository.findCouponById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(couponId));
     }
 
