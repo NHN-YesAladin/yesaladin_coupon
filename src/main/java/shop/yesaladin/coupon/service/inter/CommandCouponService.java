@@ -1,11 +1,12 @@
 package shop.yesaladin.coupon.service.inter;
 
-import javax.transaction.Transactional;
 import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
+import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 
 public interface CommandCouponService {
 
-    @Transactional
     CouponResponseDto createCoupon(CouponRequestDto couponRequestDto);
+
+    CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto);
 }

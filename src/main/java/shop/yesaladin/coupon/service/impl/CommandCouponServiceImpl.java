@@ -12,6 +12,7 @@ import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
+import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 
 @RequiredArgsConstructor
@@ -21,6 +22,18 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponRepository couponRepository;
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
+
+    @Override
+    @Transactional
+    public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
+        Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
+        triggerRepository.save(Trigger.builder()
+                .triggerTypeCode(couponRequestDto.getTriggerTypeCode())
+                .coupon(coupon)
+                .build());
+
+        return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
+    }
 
     @Override
     @Transactional

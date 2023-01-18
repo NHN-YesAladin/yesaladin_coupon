@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
+import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 
 /**
@@ -23,9 +24,16 @@ public class CommandCouponController {
 
     private final CommandCouponService commandCouponService;
 
+    @PostMapping(params = {"point"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
+        return commandCouponService.createPointCoupon(couponRequestDto);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CouponResponseDto createCoupon(CouponRequestDto couponRequestDto) {
         return commandCouponService.createCoupon(couponRequestDto);
     }
+
 }

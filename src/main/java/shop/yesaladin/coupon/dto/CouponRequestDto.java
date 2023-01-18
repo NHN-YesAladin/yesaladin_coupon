@@ -1,7 +1,7 @@
 package shop.yesaladin.coupon.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Objects;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -35,7 +35,7 @@ public class CouponRequestDto {
     private String name;
 
     @PositiveOrZero(message = "invalid coupon quantity")
-    private int quantity;
+    private Integer quantity;
 
     @Length(max = 255, message = "file Uri cannot be more than 255 characters")
     private String fileUri;
@@ -53,7 +53,7 @@ public class CouponRequestDto {
     private Integer chargePointAmount;
 
     @PositiveOrZero(message = "invalid minimum order amount")
-    private int minOrderAmount;
+    private Integer minOrderAmount;
 
     @PositiveOrZero(message = "invalid discount amount")
     private Integer discountAmount;
@@ -65,7 +65,7 @@ public class CouponRequestDto {
     @Max(value = 100, message = "discount rate cannot exceed 100")
     private Integer discountRate;
 
-    private boolean canBeOverlapped;
+    private Boolean canBeOverlapped;
 
     // 적용 범위
     private CouponBoundCode couponBoundCode;
@@ -84,7 +84,7 @@ public class CouponRequestDto {
     public AmountCoupon toAmountCouponEntity() {
         return AmountCoupon.builder()
                 .name(this.name)
-                .quantity(this.quantity)
+                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
                 .fileUri(this.fileUri)
                 .duration(this.duration)
                 .expirationDate(this.expirationDate)
@@ -97,7 +97,7 @@ public class CouponRequestDto {
     public RateCoupon toRateCouponEntity() {
         return RateCoupon.builder()
                 .name(this.name)
-                .quantity(this.quantity)
+                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
                 .fileUri(this.fileUri)
                 .duration(this.duration)
                 .expirationDate(this.expirationDate)
@@ -112,7 +112,7 @@ public class CouponRequestDto {
     public PointCoupon toPointCouponEntity() {
         return PointCoupon.builder()
                 .name(this.name)
-                .quantity(this.quantity)
+                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
                 .fileUri(this.fileUri)
                 .duration(this.duration)
                 .expirationDate(this.expirationDate)
