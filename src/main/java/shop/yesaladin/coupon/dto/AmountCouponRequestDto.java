@@ -1,7 +1,6 @@
 package shop.yesaladin.coupon.dto;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -24,6 +23,8 @@ public class AmountCouponRequestDto {
     @NotBlank(message = "coupon name must be at least 2 characters long")
     @Length(max = 50, message = "coupon name cannot be more than 50 characters")
     private String name;
+
+    private boolean isUnlimited;
 
     @PositiveOrZero(message = "invalid coupon quantity")
     private Integer quantity;
@@ -56,7 +57,7 @@ public class AmountCouponRequestDto {
     public Coupon toEntity() {
         return AmountCoupon.builder()
                 .name(this.name)
-                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
+                .isUnlimited(this.isUnlimited)
                 .fileUri(this.fileUri)
                 .duration(this.duration)
                 .expirationDate(this.expirationDate)
