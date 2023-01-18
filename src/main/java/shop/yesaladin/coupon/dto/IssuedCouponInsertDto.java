@@ -15,6 +15,6 @@ import lombok.Getter;
 public class IssuedCouponInsertDto {
 
     private final long couponId;
-    private final String couponCode;
+    private final String couponTypeCode;
     private final LocalDate expirationDate;
 }

@@ -17,7 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
@@ -64,7 +64,7 @@ class CommandIssueCouponServiceImplTest {
                 .quantity(500)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
+                .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
 
@@ -100,7 +100,7 @@ class CommandIssueCouponServiceImplTest {
                 .quantity(500)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
+                .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
 
@@ -139,7 +139,7 @@ class CommandIssueCouponServiceImplTest {
                 .quantity(-1)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
+                .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
 
@@ -196,7 +196,7 @@ class CommandIssueCouponServiceImplTest {
                 .quantity(500)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
+                .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(List.of(Trigger.builder()
                         .triggerTypeCode(TriggerTypeCode.BIRTHDAY)
                         .build()))
@@ -228,7 +228,7 @@ class CommandIssueCouponServiceImplTest {
                 .quantity(500)
                 .chargePointAmount(1000)
                 .duration(10)
-                .couponTypeCode(CouponCode.POINT)
+                .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
 

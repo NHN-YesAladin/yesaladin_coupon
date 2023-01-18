@@ -3,7 +3,7 @@ package shop.yesaladin.coupon.persistence.converter;
 import java.util.Arrays;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import shop.yesaladin.coupon.domain.model.CouponCode;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 
 /**
  * 쿠폰 코드 변환을 위한 컨버터입니다.드
@@ -12,17 +12,17 @@ import shop.yesaladin.coupon.domain.model.CouponCode;
  * @since 1.0
  */
 @Converter
-public class CouponCodeConverter implements AttributeConverter<CouponCode, Integer> {
+public class CouponTypeCodeConverter implements AttributeConverter<CouponTypeCode, Integer> {
 
     /**
      * 쿠폰 코드를 Integer 타입으로 변환합니다.
      *
-     * @param couponCode 쿠폰 코드
+     * @param couponTypeCode 쿠폰 코드
      * @return 쿠폰 코드 Id
      */
     @Override
-    public Integer convertToDatabaseColumn(CouponCode couponCode) {
-        return couponCode.getCode();
+    public Integer convertToDatabaseColumn(CouponTypeCode couponTypeCode) {
+        return couponTypeCode.getCode();
     }
 
     /**
@@ -32,8 +32,8 @@ public class CouponCodeConverter implements AttributeConverter<CouponCode, Integ
      * @return 쿠폰 코드
      */
     @Override
-    public CouponCode convertToEntityAttribute(Integer integer) {
-        return Arrays.stream(CouponCode.values())
+    public CouponTypeCode convertToEntityAttribute(Integer integer) {
+        return Arrays.stream(CouponTypeCode.values())
                 .filter(code -> integer.equals(code.getCode()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
