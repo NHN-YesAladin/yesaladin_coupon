@@ -49,6 +49,7 @@ class CommandCouponControllerTest {
         PointCouponRequestDto requestBody = new PointCouponRequestDto(
                 TriggerTypeCode.MEMBER_GRADE_WHITE,
                 "test coupon",
+                false,
                 10,
                 null,
                 null,
@@ -75,23 +76,25 @@ class CommandCouponControllerTest {
                 getDocumentResponse(),
                 requestFields(
                         fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)
-                                .description("생성할 쿠폰의 트리거 타입"),
+                                .description("쿠폰의 트리거 타입"),
                         fieldWithPath("name").type(JsonFieldType.STRING)
-                                .description("생성할 쿠폰의 이름"),
+                                .description("쿠폰의 이름"),
+                        fieldWithPath("isUnlimited").type(JsonFieldType.STRING)
+                                .description("쿠폰 발행 무제한 여부"),
                         fieldWithPath(("quantity")).type(JsonFieldType.NUMBER)
                                 .optional()
-                                .description("생성할 쿠폰의 수량, null 일 경우 무제한"),
+                                .description("쿠폰의 수량, null 일 경우 무제한"),
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
                                 .optional()
-                                .description("생성할 쿠폰의 이미지 URI"),
+                                .description("쿠폰의 이미지 URI"),
                         fieldWithPath("duration").type(JsonFieldType.STRING)
                                 .optional()
-                                .description("생성할 쿠폰의 사용 기간"),
+                                .description("쿠폰의 사용 기간"),
                         fieldWithPath("expirationDate").type(JsonFieldType.STRING)
                                 .optional()
-                                .description("생성할 쿠폰의 만료기간"),
+                                .description("쿠폰의 만료기간"),
                         fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
-                                .description("생성할 쿠폰의 타입"),
+                                .description("쿠폰의 타입"),
                         fieldWithPath("chargePointAmount").type(JsonFieldType.NUMBER)
                                 .description("포인트 쿠폰의 충전 포인트 금액")
                 ),
@@ -111,6 +114,7 @@ class CommandCouponControllerTest {
         AmountCouponRequestDto requestBody = new AmountCouponRequestDto(
                 TriggerTypeCode.MEMBER_GRADE_WHITE,
                 "test coupon",
+                false,
                 10,
                 null,
                 null,
@@ -145,6 +149,8 @@ class CommandCouponControllerTest {
                                 .description("쿠폰의 트리거 타입"),
                         fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("쿠폰의 이름"),
+                        fieldWithPath("isUnlimited").type(JsonFieldType.STRING)
+                                .description("쿠폰 발행 무제한 여부"),
                         fieldWithPath(("quantity")).type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
