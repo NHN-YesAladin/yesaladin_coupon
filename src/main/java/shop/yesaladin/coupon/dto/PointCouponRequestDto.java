@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 @Getter
 @AllArgsConstructor
 public class PointCouponRequestDto {
+
     private TriggerTypeCode triggerTypeCode;
 
     @NotBlank(message = "coupon name must be at least 2 characters long")
@@ -37,8 +39,8 @@ public class PointCouponRequestDto {
     // TODO validation 추가
     private CouponTypeCode couponTypeCode;
 
-    @PositiveOrZero(message = "invalid point amount")
-    private Integer chargePointAmount;
+    @Positive(message = "invalid point amount")
+    private int chargePointAmount;
 
     public Coupon toEntity() {
         return PointCoupon.builder()

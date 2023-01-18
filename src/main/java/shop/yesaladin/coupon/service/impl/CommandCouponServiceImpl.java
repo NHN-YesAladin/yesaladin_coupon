@@ -26,6 +26,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandTriggerRepository triggerRepository;
 
     // TODO 쿠폰 이미지 유무에 따라 파일 처리
+    // TODO 만료기간, 기간 처리
+    // TODO 각 DTO 에 CouponTypeCode 처리
 
     /**
      * 포인트 쿠폰을 생성합니다.
@@ -86,7 +88,12 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
-    private void createCouponBound(String ISBN, Long categoryId, CouponBoundCode couponBoundCode, Coupon coupon) {
+    private void createCouponBound(
+            String ISBN,
+            Long categoryId,
+            CouponBoundCode couponBoundCode,
+            Coupon coupon
+    ) {
         CouponBound couponBound = CouponBound.builder()
                 .couponId(coupon.getId())
                 .coupon(coupon)

@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,16 +42,16 @@ public class RateCouponRequestDto {
     private CouponTypeCode couponTypeCode;
 
     @PositiveOrZero(message = "invalid minimum order amount")
-    private Integer minOrderAmount;
+    private int minOrderAmount;
 
-    @PositiveOrZero(message = "invalid maximum discount amount")
-    private Integer maxDiscountAmount;
+    @Positive(message = "invalid maximum discount amount")
+    private int maxDiscountAmount;
 
-    @PositiveOrZero(message = "invalid discount rate")
+    @Positive(message = "invalid discount rate")
     @Max(value = 100, message = "discount rate cannot exceed 100")
-    private Integer discountRate;
+    private int discountRate;
 
-    private Boolean canBeOverlapped;
+    private boolean canBeOverlapped;
 
     // 적용 범위
     private CouponBoundCode couponBoundCode;

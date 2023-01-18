@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,12 +41,12 @@ public class AmountCouponRequestDto {
     private CouponTypeCode couponTypeCode;
 
     @PositiveOrZero(message = "invalid minimum order amount")
-    private Integer minOrderAmount;
+    private int minOrderAmount;
 
-    @PositiveOrZero(message = "invalid discount amount")
-    private Integer discountAmount;
+    @Positive(message = "invalid discount amount")
+    private int discountAmount;
 
-    private Boolean canBeOverlapped;
+    private boolean canBeOverlapped;
 
     // 적용 범위
     private CouponBoundCode couponBoundCode;
