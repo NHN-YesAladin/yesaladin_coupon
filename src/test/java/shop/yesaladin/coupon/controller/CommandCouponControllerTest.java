@@ -44,25 +44,6 @@ class CommandCouponControllerTest {
     @DisplayName("포인트 쿠폰 생성 성공")
     void createPointCouponTest() throws Exception {
         // given
-//        CouponRequestDto requestBody = new CouponRequestDto(
-//                TriggerTypeCode.MEMBER_GRADE_WHITE,
-//                "test coupon",
-//                10,
-//                null,
-//                null,
-//                LocalDate.of(2023, 3, 1),
-//                CouponTypeCode.POINT,
-//                1000,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-
         PointCouponRequestDto requestBody = new PointCouponRequestDto(
                 TriggerTypeCode.MEMBER_GRADE_WHITE,
                 "test coupon",
@@ -83,7 +64,7 @@ class CommandCouponControllerTest {
 
         // then
         actual.andExpect(status().isCreated())
-                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         // docs
         actual.andDo(document(

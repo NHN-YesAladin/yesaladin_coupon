@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import shop.yesaladin.coupon.dto.CouponRequestDto;
+import shop.yesaladin.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.PointCouponRequestDto;
+import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 
 /**
@@ -30,10 +31,15 @@ public class CommandCouponController {
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
-    @PostMapping
+    @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createCoupon(CouponRequestDto couponRequestDto) {
-        return commandCouponService.createCoupon(couponRequestDto);
+    public CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto) {
+        return commandCouponService.createAmountCoupon(couponRequestDto);
     }
 
+    @PostMapping(params = {"rate"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto) {
+        return commandCouponService.createRateCoupon(couponRequestDto);
+    }
 }

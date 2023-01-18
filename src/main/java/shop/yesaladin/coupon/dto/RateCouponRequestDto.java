@@ -9,24 +9,15 @@ import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 
-/**
- * 쿠폰 생성 시 사용하는 DTO 클래스 입니다.
- * (정액할인 쿠폰, 정율할인 쿠폰, 포인트 쿠폰)
- *
- * @author 서민지
- * @since 1.0
- */
 @Getter
 @AllArgsConstructor
-public class CouponRequestDto {
+public class RateCouponRequestDto {
 
     private TriggerTypeCode triggerTypeCode;
 
@@ -49,14 +40,8 @@ public class CouponRequestDto {
     // TODO validation 추가
     private CouponTypeCode couponTypeCode;
 
-    @PositiveOrZero(message = "invalid point amount")
-    private Integer chargePointAmount;
-
     @PositiveOrZero(message = "invalid minimum order amount")
     private Integer minOrderAmount;
-
-    @PositiveOrZero(message = "invalid discount amount")
-    private Integer discountAmount;
 
     @PositiveOrZero(message = "invalid maximum discount amount")
     private Integer maxDiscountAmount;
@@ -72,29 +57,7 @@ public class CouponRequestDto {
     private String ISBN;
     private Long categoryId;
 
-    public Coupon toEntity(CouponTypeCode couponTypeCode) {
-        if (couponTypeCode.equals(CouponTypeCode.FIXED_PRICE)) {
-            return toAmountCouponEntity();
-        } else if (couponTypeCode.equals(CouponTypeCode.FIXED_RATE)) {
-            return toRateCouponEntity();
-        }
-        return toPointCouponEntity();
-    }
-
-    public AmountCoupon toAmountCouponEntity() {
-        return AmountCoupon.builder()
-                .name(this.name)
-                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
-                .fileUri(this.fileUri)
-                .duration(this.duration)
-                .expirationDate(this.expirationDate)
-                .couponTypeCode(this.couponTypeCode)
-                .minOrderAmount(this.minOrderAmount)
-                .canBeOverlapped(this.canBeOverlapped)
-                .build();
-    }
-
-    public RateCoupon toRateCouponEntity() {
+    public Coupon toEntity() {
         return RateCoupon.builder()
                 .name(this.name)
                 .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
@@ -109,15 +72,4 @@ public class CouponRequestDto {
                 .build();
     }
 
-    public PointCoupon toPointCouponEntity() {
-        return PointCoupon.builder()
-                .name(this.name)
-                .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
-                .fileUri(this.fileUri)
-                .duration(this.duration)
-                .expirationDate(this.expirationDate)
-                .couponTypeCode(this.couponTypeCode)
-                .chargePointAmount(this.chargePointAmount)
-                .build();
-    }
 }

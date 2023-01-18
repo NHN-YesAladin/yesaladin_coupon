@@ -8,14 +8,16 @@ import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 
 @Getter
 @AllArgsConstructor
-public class PointCouponRequestDto {
+public class AmountCouponRequestDto {
+
     private TriggerTypeCode triggerTypeCode;
 
     @NotBlank(message = "coupon name must be at least 2 characters long")
@@ -37,18 +39,30 @@ public class PointCouponRequestDto {
     // TODO validation 추가
     private CouponTypeCode couponTypeCode;
 
-    @PositiveOrZero(message = "invalid point amount")
-    private Integer chargePointAmount;
+    @PositiveOrZero(message = "invalid minimum order amount")
+    private Integer minOrderAmount;
+
+    @PositiveOrZero(message = "invalid discount amount")
+    private Integer discountAmount;
+
+    private Boolean canBeOverlapped;
+
+    // 적용 범위
+    private CouponBoundCode couponBoundCode;
+    private String ISBN;
+    private Long categoryId;
 
     public Coupon toEntity() {
-        return PointCoupon.builder()
+        return AmountCoupon.builder()
                 .name(this.name)
                 .quantity(Objects.isNull(this.quantity) ? -1 : this.quantity)
                 .fileUri(this.fileUri)
                 .duration(this.duration)
                 .expirationDate(this.expirationDate)
                 .couponTypeCode(this.couponTypeCode)
-                .chargePointAmount(this.chargePointAmount)
+                .minOrderAmount(this.minOrderAmount)
+                .canBeOverlapped(this.canBeOverlapped)
                 .build();
     }
+
 }
