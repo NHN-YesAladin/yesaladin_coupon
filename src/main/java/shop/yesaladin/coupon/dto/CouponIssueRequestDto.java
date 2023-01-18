@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CouponIssuanceRequestDto {
+public class CouponIssueRequestDto {
 
     @NotNull(message = "couponId is required field")
     @PositiveOrZero(message = "invalid coupon id: ${validatedValue}")

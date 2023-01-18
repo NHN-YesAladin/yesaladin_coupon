@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class CouponIssuanceInsertDto {
+public class IssuedCouponInsertDto {
 
     private final long couponId;
     private final String couponCode;

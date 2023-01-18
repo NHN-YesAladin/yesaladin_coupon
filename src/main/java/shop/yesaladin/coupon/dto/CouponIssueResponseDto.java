@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class CouponIssuanceResponseDto {
+public class CouponIssueResponseDto {
 
     private final List<String> createdCouponCodes;
 }
