@@ -98,7 +98,7 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
 
     private CouponIssueResponseDto createResponse(List<IssuedCouponInsertDto> issuanceDataList) {
         List<String> createdCouponCodes = issuanceDataList.stream()
-                .map(IssuedCouponInsertDto::getCouponCode)
+                .map(IssuedCouponInsertDto::getCouponTypeCode)
                 .collect(Collectors.toList());
         return new CouponIssueResponseDto(createdCouponCodes);
     }

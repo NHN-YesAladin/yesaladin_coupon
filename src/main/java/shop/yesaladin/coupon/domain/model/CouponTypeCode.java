@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
-public enum CouponCode {
+public enum CouponTypeCode {
 
     FIXED_PRICE(1), FIXED_RATE(2), POINT(3);  // 쿠폰 종류 코드
     private final int code;

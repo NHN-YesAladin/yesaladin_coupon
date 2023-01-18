@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 
 @DataJpaTest
 class JpaQueryCouponRepositoryTest {
@@ -30,7 +30,7 @@ class JpaQueryCouponRepositoryTest {
                 .discountAmount(1000)
                 .canBeOverlapped(false)
                 .duration(3)
-                .couponTypeCode(CouponCode.FIXED_PRICE)
+                .couponTypeCode(CouponTypeCode.FIXED_PRICE)
                 .build();
 
         em.persist(coupon);

@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 
 @Transactional
@@ -36,7 +36,7 @@ class MyBatisInsertCouponIssuanceMapperTest {
                 .discountAmount(1000)
                 .canBeOverlapped(false)
                 .duration(3)
-                .couponTypeCode(CouponCode.FIXED_PRICE)
+                .couponTypeCode(CouponTypeCode.FIXED_PRICE)
                 .build();
 
         em.persist(coupon);

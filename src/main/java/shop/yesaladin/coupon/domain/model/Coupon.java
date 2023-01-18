@@ -19,7 +19,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import shop.yesaladin.coupon.persistence.converter.CouponCodeConverter;
+import shop.yesaladin.coupon.persistence.converter.CouponTypeCodeConverter;
 
 /**
  * 쿠폰 엔터티 입니다.
@@ -57,8 +57,8 @@ public abstract class Coupon {
     private LocalDate expirationDate;
 
     @Column(name = "coupon_type_code_id")
-    @Convert(converter = CouponCodeConverter.class)
-    private CouponCode couponTypeCode;
+    @Convert(converter = CouponTypeCodeConverter.class)
+    private CouponTypeCode couponTypeCode;
 
     @OneToMany(mappedBy = "coupon")
     private List<Trigger> triggerList = new ArrayList<>();
