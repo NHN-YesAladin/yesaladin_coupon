@@ -16,6 +16,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * 이달의 쿠폰 관련 정책 엔티티입니다.
+ *
+ * @author 김홍대
+ * @since 1.0
+ */
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
