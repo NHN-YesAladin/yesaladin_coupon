@@ -26,17 +26,17 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
-import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
+import shop.yesaladin.coupon.dto.CouponIssueResponseDto;
+import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
 
-@WebMvcTest(CommandCouponIssuanceController.class)
+@WebMvcTest(CommandIssuedCouponController.class)
 @AutoConfigureRestDocs
-class CommandCouponIssuanceControllerTest {
+class CommandIssuedCouponControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CommandCouponIssuanceService service;
+    private CommandIssueCouponService service;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -58,7 +58,7 @@ class CommandCouponIssuanceControllerTest {
                 "fd2f0f65-2fdc-4ea4-8ea4-ef4d20a1418d"
         );
         Mockito.when(service.issueCoupon(Mockito.any()))
-                .thenReturn(new CouponIssuanceResponseDto(response));
+                .thenReturn(new CouponIssueResponseDto(response));
 
         // when
         ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)

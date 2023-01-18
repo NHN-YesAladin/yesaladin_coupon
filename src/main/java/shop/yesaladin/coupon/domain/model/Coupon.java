@@ -1,6 +1,8 @@
 package shop.yesaladin.coupon.domain.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -56,4 +59,7 @@ public abstract class Coupon {
     @Column(name = "coupon_type_code_id")
     @Convert(converter = CouponCodeConverter.class)
     private CouponCode couponTypeCode;
+
+    @OneToMany(mappedBy = "coupon")
+    private List<Trigger> triggerList = new ArrayList<>();
 }

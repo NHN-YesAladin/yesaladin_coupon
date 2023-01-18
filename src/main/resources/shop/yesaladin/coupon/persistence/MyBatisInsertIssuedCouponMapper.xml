@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="shop.yesaladin.coupon.persistence.MyBatisInsertCouponIssuanceMapper">
-    <insert id="insertCouponIssuance">
-        INSERT INTO coupon_issuances(coupon_id, coupon_code, created_datetime, is_given,
+<mapper namespace="shop.yesaladin.coupon.persistence.MyBatisInsertIssuedCouponMapper">
+    <insert id="insertIssuedCoupon">
+        INSERT INTO issued_coupons(coupon_id, coupon_code, created_datetime, is_given,
         expiration_date) VALUES
-        <foreach collection="issuanceDataList" item="data" separator=",">
+        <foreach collection="insertDataList" item="data" separator=",">
             (#{data.couponId}, #{data.couponCode}, NOW(), FALSE, #{data.expirationDate})
         </foreach>
     </insert>
