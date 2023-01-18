@@ -1,55 +1,45 @@
 package shop.yesaladin.coupon.domain.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import shop.yesaladin.coupon.persistence.converter.TriggerTypeCodeCodeConverter;
 
 /**
- * 발행 쿠폰 엔터티 입니다.
+ * 쿠폰 트리거 엔터티 입니다.
  *
- * @author 서민지
+ * @author 서민지, 김홍대
  * @since 1.0
  */
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "coupon_issuances")
+@Table(name = "triggers")
 @Entity
-public class CouponIssuance {
+public class Trigger {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "coupon_code", nullable = false, unique = true, columnDefinition = "CHAR(36)")
-    private String couponCode;
+    @Column(name = "trigger_code_id")
+    @Convert(converter = TriggerTypeCodeCodeConverter.class)
+    private TriggerTypeCode triggerTypeCode;
 
-    @Column(name = "created_datetime", nullable = false)
-    private LocalDateTime createdDatetime;
-
-    @Column(name = "is_given", nullable = false)
-    private boolean isGiven;
-
-    @Column(name = "expiration_date", nullable = false)
-    private LocalDate expirationDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 }

@@ -14,18 +14,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import shop.yesaladin.coupon.persistence.converter.CouponBoundCodeConverter;
 
 /**
  * 쿠폰 범위 엔터티 입니다.
  *
- * @author 서민지
+ * @author 서민지, 김홍대
  * @since 1.0
  */
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "coupon_bounds")
@@ -33,18 +31,18 @@ import shop.yesaladin.coupon.persistence.converter.CouponBoundCodeConverter;
 public class CouponBound {
 
     @Id
-    @Column(name = "coupon_id")
-    private Long id;
+    @Column
+    private Long couponId;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id")
+    @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 
     @Column(length = 50)
     private String ISBN;
 
-    @Column(name = "category_id")
+    @Column
     private Long categoryId;
 
     @Column(name = "coupon_bound_code_id")
