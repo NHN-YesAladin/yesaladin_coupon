@@ -4,8 +4,8 @@ import java.lang.reflect.Field;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -17,21 +17,24 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.domain.model.PointCoupon;
+import shop.yesaladin.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
-import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
-import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
-import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
+import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssueResponseDto;
+import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
 
-class CommandCouponIssuanceServiceImplTest {
+class CommandIssueCouponServiceImplTest {
 
     private IssuanceConfiguration issuanceConfig;
     private QueryCouponRepository queryCouponRepository;
-    private InsertCouponIssuanceRepository insertRepository;
-    private CommandCouponIssuanceServiceImpl service;
+    private InsertIssuedCouponRepository insertRepository;
+    private CommandIssueCouponServiceImpl service;
     private final Clock clock = Clock.fixed(
             Instant.parse("2023-01-01T00:00:00.00Z"),
             ZoneId.of("UTC")
@@ -41,8 +44,8 @@ class CommandCouponIssuanceServiceImplTest {
     void setUp() {
         issuanceConfig = Mockito.mock(IssuanceConfiguration.class);
         queryCouponRepository = Mockito.mock(QueryCouponRepository.class);
-        insertRepository = Mockito.mock(InsertCouponIssuanceRepository.class);
-        service = new CommandCouponIssuanceServiceImpl(
+        insertRepository = Mockito.mock(InsertIssuedCouponRepository.class);
+        service = new CommandIssueCouponServiceImpl(
                 issuanceConfig,
                 queryCouponRepository,
                 insertRepository,
@@ -55,21 +58,17 @@ class CommandCouponIssuanceServiceImplTest {
     void issueLimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        Coupon coupon = Coupon.builder()
+        Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
                 .quantity(500)
-                .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
-                .discountAmount(1000)
-                .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(Collections.emptyList())
                 .build();
 
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
@@ -78,14 +77,14 @@ class CommandCouponIssuanceServiceImplTest {
                 .thenReturn(Optional.of(coupon));
 
         // when
-        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
 
         // then
-        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
         Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(coupon.getQuantity());
         Mockito.verify(insertRepository, Mockito.times(1))
-                .insertCouponIssuance(argumentCaptor.capture());
-        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+                .insertIssuedCoupon(argumentCaptor.capture());
+        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
         Assertions.assertThat(actualArgs).hasSize(500);
     }
 
@@ -95,22 +94,18 @@ class CommandCouponIssuanceServiceImplTest {
             throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        Coupon coupon = Coupon.builder()
+        Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
                 .quantity(500)
-                .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
-                .discountAmount(1000)
-                .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(Collections.emptyList())
                 .build();
 
         int expectedQuantity = 10;
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         Field quantityField = requestDto.getClass().getDeclaredField("quantity");
         couponIdField.setAccessible(true);
@@ -122,14 +117,14 @@ class CommandCouponIssuanceServiceImplTest {
                 .thenReturn(Optional.of(coupon));
 
         // when
-        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
 
         // then
-        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
         Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(expectedQuantity);
         Mockito.verify(insertRepository, Mockito.times(1))
-                .insertCouponIssuance(argumentCaptor.capture());
-        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+                .insertIssuedCoupon(argumentCaptor.capture());
+        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
         Assertions.assertThat(actualArgs).hasSize(expectedQuantity);
     }
 
@@ -138,21 +133,17 @@ class CommandCouponIssuanceServiceImplTest {
     void issueUnlimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        Coupon coupon = Coupon.builder()
+        Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
                 .quantity(-1)
-                .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
-                .discountAmount(1000)
-                .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
+                .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(Collections.emptyList())
                 .build();
 
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
@@ -163,14 +154,14 @@ class CommandCouponIssuanceServiceImplTest {
         Mockito.when(issuanceConfig.getUnlimitedFlag()).thenReturn(-1);
 
         // when
-        CouponIssuanceResponseDto actual = service.issueCoupon(requestDto);
+        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
 
         // then
-        ArgumentCaptor<List<CouponIssuanceInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
         Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(100);
         Mockito.verify(insertRepository, Mockito.times(1))
-                .insertCouponIssuance(argumentCaptor.capture());
-        List<CouponIssuanceInsertDto> actualArgs = argumentCaptor.getValue();
+                .insertIssuedCoupon(argumentCaptor.capture());
+        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
         Assertions.assertThat(actualArgs).hasSize(100);
     }
 
@@ -180,7 +171,7 @@ class CommandCouponIssuanceServiceImplTest {
             throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
@@ -199,20 +190,19 @@ class CommandCouponIssuanceServiceImplTest {
             throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        Coupon coupon = Coupon.builder()
+        Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
                 .quantity(500)
-                .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
-                .discountAmount(1000)
-                .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.AUTO_ISSUANCE)
+                .chargePointAmount(1000)
+                .expirationDate(LocalDate.of(2023, 1, 4))
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(List.of(Trigger.builder()
+                        .triggerTypeCode(TriggerTypeCode.BIRTHDAY)
+                        .build()))
                 .build();
 
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
@@ -232,20 +222,17 @@ class CommandCouponIssuanceServiceImplTest {
             throws NoSuchFieldException, IllegalAccessException {
         // given
         long couponId = 1L;
-        Coupon coupon = Coupon.builder()
+        Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
                 .quantity(500)
-                .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
-                .discountAmount(1000)
-                .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.USER_DOWNLOAD)
+                .chargePointAmount(1000)
+                .duration(10)
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(Collections.emptyList())
                 .build();
 
-        CouponIssuanceRequestDto requestDto = ReflectionUtils.newInstance(CouponIssuanceRequestDto.class);
+        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         couponIdField.setAccessible(true);
         couponIdField.set(requestDto, couponId);

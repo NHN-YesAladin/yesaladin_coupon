@@ -1,7 +1,6 @@
 package shop.yesaladin.coupon.domain.model;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,40 +15,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
- * 발행 쿠폰 엔터티 입니다.
+ * 이달의 쿠폰 관련 정책 엔티티입니다.
  *
- * @author 서민지
+ * @author 김홍대
  * @since 1.0
  */
 @Getter
 @Builder
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "coupon_issuances")
+@Table(name = "coupon_of_the_month_policy")
 @Entity
-public class CouponIssuance {
+public class CouponOfTheMonthPolicy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "coupon_code", nullable = false, unique = true, columnDefinition = "CHAR(36)")
-    private String couponCode;
-
-    @Column(name = "created_datetime", nullable = false)
-    private LocalDateTime createdDatetime;
-
-    @Column(name = "is_given", nullable = false)
-    private boolean isGiven;
-
-    @Column(name = "expiration_date", nullable = false)
-    private LocalDate expirationDate;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id")
+    @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
+
+    @Column(nullable = false)
+    private int openDate;
+
+    @Column(nullable = false)
+    private LocalTime openTime;
 }

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
-import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
-import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
+import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssueResponseDto;
+import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
 
 /**
  * 쿠폰 발급 관련 Command 요청을 처리하는 Controller 클래스입니다.
@@ -21,9 +21,9 @@ import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/issuances")
-public class CommandCouponIssuanceController {
+public class CommandIssuedCouponController {
 
-    private final CommandCouponIssuanceService issuanceCommandService;
+    private final CommandIssueCouponService issuanceCommandService;
 
     /**
      * 쿠폰을 발행합니다.
@@ -33,7 +33,7 @@ public class CommandCouponIssuanceController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponIssuanceResponseDto issueCoupon(@Valid @RequestBody CouponIssuanceRequestDto dto) {
+    public CouponIssueResponseDto issueCoupon(@Valid @RequestBody CouponIssueRequestDto dto) {
         return issuanceCommandService.issueCoupon(dto);
     }
 }

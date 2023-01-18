@@ -1,6 +1,6 @@
 package shop.yesaladin.coupon.persistence;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,9 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
+import shop.yesaladin.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 
 @Transactional
 @SpringBootTest
@@ -23,21 +24,19 @@ class MyBatisInsertCouponIssuanceMapperTest {
     @Autowired
     private EntityManager em;
     @Autowired
-    private MyBatisInsertCouponIssuanceMapper mapper;
+    private MyBatisInsertIssuedCouponMapper mapper;
     private Coupon coupon;
 
     @BeforeEach
     void setUp() {
-        coupon = Coupon.builder()
+        coupon = AmountCoupon.builder()
                 .name("test coupon")
                 .quantity(500)
                 .minOrderAmount(1000)
-                .maxDiscountAmount(1000)
                 .discountAmount(1000)
                 .canBeOverlapped(false)
-                .openDatetime(LocalDateTime.of(2023, 1, 1, 0, 0))
-                .couponTypeCode(CouponCode.POINT)
-                .issuanceCode(CouponCode.AUTO_ISSUANCE)
+                .duration(3)
+                .couponTypeCode(CouponTypeCode.FIXED_PRICE)
                 .build();
 
         em.persist(coupon);
@@ -47,18 +46,18 @@ class MyBatisInsertCouponIssuanceMapperTest {
     @DisplayName("쿠폰 대량 등록에 성공한다.")
     void couponIssuanceBulkInsertTest() {
         // given
-        List<CouponIssuanceInsertDto> insertList = new ArrayList<>();
+        List<IssuedCouponInsertDto> insertList = new ArrayList<>();
         for (int i = 0; i < 500; i++) {
-            CouponIssuanceInsertDto couponIssuanceInsertDto = new CouponIssuanceInsertDto(
+            IssuedCouponInsertDto issuedCouponInsertDto = new IssuedCouponInsertDto(
                     coupon.getId(),
                     UUID.randomUUID().toString().substring(0, 20),
-                    coupon.getOpenDatetime().plusDays(7).toLocalDate()
+                    LocalDate.now().plusDays(coupon.getDuration())
             );
-            insertList.add(couponIssuanceInsertDto);
+            insertList.add(issuedCouponInsertDto);
         }
 
         // when
-        int actual = mapper.insertCouponIssuance(insertList);
+        int actual = mapper.insertIssuedCoupon(insertList);
 
         // then
         Assertions.assertThat(actual).isEqualTo(500);

@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.CouponCode;
-import shop.yesaladin.coupon.domain.repository.InsertCouponIssuanceRepository;
+import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
-import shop.yesaladin.coupon.dto.CouponIssuanceInsertDto;
-import shop.yesaladin.coupon.dto.CouponIssuanceRequestDto;
-import shop.yesaladin.coupon.dto.CouponIssuanceResponseDto;
+import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssueResponseDto;
+import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
-import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
+import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
 
 /**
  * CouponIssuanceCommandService 인터페이스의 구현체입니다.
@@ -31,36 +31,35 @@ import shop.yesaladin.coupon.service.inter.CommandCouponIssuanceService;
  */
 @RequiredArgsConstructor
 @Service
-public class CommandCouponIssuanceServiceImpl implements CommandCouponIssuanceService {
+public class CommandIssueCouponServiceImpl implements CommandIssueCouponService {
 
     private final IssuanceConfiguration issuanceConfig;
     private final QueryCouponRepository queryCouponRepository;
-    private final InsertCouponIssuanceRepository issuanceInsertRepository;
+    private final InsertIssuedCouponRepository issuanceInsertRepository;
     private final Clock clock;
 
     @Override
     @Transactional
-    public CouponIssuanceResponseDto issueCoupon(CouponIssuanceRequestDto requestDto) {
+    public CouponIssueResponseDto issueCoupon(CouponIssueRequestDto requestDto) {
         Coupon coupon = tryGetCouponById(requestDto.getCouponId());
-        List<CouponIssuanceInsertDto> issuanceDataList = createIssuanceDataList(
+        List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
                 coupon,
                 requestDto.getQuantity()
         );
 
-        issuanceInsertRepository.insertCouponIssuance(issuanceDataList);
+        issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
 
         return createResponse(issuanceDataList);
     }
 
-    private List<CouponIssuanceInsertDto> createIssuanceDataList(
-            Coupon coupon,
-            Integer requestedQuantity
+    private List<IssuedCouponInsertDto> createIssuanceDataList(
+            Coupon coupon, Integer requestedQuantity
     ) {
         int issueQuantity = getCouponQuantityWillBeIssued(coupon, requestedQuantity);
 
-        List<CouponIssuanceInsertDto> issuanceDataList = new ArrayList<>();
+        List<IssuedCouponInsertDto> issuanceDataList = new ArrayList<>();
         for (int count = 0; count < issueQuantity; count++) {
-            CouponIssuanceInsertDto insertDto = new CouponIssuanceInsertDto(
+            IssuedCouponInsertDto insertDto = new IssuedCouponInsertDto(
                     coupon.getId(),
                     UUID.randomUUID().toString(),
                     calculateExpirationDate(coupon)
@@ -87,7 +86,7 @@ public class CommandCouponIssuanceServiceImpl implements CommandCouponIssuanceSe
     }
 
     private LocalDate calculateExpirationDate(Coupon coupon) {
-        if (coupon.getIssuanceCode().equals(CouponCode.AUTO_ISSUANCE)) {
+        if (isAutoIssuanceCoupon(coupon)) {
             Integer duration = Optional.ofNullable(coupon.getDuration())
                     .orElseThrow(() -> new InvalidCouponDataException(coupon.getId()));
             return LocalDate.now(clock).plusDays(duration);
@@ -97,10 +96,21 @@ public class CommandCouponIssuanceServiceImpl implements CommandCouponIssuanceSe
                 .orElseThrow(() -> new InvalidCouponDataException(coupon.getId()));
     }
 
-    private CouponIssuanceResponseDto createResponse(List<CouponIssuanceInsertDto> issuanceDataList) {
+    private CouponIssueResponseDto createResponse(List<IssuedCouponInsertDto> issuanceDataList) {
         List<String> createdCouponCodes = issuanceDataList.stream()
-                .map(CouponIssuanceInsertDto::getCouponCode)
+                .map(IssuedCouponInsertDto::getCouponTypeCode)
                 .collect(Collectors.toList());
-        return new CouponIssuanceResponseDto(createdCouponCodes);
+        return new CouponIssueResponseDto(createdCouponCodes);
+    }
+
+    private boolean isAutoIssuanceCoupon(Coupon coupon) {
+        List<TriggerTypeCode> autoIssuanceCouponTriggerList = List.of(
+                TriggerTypeCode.BIRTHDAY,
+                TriggerTypeCode.SIGN_UP
+        );
+
+        return coupon.getTriggerList()
+                .stream()
+                .anyMatch(trigger -> autoIssuanceCouponTriggerList.contains(trigger.getTriggerTypeCode()));
     }
 }
