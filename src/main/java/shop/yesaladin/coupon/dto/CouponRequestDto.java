@@ -15,6 +15,7 @@ import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.domain.model.RateCoupon;
+import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 
 /**
  * 쿠폰 생성 시 사용하는 DTO 클래스 입니다.
@@ -26,6 +27,8 @@ import shop.yesaladin.coupon.domain.model.RateCoupon;
 @Getter
 @AllArgsConstructor
 public class CouponRequestDto {
+
+    private TriggerTypeCode triggerTypeCode;
 
     @NotBlank(message = "coupon name must be at least 2 characters long")
     @Length(max = 50, message = "coupon name cannot be more than 50 characters")
@@ -68,6 +71,15 @@ public class CouponRequestDto {
     private CouponBoundCode couponBoundCode;
     private String ISBN;
     private Long categoryId;
+
+    public Coupon toEntity(CouponTypeCode couponTypeCode) {
+        if (couponTypeCode.equals(CouponTypeCode.FIXED_PRICE)) {
+            return toAmountCouponEntity();
+        } else if (couponTypeCode.equals(CouponTypeCode.FIXED_RATE)) {
+            return toRateCouponEntity();
+        }
+        return toPointCouponEntity();
+    }
 
     public AmountCoupon toAmountCouponEntity() {
         return AmountCoupon.builder()
