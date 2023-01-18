@@ -9,8 +9,8 @@ import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 public class CouponResponseDto {
 
     private String name;
-    private Integer discountRate;
-    private Integer discountAmount;
-    private Integer chargePointAmount;
+//    private Integer discountRate;
+//    private Integer discountAmount;
+//    private Integer chargePointAmount;
     private CouponTypeCode couponTypeCode;
 }

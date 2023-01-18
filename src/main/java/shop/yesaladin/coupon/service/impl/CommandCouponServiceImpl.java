@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
@@ -16,6 +17,7 @@ import shop.yesaladin.coupon.service.inter.CommandCouponService;
 @RequiredArgsConstructor
 @Service
 public class CommandCouponServiceImpl implements CommandCouponService {
+
     private final CommandCouponRepository couponRepository;
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
@@ -35,29 +37,13 @@ public class CommandCouponServiceImpl implements CommandCouponService {
 
         // TODO 쿠폰 이미지 유무에 따라 파일 처리
 
-        // [자동 발행]
-        // 쿠폰 발급 대상자가 생일자인 경우
-        // 쿠폰 발급 대상자가 회원가입 대상자인 경우
-        CouponIssueTargetCode issueTargetCode = couponRequestDto.getIssueTargetCode();
-        int issueTargetCodeId = issueTargetCode.getCode();
+        // 트리거 테이블에 레코드 생성
+        triggerRepository.save(Trigger.builder()
+                .triggerTypeCode(couponRequestDto.getTriggerTypeCode())
+                .coupon(coupon)
+                .build());
 
-        if (issueTargetCodeId == 100 || issueTargetCodeId == 101) {
-            // TODO 이벤트 담당 쿠폰이 1개만 존재해야 하는 경우 처리
-
-            // 이벤트 발행 쿠폰 테이블에 레코드 생성
-            triggerRepository.save(CouponEvent.builder()
-                    .couponEventCode(issueTargetCode.getCouponEventCode())
-                    .coupon(coupon)
-                    .build()
-            );
-        }
-
-        return new CouponResponseDto(coupon.getName(),
-                coupon.getDiscountRate(),
-                coupon.getDiscountAmount(),
-                coupon.getChargePointAmount(),
-                coupon.getCouponTypeCode()
-        );
+        return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
     // transactional?
