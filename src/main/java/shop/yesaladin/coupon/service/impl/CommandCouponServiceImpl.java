@@ -71,7 +71,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
-    public Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
+    private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
         issueCouponService.issueCoupon(new CouponIssueRequestDto(

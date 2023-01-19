@@ -61,22 +61,19 @@ public class AmountCouponRequestDto extends CouponRequestDto {
 
     @Positive(message = "invalid discount amount")
     private int discountAmount;
-
     private boolean canBeOverlapped;
-
-    // 적용 범위
     private CouponBoundCode couponBoundCode;
     private String ISBN;
     private Long categoryId;
 
     public Coupon toEntity() {
         return AmountCoupon.builder()
-                .name(this.name)
-                .isUnlimited(this.isUnlimited)
-                .fileUri(this.fileUri)
-                .duration(this.duration)
-                .expirationDate(this.expirationDate)
-                .couponTypeCode(this.couponTypeCode)
+                .name(this.getName())
+                .isUnlimited(this.getIsUnlimited())
+                .fileUri(this.getFileUri())
+                .duration(this.getDuration())
+                .expirationDate(this.getExpirationDate())
+                .couponTypeCode(this.getCouponTypeCode())
                 .minOrderAmount(this.minOrderAmount)
                 .canBeOverlapped(this.canBeOverlapped)
                 .build();
