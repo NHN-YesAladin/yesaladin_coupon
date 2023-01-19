@@ -11,7 +11,7 @@ import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 정액할인 쿠폰 생성 요청 시 사용하는 Dto 입니다.

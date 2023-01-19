@@ -9,7 +9,7 @@ import shop.yesaladin.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @DataJpaTest
 class JpaTriggerRepositoryTest {

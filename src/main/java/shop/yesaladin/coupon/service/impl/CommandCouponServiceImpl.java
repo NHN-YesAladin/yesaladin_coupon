@@ -7,7 +7,6 @@ import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
@@ -19,6 +18,7 @@ import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.

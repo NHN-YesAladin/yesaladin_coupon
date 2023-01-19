@@ -20,7 +20,6 @@ import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
@@ -28,6 +27,7 @@ import shop.yesaladin.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandIssueCouponServiceImplTest {
 

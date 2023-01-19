@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
@@ -21,6 +20,7 @@ import shop.yesaladin.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.exception.InvalidCouponDataException;
 import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * CouponIssuanceCommandService 인터페이스의 구현체입니다.

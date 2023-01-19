@@ -9,7 +9,7 @@ import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @Getter
 @AllArgsConstructor

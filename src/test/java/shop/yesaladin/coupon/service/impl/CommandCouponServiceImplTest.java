@@ -12,13 +12,13 @@ import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.RateCoupon;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandCouponServiceImplTest {
 

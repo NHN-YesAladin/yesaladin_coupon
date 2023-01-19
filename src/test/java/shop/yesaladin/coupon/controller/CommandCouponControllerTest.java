@@ -25,13 +25,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @WebMvcTest(CommandCouponController.class)
 @AutoConfigureRestDocs
