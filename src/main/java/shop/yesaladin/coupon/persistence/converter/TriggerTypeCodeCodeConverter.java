@@ -3,7 +3,7 @@ package shop.yesaladin.coupon.persistence.converter;
 import java.util.Arrays;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 쿠폰 이벤트 코드 변환을 위한 컨버터입니다.

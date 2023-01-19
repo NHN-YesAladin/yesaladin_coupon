@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.PointCoupon;
-import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
+import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 포인트 쿠폰 생성 요청 시 사용하는 Dto 입니다.
