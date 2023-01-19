@@ -31,7 +31,6 @@ class MyBatisInsertCouponIssuanceMapperTest {
     void setUp() {
         coupon = AmountCoupon.builder()
                 .name("test coupon")
-                .quantity(500)
                 .minOrderAmount(1000)
                 .discountAmount(1000)
                 .canBeOverlapped(false)

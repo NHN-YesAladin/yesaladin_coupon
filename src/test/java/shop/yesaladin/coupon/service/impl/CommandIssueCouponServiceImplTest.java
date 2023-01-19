@@ -61,57 +61,20 @@ class CommandIssueCouponServiceImplTest {
         Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
-                .quantity(500)
+                .isUnlimited(false)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
                 .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
 
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        couponIdField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-
-        Mockito.when(queryCouponRepository.findCouponById(couponId))
-                .thenReturn(Optional.of(coupon));
-
-        // when
-        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
-
-        // then
-        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(coupon.getQuantity());
-        Mockito.verify(insertRepository, Mockito.times(1))
-                .insertIssuedCoupon(argumentCaptor.capture());
-        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
-        Assertions.assertThat(actualArgs).hasSize(500);
-    }
-
-    @Test
-    @DisplayName("수량이 설정된 쿠폰이더라도 requestDto에 수량 값이 존재하면 그 수량만큼만 발급된다..")
-    void issueLimitedCouponWithQuantitySuccessTest()
-            throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .quantity(500)
-                .chargePointAmount(1000)
-                .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(Collections.emptyList())
-                .build();
-
-        int expectedQuantity = 10;
         CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
         Field quantityField = requestDto.getClass().getDeclaredField("quantity");
         couponIdField.setAccessible(true);
         quantityField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
-        quantityField.set(requestDto, expectedQuantity);
+        quantityField.set(requestDto, 500);
 
         Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
@@ -121,11 +84,11 @@ class CommandIssueCouponServiceImplTest {
 
         // then
         ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(expectedQuantity);
+        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(500);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(argumentCaptor.capture());
         List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
-        Assertions.assertThat(actualArgs).hasSize(expectedQuantity);
+        Assertions.assertThat(actualArgs).hasSize(500);
     }
 
     @Test
@@ -136,7 +99,7 @@ class CommandIssueCouponServiceImplTest {
         Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
-                .quantity(-1)
+                .isUnlimited(true)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
                 .couponTypeCode(CouponTypeCode.POINT)
@@ -193,9 +156,9 @@ class CommandIssueCouponServiceImplTest {
         Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
-                .quantity(500)
                 .chargePointAmount(1000)
                 .expirationDate(LocalDate.of(2023, 1, 4))
+                .isUnlimited(false)
                 .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(List.of(Trigger.builder()
                         .triggerTypeCode(TriggerTypeCode.BIRTHDAY)
@@ -204,8 +167,11 @@ class CommandIssueCouponServiceImplTest {
 
         CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
         couponIdField.setAccessible(true);
+        quantityField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
+        quantityField.set(requestDto, 500);
 
         Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
@@ -225,8 +191,8 @@ class CommandIssueCouponServiceImplTest {
         Coupon coupon = PointCoupon.builder()
                 .id(couponId)
                 .name("test coupon")
-                .quantity(500)
                 .chargePointAmount(1000)
+                .isUnlimited(false)
                 .duration(10)
                 .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
@@ -234,8 +200,11 @@ class CommandIssueCouponServiceImplTest {
 
         CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
         Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
+        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
         couponIdField.setAccessible(true);
+        quantityField.setAccessible(true);
         couponIdField.set(requestDto, couponId);
+        quantityField.set(requestDto, 500);
 
         Mockito.when(queryCouponRepository.findCouponById(couponId))
                 .thenReturn(Optional.of(coupon));
