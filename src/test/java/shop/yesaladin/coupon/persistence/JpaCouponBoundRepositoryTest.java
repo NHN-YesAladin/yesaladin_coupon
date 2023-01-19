@@ -35,17 +35,12 @@ class JpaCouponBoundRepositoryTest {
         // given
         Coupon savedCoupon = commandCouponRepository.save(coupon);
         CouponBound couponBound = CouponBound.builder()
-//                .couponId(savedCoupon.getId())
                 .coupon(savedCoupon)
                 .couponBoundCode(CouponBoundCode.ALL)
                 .build();
 
-        System.out.println("###" + savedCoupon.getId());
-
         // when
         CouponBound save = couponBoundRepository.save(couponBound);
-
-        System.out.println("###" + save.getCouponId());
 
         // then
         assertThat(save.getCouponId()).isEqualTo(savedCoupon.getId());

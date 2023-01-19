@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.controller;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createPointCoupon(@RequestBody PointCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createPointCoupon(@Valid @RequestBody PointCouponRequestDto couponRequestDto) {
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
@@ -48,7 +49,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createAmountCoupon(@RequestBody AmountCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createAmountCoupon(@Valid @RequestBody AmountCouponRequestDto couponRequestDto) {
         return commandCouponService.createAmountCoupon(couponRequestDto);
     }
 
@@ -60,7 +61,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"rate"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createRateCoupon(@RequestBody RateCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createRateCoupon(@Valid @RequestBody RateCouponRequestDto couponRequestDto) {
         return commandCouponService.createRateCoupon(couponRequestDto);
     }
 }

@@ -15,27 +15,27 @@ import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 @AllArgsConstructor
 public abstract class CouponRequestDto {
 
-    public TriggerTypeCode triggerTypeCode;
+    private TriggerTypeCode triggerTypeCode;
 
     @NotBlank(message = "coupon name must be at least 2 characters long")
     @Length(max = 50, message = "coupon name cannot be more than 50 characters")
-    protected String name;
+    private String name;
 
-    protected Boolean isUnlimited;
+    private Boolean isUnlimited;
 
     @PositiveOrZero(message = "invalid coupon quantity")
-    protected Integer quantity;
+    private Integer quantity;
 
     @Length(max = 255, message = "file Uri cannot be more than 255 characters")
-    protected String fileUri;
+    private String fileUri;
 
     @PositiveOrZero(message = "invalid duration of use")
-    protected Integer duration;
+    private Integer duration;
 
     @Future(message = "invalid coupon expiration date")
-    protected LocalDate expirationDate;
+    private LocalDate expirationDate;
 
-    protected CouponTypeCode couponTypeCode;
+    private CouponTypeCode couponTypeCode;
 
     public abstract Coupon toEntity();
 }

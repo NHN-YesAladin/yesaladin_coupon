@@ -50,12 +50,12 @@ public class PointCouponRequestDto extends CouponRequestDto {
 
     public Coupon toEntity() {
         return PointCoupon.builder()
-                .name(this.name)
-                .isUnlimited(this.isUnlimited)
-                .fileUri(this.fileUri)
-                .duration(this.duration)
-                .expirationDate(this.expirationDate)
-                .couponTypeCode(this.couponTypeCode)
+                .name(this.getName())
+                .isUnlimited(this.getIsUnlimited())
+                .fileUri(this.getFileUri())
+                .duration(this.getDuration())
+                .expirationDate(this.getExpirationDate())
+                .couponTypeCode(this.getCouponTypeCode())
                 .chargePointAmount(this.chargePointAmount)
                 .build();
     }

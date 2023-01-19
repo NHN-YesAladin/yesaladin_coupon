@@ -1,4 +1,84 @@
-= Coupon Issuance
+== Coupon
+
+=== 정액할인 쿠폰 생성
+
+==== curl
+
+include::{snippets}/create-amount-coupon-success/curl-request.adoc[]
+
+=== request
+
+==== Body
+
+include::{snippets}/create-amount-coupon-success/request-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-amount-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/create-amount-coupon-success/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-amount-coupon-success/http-response.adoc[]
+
+=== 정율할인 쿠폰 생성
+
+==== curl
+
+include::{snippets}/create-rate-coupon-success/curl-request.adoc[]
+
+=== request
+
+==== Body
+
+include::{snippets}/create-rate-coupon-success/request-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-rate-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/create-rate-coupon-success/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-rate-coupon-success/http-response.adoc[]
+
+=== 포인트 쿠폰 생성
+
+==== curl
+
+include::{snippets}/create-point-coupon-success/curl-request.adoc[]
+
+=== request
+
+==== Body
+
+include::{snippets}/create-point-coupon-success/request-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-point-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/create-point-coupon-success/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/create-point-coupon-success/http-response.adoc[]
+
+== Coupon Issuance
 
 === 쿠폰 발행
 
