@@ -27,6 +27,7 @@ import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.dto.AmountCouponRequestDto;
+import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
@@ -47,7 +48,7 @@ class CommandCouponControllerTest {
     @DisplayName("포인트 쿠폰 생성 성공")
     void createPointCouponTest() throws Exception {
         // given
-        PointCouponRequestDto requestBody = new PointCouponRequestDto(
+        CouponRequestDto requestBody = new PointCouponRequestDto(
                 TriggerTypeCode.MEMBER_GRADE_WHITE,
                 "test coupon",
                 false,

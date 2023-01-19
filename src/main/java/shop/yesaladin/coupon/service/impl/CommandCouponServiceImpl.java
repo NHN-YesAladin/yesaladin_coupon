@@ -13,6 +13,7 @@ import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
+import shop.yesaladin.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
@@ -34,64 +35,54 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandTriggerRepository triggerRepository;
     private final CommandIssueCouponService issueCouponService;
 
-    // TODO 쿠폰 이미지 유무에 따라 파일 처리
-
     @Override
     @Transactional
-    public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
-        Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
-        createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                coupon.getId(),
-                couponRequestDto.getQuantity()
-        ));
+    public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
+        Coupon coupon = issueCouponAfterCreate(pointCouponRequestDto);
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
     @Override
     @Transactional
-    public CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto) {
-        Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
+    public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
+        Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
         createCouponBound(
-                couponRequestDto.getISBN(),
-                couponRequestDto.getCategoryId(),
-                couponRequestDto.getCouponBoundCode(),
+                amountCouponRequestDto.getISBN(),
+                amountCouponRequestDto.getCategoryId(),
+                amountCouponRequestDto.getCouponBoundCode(),
                 coupon
         );
-        createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                coupon.getId(),
-                couponRequestDto.getQuantity()
-        ));
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
     @Override
     @Transactional
-    public CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto) {
-        Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
+    public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
+        Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
         createCouponBound(
-                couponRequestDto.getISBN(),
-                couponRequestDto.getCategoryId(),
-                couponRequestDto.getCouponBoundCode(),
+                rateCouponRequestDto.getISBN(),
+                rateCouponRequestDto.getCategoryId(),
+                rateCouponRequestDto.getCouponBoundCode(),
                 coupon
         );
+
+        return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
+    }
+
+    public Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
+        Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
         issueCouponService.issueCoupon(new CouponIssueRequestDto(
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
-
-        return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
+        return coupon;
     }
 
     private void createCouponBound(
-            String ISBN,
-            Long categoryId,
-            CouponBoundCode couponBoundCode,
-            Coupon coupon
+            String ISBN, Long categoryId, CouponBoundCode couponBoundCode, Coupon coupon
     ) {
         CouponBound couponBound = CouponBound.builder()
                 .couponId(coupon.getId())

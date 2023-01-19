@@ -37,7 +37,6 @@ public class CommandCouponController {
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
     public CouponResponseDto createPointCoupon(@RequestBody PointCouponRequestDto couponRequestDto) {
-        log.info("{}", couponRequestDto);
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
