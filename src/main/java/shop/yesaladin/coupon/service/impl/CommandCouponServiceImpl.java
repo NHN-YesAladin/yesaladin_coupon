@@ -17,6 +17,12 @@ import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 
+/**
+ * CommandCouponService 인터페이스의 구현체 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Service
 public class CommandCouponServiceImpl implements CommandCouponService {
@@ -28,13 +34,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     // TODO 쿠폰 이미지 유무에 따라 파일 처리
     // TODO 만료기간, 기간 처리
     // TODO 각 DTO 에 CouponTypeCode 처리
+    // TODO 무제한 여부에 따라 자동 발행 구현
 
-    /**
-     * 포인트 쿠폰을 생성합니다.
-     *
-     * @param couponRequestDto
-     * @return
-     */
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
@@ -44,13 +45,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
-
-    /**
-     * 정액할인 쿠폰을 생성합니다.
-     *
-     * @param couponRequestDto
-     * @return
-     */
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto) {
@@ -66,13 +60,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
-
-    /**
-     * 정율할인 쿠폰을 생성합니다.
-     *
-     * @param couponRequestDto
-     * @return
-     */
     @Override
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto) {

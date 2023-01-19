@@ -14,6 +14,12 @@ import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 
+/**
+ * 정액할인 쿠폰 생성 요청 시 사용하는 Dto 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @AllArgsConstructor
 public class AmountCouponRequestDto {

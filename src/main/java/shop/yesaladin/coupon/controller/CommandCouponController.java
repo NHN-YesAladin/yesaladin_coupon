@@ -13,7 +13,7 @@ import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
 
 /**
- * 쿠폰 생성을 위한 RestController 입니다.
+ * 쿠폰 생성 Command 요청을 처리하는 RestController 입니다.
  *
  * @author 서민지
  * @since 1.0
@@ -25,18 +25,36 @@ public class CommandCouponController {
 
     private final CommandCouponService commandCouponService;
 
+    /**
+     * 포인트 쿠폰을 생성합니다.
+     *
+     * @param couponRequestDto 생성할 쿠폰 정보를 담은 Dto
+     * @return 생성된 쿠폰의 정보를 담은 Dto
+     */
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
     public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
+    /**
+     * 정액할인 쿠폰을 생성합니다.
+     *
+     * @param couponRequestDto 생성할 쿠폰 정보를 담은 Dto
+     * @return 생성된 쿠폰의 정보를 담은 Dto
+     */
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto) {
         return commandCouponService.createAmountCoupon(couponRequestDto);
     }
 
+    /**
+     * 정율할인 쿠폰을 생성합니다.
+     *
+     * @param couponRequestDto 생성할 쿠폰 정보를 담은 Dto
+     * @return 생성된 쿠폰의 정보를 담은 Dto
+     */
     @PostMapping(params = {"rate"})
     @ResponseStatus(HttpStatus.CREATED)
     public CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto) {
