@@ -1,6 +1,7 @@
 spring:
   application:
     name: yesaladin-coupon
+
   datasource:
     url: jdbc:h2:mem:/test
     username: sa
