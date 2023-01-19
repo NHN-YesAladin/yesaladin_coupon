@@ -50,7 +50,7 @@ class CommandCouponControllerTest {
         // given
         CouponRequestDto requestBody = new PointCouponRequestDto(
                 TriggerTypeCode.MEMBER_GRADE_WHITE,
-                "test coupon",
+                "1,000 point coupon",
                 false,
                 10,
                 null,
@@ -70,6 +70,7 @@ class CommandCouponControllerTest {
         // then
         actual.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        Mockito.verify(service).createPointCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
@@ -89,7 +90,7 @@ class CommandCouponControllerTest {
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
-                        fieldWithPath("duration").type(JsonFieldType.STRING)
+                        fieldWithPath("duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 사용 기간"),
                         fieldWithPath("expirationDate").type(JsonFieldType.STRING)
@@ -114,13 +115,13 @@ class CommandCouponControllerTest {
     void createAmountCouponTest() throws Exception {
         // given
         AmountCouponRequestDto requestBody = new AmountCouponRequestDto(
-                TriggerTypeCode.MEMBER_GRADE_WHITE,
-                "test coupon",
-                false,
+                TriggerTypeCode.BIRTHDAY,
+                "1000won discount coupon",
+                true,
+                null,
+                null,
                 10,
                 null,
-                null,
-                LocalDate.now().plusMonths(1),
                 CouponTypeCode.FIXED_PRICE,
                 10000,
                 1000,
@@ -140,6 +141,7 @@ class CommandCouponControllerTest {
         // then
         actual.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        Mockito.verify(service).createAmountCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
@@ -159,7 +161,7 @@ class CommandCouponControllerTest {
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
-                        fieldWithPath("duration").type(JsonFieldType.STRING)
+                        fieldWithPath("duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 사용 기간"),
                         fieldWithPath("expirationDate").type(JsonFieldType.STRING)
@@ -196,21 +198,21 @@ class CommandCouponControllerTest {
     void createdRateCouponTest() throws Exception {
         // given
         RateCouponRequestDto requestBody = new RateCouponRequestDto(
-                TriggerTypeCode.MEMBER_GRADE_WHITE,
-                "test coupon",
+                TriggerTypeCode.COUPON_OF_THE_MONTH,
+                "SF genre 10% discount coupon",
                 false,
-                10,
+                100,
                 null,
                 null,
                 LocalDate.now().plusMonths(1),
-                CouponTypeCode.FIXED_PRICE,
+                CouponTypeCode.FIXED_RATE,
                 10000,
                 2000,
                 10,
                 false,
-                CouponBoundCode.ALL,
+                CouponBoundCode.CATEGORY,
                 null,
-                null
+                100L
         );
 
         Mockito.when(service.createRateCoupon(Mockito.any())).thenReturn(new CouponResponseDto(
@@ -223,6 +225,7 @@ class CommandCouponControllerTest {
         // then
         actual.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        Mockito.verify(service).createRateCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
@@ -242,7 +245,7 @@ class CommandCouponControllerTest {
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
-                        fieldWithPath("duration").type(JsonFieldType.STRING)
+                        fieldWithPath("duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 사용 기간"),
                         fieldWithPath("expirationDate").type(JsonFieldType.STRING)
