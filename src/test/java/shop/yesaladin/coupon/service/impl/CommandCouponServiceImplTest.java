@@ -1,49 +1,58 @@
 package shop.yesaladin.coupon.service.impl;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import shop.yesaladin.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.RateCoupon;
+import shop.yesaladin.coupon.domain.model.TriggerTypeCode;
 import shop.yesaladin.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
-import shop.yesaladin.coupon.service.inter.CommandCouponService;
+import shop.yesaladin.coupon.dto.CouponResponseDto;
+import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
 
 class CommandCouponServiceImplTest {
 
-    private CommandCouponRepository commandCouponRepository;
-    private CommandCouponBoundRepository commandCouponBoundRepository;
-    private CommandTriggerRepository commandTriggerRepository;
-    private CommandIssueCouponService commandIssueCouponService;
-    private CommandCouponService commandCouponService;
+    private CommandCouponRepository couponRepository;
+    private CommandCouponBoundRepository couponBoundRepository;
+    private CommandTriggerRepository triggerRepository;
+    private CommandIssueCouponService issueCouponService;
+    private CommandCouponServiceImpl couponService;
     private Coupon coupon;
 
     @BeforeEach
     void setUp() {
-        commandCouponRepository = Mockito.mock(CommandCouponRepository.class);
-        commandCouponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
-        commandTriggerRepository = Mockito.mock(CommandTriggerRepository.class);
-        commandIssueCouponService = Mockito.mock(CommandIssueCouponService.class);
+        couponRepository = Mockito.mock(CommandCouponRepository.class);
+        couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
+        triggerRepository = Mockito.mock(CommandTriggerRepository.class);
+        issueCouponService = Mockito.mock(CommandIssueCouponService.class);
 
-        commandCouponService = new CommandCouponServiceImpl(
-                commandCouponRepository,
-                commandCouponBoundRepository,
-                commandTriggerRepository,
-                commandIssueCouponService
+        couponService = new CommandCouponServiceImpl(
+                couponRepository,
+                couponBoundRepository,
+                triggerRepository,
+                issueCouponService
         );
     }
 
-    // TODO
     @Test
-    @DisplayName("무제한 쿠폰 생성 후 자동 발행 성공")
+    @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
     void createPointCoupon() {
-        // when
+        // given
+        Long couponId = 1l;
+        String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
-                .name("10% 할인 쿠폰")
+                .id(1L)
+                .name(couponName)
                 .isUnlimited(true)
                 .couponTypeCode(CouponTypeCode.FIXED_RATE)
                 .minOrderAmount(10000)
@@ -51,9 +60,37 @@ class CommandCouponServiceImplTest {
                 .discountRate(10)
                 .build();
 
-        // 어떤 메소드들이 호출되는지, 어떤 매개 변수로 동작되는지 테스트, 횟수 등?
-        // 리턴 타입 확인
+        RateCouponRequestDto requestDto = new RateCouponRequestDto(
+                TriggerTypeCode.SIGN_UP,
+                couponName,
+                true,
+                null,
+                null,
+                10,
+                null,
+                CouponTypeCode.FIXED_RATE,
+                10000,
+                2000,
+                10,
+                false,
+                CouponBoundCode.ALL,
+                null,
+                null
+        );
 
+        // when
+        Mockito.when(couponRepository.save(any())).thenReturn(coupon);
+        CouponResponseDto couponResponseDto = couponService.createRateCoupon(
+                requestDto);
+
+        // then
+        Assertions.assertThat(couponResponseDto.getName()).isEqualTo(couponName);
+        Assertions.assertThat(couponResponseDto.getCouponTypeCode())
+                .isEqualTo(CouponTypeCode.FIXED_RATE);
+        verify(couponRepository).save(any());
+        verify(triggerRepository).save(any());
+        verify(issueCouponService).issueCoupon(any());
+        verify(couponBoundRepository).save(any());
     }
 
 }
