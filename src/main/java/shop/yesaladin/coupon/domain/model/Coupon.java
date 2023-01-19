@@ -15,7 +15,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -43,9 +42,8 @@ public abstract class Coupon {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Builder.Default
     @Column(nullable = false)
-    private int quantity = -1;
+    private boolean isUnlimited;
 
     @Column
     private String fileUri;
