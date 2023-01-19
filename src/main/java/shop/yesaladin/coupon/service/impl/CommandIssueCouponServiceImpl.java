@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -75,14 +74,10 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
     }
 
     private int getCouponQuantityWillBeIssued(Coupon coupon, Integer requestedQuantity) {
-        if (Objects.nonNull(requestedQuantity)) {
-            return requestedQuantity;
-        }
-        int issueQuantity = coupon.getQuantity();
-        if (issueQuantity == issuanceConfig.getUnlimitedFlag()) {
+        if (coupon.isUnlimited()) {
             return issuanceConfig.getUnlimitedCouponIssueSize();
         }
-        return issueQuantity;
+        return requestedQuantity;
     }
 
     private LocalDate calculateExpirationDate(Coupon coupon) {
