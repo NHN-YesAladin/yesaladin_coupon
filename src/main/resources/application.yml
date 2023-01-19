@@ -1,5 +1,15 @@
 spring:
   application:
     name: yesaladin-coupon
-  config:
-    import: optional:configserver:localhost:8888
+  datasource:
+    url: jdbc:h2:mem:/test
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    show-sql: true
+
+coupon:
+  issue:
+    unlimited-coupon-issue-size: 100
+    unlimited-flag-value: -1
