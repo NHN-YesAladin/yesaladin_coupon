@@ -72,7 +72,7 @@ class CommandCouponControllerTest {
 
         // docs
         actual.andDo(document(
-                "create-coupon-success",
+                "create-point-coupon-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestFields(
@@ -80,9 +80,9 @@ class CommandCouponControllerTest {
                                 .description("쿠폰의 트리거 타입"),
                         fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("쿠폰의 이름"),
-                        fieldWithPath("isUnlimited").type(JsonFieldType.STRING)
+                        fieldWithPath("isUnlimited").type(JsonFieldType.BOOLEAN)
                                 .description("쿠폰 발행 무제한 여부"),
-                        fieldWithPath(("quantity")).type(JsonFieldType.NUMBER)
+                        fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
@@ -142,7 +142,7 @@ class CommandCouponControllerTest {
 
         // docs
         actual.andDo(document(
-                "create-coupon-success",
+                "create-amount-coupon-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestFields(
@@ -150,9 +150,9 @@ class CommandCouponControllerTest {
                                 .description("쿠폰의 트리거 타입"),
                         fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("쿠폰의 이름"),
-                        fieldWithPath("isUnlimited").type(JsonFieldType.STRING)
+                        fieldWithPath("isUnlimited").type(JsonFieldType.BOOLEAN)
                                 .description("쿠폰 발행 무제한 여부"),
-                        fieldWithPath(("quantity")).type(JsonFieldType.NUMBER)
+                        fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
@@ -174,7 +174,7 @@ class CommandCouponControllerTest {
                                 .description("중복 할인 가능 여부"),
                         fieldWithPath("couponBoundCode").type(JsonFieldType.STRING)
                                 .description("쿠폰의 적용 범위 코드"),
-                        fieldWithPath("ISBN").type(JsonFieldType.STRING)
+                        fieldWithPath("isbn").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰이 적용될 수 있는 상품의 ISBN"),
                         fieldWithPath("categoryId").type(JsonFieldType.NUMBER)
@@ -225,7 +225,7 @@ class CommandCouponControllerTest {
 
         // docs
         actual.andDo(document(
-                "create-coupon-success",
+                "create-rate-coupon-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestFields(
@@ -233,9 +233,9 @@ class CommandCouponControllerTest {
                                 .description("쿠폰의 트리거 타입"),
                         fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("쿠폰의 이름"),
-                        fieldWithPath("isUnlimited").type(JsonFieldType.STRING)
+                        fieldWithPath("isUnlimited").type(JsonFieldType.BOOLEAN)
                                 .description("쿠폰 발행 무제한 여부"),
-                        fieldWithPath(("quantity")).type(JsonFieldType.NUMBER)
+                        fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
                         fieldWithPath("fileUri").type(JsonFieldType.STRING)
@@ -259,7 +259,7 @@ class CommandCouponControllerTest {
                                 .description("중복 할인 가능 여부"),
                         fieldWithPath("couponBoundCode").type(JsonFieldType.STRING)
                                 .description("쿠폰의 적용 범위 코드"),
-                        fieldWithPath("ISBN").type(JsonFieldType.STRING)
+                        fieldWithPath("isbn").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰이 적용될 수 있는 상품의 ISBN"),
                         fieldWithPath("categoryId").type(JsonFieldType.NUMBER)

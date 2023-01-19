@@ -29,7 +29,7 @@ public class PointCouponRequestDto {
     @Length(max = 50, message = "coupon name cannot be more than 50 characters")
     private String name;
 
-    private boolean isUnlimited;
+    private Boolean isUnlimited;
 
     @PositiveOrZero(message = "invalid coupon quantity")
     private Integer quantity;

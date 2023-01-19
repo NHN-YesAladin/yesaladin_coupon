@@ -1,8 +1,10 @@
 package shop.yesaladin.coupon.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +20,7 @@ import shop.yesaladin.coupon.service.inter.CommandCouponService;
  * @author 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/coupons")
@@ -33,7 +36,8 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createPointCoupon(@RequestBody PointCouponRequestDto couponRequestDto) {
+        log.info("{}", couponRequestDto);
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
@@ -45,7 +49,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createAmountCoupon(@RequestBody AmountCouponRequestDto couponRequestDto) {
         return commandCouponService.createAmountCoupon(couponRequestDto);
     }
 
@@ -57,7 +61,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"rate"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createRateCoupon(@RequestBody RateCouponRequestDto couponRequestDto) {
         return commandCouponService.createRateCoupon(couponRequestDto);
     }
 }

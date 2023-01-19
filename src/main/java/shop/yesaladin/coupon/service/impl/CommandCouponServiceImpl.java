@@ -12,10 +12,12 @@ import shop.yesaladin.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.dto.AmountCouponRequestDto;
+import shop.yesaladin.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.service.inter.CommandCouponService;
+import shop.yesaladin.coupon.service.inter.CommandIssueCouponService;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
@@ -30,17 +32,19 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponRepository couponRepository;
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
+    private final CommandIssueCouponService issueCouponService;
 
     // TODO 쿠폰 이미지 유무에 따라 파일 처리
-    // TODO 만료기간, 기간 처리
-    // TODO 각 DTO 에 CouponTypeCode 처리
-    // TODO 무제한 여부에 따라 자동 발행 구현
 
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                coupon.getId(),
+                couponRequestDto.getQuantity()
+        ));
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
@@ -56,6 +60,10 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 coupon
         );
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                coupon.getId(),
+                couponRequestDto.getQuantity()
+        ));
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
@@ -71,6 +79,10 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 coupon
         );
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                coupon.getId(),
+                couponRequestDto.getQuantity()
+        ));
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
