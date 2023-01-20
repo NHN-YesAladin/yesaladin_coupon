@@ -121,6 +121,12 @@
             <artifactId>yesaladin_coupon_utils</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.9.0</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
