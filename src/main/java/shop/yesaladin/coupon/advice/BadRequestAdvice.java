@@ -8,7 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import shop.yesaladin.coupon.dto.ErrorResponseDto;
+import shop.yesaladin.coupon.coupon.dto.ErrorResponseDto;
 
 /**
  * 400 Bad Request 응답을 내려주기 위한 RestControllerAdvice 클래스입니다.
