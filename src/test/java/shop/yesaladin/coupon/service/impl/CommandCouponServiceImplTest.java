@@ -66,6 +66,7 @@ class CommandCouponServiceImplTest {
                 true,
                 null,
                 null,
+                null,
                 10,
                 null,
                 CouponTypeCode.FIXED_RATE,

@@ -7,6 +7,7 @@ import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
@@ -26,8 +27,8 @@ public abstract class CouponRequestDto {
     @PositiveOrZero(message = "invalid coupon quantity")
     private Integer quantity;
 
-    @Length(max = 255, message = "file Uri cannot be more than 255 characters")
-    private String fileUri;
+    private MultipartFile imageFile;
+    private String imageFileUri;
 
     @PositiveOrZero(message = "invalid duration of use")
     private Integer duration;

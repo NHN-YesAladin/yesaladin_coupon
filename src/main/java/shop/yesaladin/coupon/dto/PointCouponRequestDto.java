@@ -7,6 +7,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.domain.model.PointCoupon;
@@ -26,7 +27,8 @@ public class PointCouponRequestDto extends CouponRequestDto {
             @NotBlank(message = "coupon name must be at least 2 characters long") @Length(max = 50, message = "coupon name cannot be more than 50 characters") String name,
             Boolean isUnlimited,
             @PositiveOrZero(message = "invalid coupon quantity") Integer quantity,
-            @Length(max = 255, message = "file Uri cannot be more than 255 characters") String fileUri,
+            MultipartFile imageFile,
+            String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
             @Future(message = "invalid coupon expiration date") LocalDate expirationDate,
             CouponTypeCode couponTypeCode,
@@ -37,7 +39,8 @@ public class PointCouponRequestDto extends CouponRequestDto {
                 name,
                 isUnlimited,
                 quantity,
-                fileUri,
+                imageFile,
+                imageFileUri,
                 duration,
                 expirationDate,
                 couponTypeCode
@@ -52,7 +55,7 @@ public class PointCouponRequestDto extends CouponRequestDto {
         return PointCoupon.builder()
                 .name(this.getName())
                 .isUnlimited(this.getIsUnlimited())
-                .fileUri(this.getFileUri())
+                .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
                 .couponTypeCode(this.getCouponTypeCode())

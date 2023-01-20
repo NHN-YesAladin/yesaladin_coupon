@@ -3,6 +3,7 @@ package shop.yesaladin.coupon.service.impl;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.domain.model.CouponBoundCode;
@@ -43,9 +44,24 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    private boolean hasImageFile(CouponRequestDto couponRequestDto) {
+        if (!couponRequestDto.getImageFile().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    private String upload(MultipartFile file) {
+        // 인증토큰 발급 받기
+        // 파일 업로드 하기
+        // url 받기
+    }
+
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
+
+
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
         createCouponBound(
                 amountCouponRequestDto.getISBN(),
@@ -85,7 +101,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             String ISBN, Long categoryId, CouponBoundCode couponBoundCode, Coupon coupon
     ) {
         CouponBound couponBound = CouponBound.builder()
-                .couponId(coupon.getId())
                 .coupon(coupon)
                 .ISBN(ISBN)
                 .categoryId(categoryId)
