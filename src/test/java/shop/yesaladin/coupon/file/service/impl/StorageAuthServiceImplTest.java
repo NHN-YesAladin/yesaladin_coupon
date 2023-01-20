@@ -3,7 +3,6 @@ package shop.yesaladin.coupon.file.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestTemplate;
 
 class StorageAuthServiceImplTest {
 
@@ -11,7 +10,6 @@ class StorageAuthServiceImplTest {
     private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
     private String username = "mmmmm_s2@naver.com";
     private String password = "yesaladin";
-    private RestTemplate restTemplate = new RestTemplate();
 
     private StorageAuthServiceImpl storageAuthService;
 
@@ -21,8 +19,7 @@ class StorageAuthServiceImplTest {
                 authUrl,
                 tenantId,
                 username,
-                password,
-                restTemplate
+                password
         );
     }
 

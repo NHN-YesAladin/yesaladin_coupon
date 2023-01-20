@@ -26,6 +26,7 @@ public class StorageAuthServiceImpl implements StorageAuthService {
     private final String username;
     @Value("${coupon.storage-token.auth.password}")
     private final String password;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     private AccessTokenRequest createAccessTokenRequest() {
         AccessTokenRequest request = new AccessTokenRequest();
@@ -45,9 +46,8 @@ public class StorageAuthServiceImpl implements StorageAuthService {
                 = new HttpEntity<>(createAccessTokenRequest(), headers);
 
         // 토큰 요청
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response
-                = restTemplate.exchange(
+                = this.restTemplate.exchange(
                 this.authUrl,
                 HttpMethod.POST,
                 httpEntity,
