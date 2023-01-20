@@ -19,12 +19,8 @@ import shop.yesaladin.coupon.file.service.inter.StorageAuthService;
 @Service
 public class ObjectStorageServiceImpl implements ObjectStorageService {
 
-
     @Value("${coupon.storage.url}")
     private final String storageUrl;
-    @Value("${coupon.storage.account}")
-    private final String storageAccount;
-
     @Value("${coupon.storage.container-name}")
     private final String containerName;
     private final StorageAuthService storageAuthService;
@@ -53,13 +49,13 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         requestFactory.setBufferRequestBody(false);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
-        HttpMessageConverterExtractor<String> responseExtractor
-                = new HttpMessageConverterExtractor<>(
-                String.class,
+        HttpMessageConverterExtractor<String> responseExtractor = new HttpMessageConverterExtractor<>(String.class,
                 restTemplate.getMessageConverters()
         );
 
         // API 호출
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
+
+        System.out.println("성공");
     }
 }
