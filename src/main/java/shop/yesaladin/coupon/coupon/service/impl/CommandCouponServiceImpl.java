@@ -113,9 +113,10 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private void createTrigger(TriggerTypeCode couponRequestDto, Coupon coupon) {
-        triggerRepository.save(Trigger.builder()
+        Trigger trigger = triggerRepository.save(Trigger.builder()
                 .triggerTypeCode(couponRequestDto)
                 .coupon(coupon)
                 .build());
+        coupon.addTrigger(trigger);
     }
 }

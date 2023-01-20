@@ -3,6 +3,7 @@ package shop.yesaladin.coupon.coupon.domain.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -60,4 +61,11 @@ public abstract class Coupon {
 
     @OneToMany(mappedBy = "coupon")
     private List<Trigger> triggerList = new ArrayList<>();
+
+    public void addTrigger(Trigger trigger) {
+        if (Objects.isNull(triggerList)) {
+            this.triggerList = new ArrayList<>();
+        }
+        this.triggerList.add(trigger);
+    }
 }
