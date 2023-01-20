@@ -89,7 +89,10 @@ class CommandCouponControllerTest {
                         fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
-                        fieldWithPath("fileUri").type(JsonFieldType.STRING)
+                        fieldWithPath("imageFile").type(JsonFieldType.OBJECT)
+                                .optional()
+                                .description("업로드된 쿠폰 이미지 파일"),
+                        fieldWithPath("imageFileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
                         fieldWithPath("duration").type(JsonFieldType.NUMBER)
@@ -161,7 +164,10 @@ class CommandCouponControllerTest {
                         fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
-                        fieldWithPath("fileUri").type(JsonFieldType.STRING)
+                        fieldWithPath("imageFile").type(JsonFieldType.OBJECT)
+                                .optional()
+                                .description("업로드된 쿠폰 이미지 파일"),
+                        fieldWithPath("imageFileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
                         fieldWithPath("duration").type(JsonFieldType.NUMBER)
@@ -246,7 +252,10 @@ class CommandCouponControllerTest {
                         fieldWithPath("quantity").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("쿠폰의 수량, null 일 경우 무제한"),
-                        fieldWithPath("fileUri").type(JsonFieldType.STRING)
+                        fieldWithPath("imageFile").type(JsonFieldType.OBJECT)
+                                .optional()
+                                .description("업로드된 쿠폰 이미지 파일"),
+                        fieldWithPath("imageFileUri").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("쿠폰의 이미지 URI"),
                         fieldWithPath("duration").type(JsonFieldType.NUMBER)
