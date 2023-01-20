@@ -1,18 +1,18 @@
 package shop.yesaladin.coupon.file.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
 public class AccessTokenResponse {
 
-    @JsonProperty("access.token.id")
-    private String tokenId;
-    @JsonProperty("access.token.tenant.id")
-    private String tenantId;
-    @JsonProperty("access.token.expires")
-    private String expires;
-    @JsonProperty("access.user.id")
-    private String userId;
+    private String id;
 
+    @SuppressWarnings("unchecked")
+    @JsonProperty("access")
+    private void unpackNested(Map<String, Object> access) {
+        Map<String, String> token = (Map<String, String>) access.get("token");
+        this.id = token.get("id");
+    }
 }

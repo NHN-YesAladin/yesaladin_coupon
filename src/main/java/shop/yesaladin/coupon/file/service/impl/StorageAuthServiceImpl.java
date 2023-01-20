@@ -1,7 +1,8 @@
 package shop.yesaladin.coupon.file.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,10 +14,9 @@ import shop.yesaladin.coupon.file.dto.AccessTokenRequest;
 import shop.yesaladin.coupon.file.dto.AccessTokenResponse;
 import shop.yesaladin.coupon.file.service.inter.StorageAuthService;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
-public class StorageStorageAuthServiceImpl implements StorageAuthService {
+public class StorageAuthServiceImpl implements StorageAuthService {
 
     @Value("${coupon.storage-token.auth.url}")
     private final String authUrl;
@@ -26,7 +26,6 @@ public class StorageStorageAuthServiceImpl implements StorageAuthService {
     private final String username;
     @Value("${coupon.storage-token.auth.password}")
     private final String password;
-    private final RestTemplate restTemplate;
 
     private AccessTokenRequest createAccessTokenRequest() {
         AccessTokenRequest request = new AccessTokenRequest();
@@ -37,28 +36,30 @@ public class StorageStorageAuthServiceImpl implements StorageAuthService {
     }
 
     @Override
-    public String requestToken() {
+    public String requestToken() throws JsonProcessingException {
         // 헤더 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
-        log.info(headers.toString());
-
         HttpEntity<AccessTokenRequest> httpEntity
                 = new HttpEntity<>(createAccessTokenRequest(), headers);
 
-        log.info(httpEntity.toString());
-        log.info(this.authUrl);
-
         // 토큰 요청
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response
-                = this.restTemplate.exchange(
+                = restTemplate.exchange(
                 this.authUrl,
                 HttpMethod.POST,
                 httpEntity,
                 String.class
         );
 
-        return response.getBody();
+        JsonMapper jsonMapper = new JsonMapper();
+        AccessTokenResponse accessTokenResponse = jsonMapper.readValue(
+                response.getBody(),
+                AccessTokenResponse.class
+        );
+
+        return accessTokenResponse.getId();
     }
 }
