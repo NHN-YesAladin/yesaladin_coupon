@@ -2,6 +2,12 @@ package shop.yesaladin.coupon.file.dto;
 
 import lombok.Data;
 
+/**
+ * 오브젝트 스토리지 접근에 필요한 인증 토큰 요청시 사용되는 클래스 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Data
 public class AccessTokenRequest {
 

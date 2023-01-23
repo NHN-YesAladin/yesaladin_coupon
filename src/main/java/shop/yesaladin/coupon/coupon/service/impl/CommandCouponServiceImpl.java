@@ -59,8 +59,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setFileUri(upload(amountCouponRequestDto.getCouponImage()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(
-                amountCouponRequestDto.getISBN(),
+        createCouponBound(amountCouponRequestDto.getISBN(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -76,8 +75,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setFileUri(upload(rateCouponRequestDto.getCouponImage()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(
-                rateCouponRequestDto.getISBN(),
+        createCouponBound(rateCouponRequestDto.getISBN(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -94,8 +92,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         String contentType = file.getContentType();
         String fileName = UUID.randomUUID() + "." + contentType;
 
-        return objectStorageService.uploadObject(
-                storageConfiguration.getContainerName(),
+        return objectStorageService.uploadObject(storageConfiguration.getContainerName(),
                 fileName,
                 file
         );
@@ -104,8 +101,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                coupon.getId(),
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
         return coupon;
