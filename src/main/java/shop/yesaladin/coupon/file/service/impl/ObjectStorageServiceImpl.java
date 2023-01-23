@@ -26,7 +26,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         return storageConfiguration.getStorageUrl() + "/" + containerName + "/" + objectName;
     }
 
-    // 발급받은 인증 토큰을 사용하여 파일을 업로드합니다.
     @Override
     public String uploadObject(String containerName, String objectName, MultipartFile multipartFile) {
         String tokenId = storageAuthService.requestToken();

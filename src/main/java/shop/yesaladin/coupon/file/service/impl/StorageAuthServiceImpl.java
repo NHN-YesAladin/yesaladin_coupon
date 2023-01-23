@@ -32,14 +32,12 @@ public class StorageAuthServiceImpl implements StorageAuthService {
 
     @Override
     public String requestToken() {
-        // 헤더 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
 
         HttpEntity<AccessTokenRequest> httpEntity
                 = new HttpEntity<>(createAccessTokenRequest(), headers);
 
-        // 토큰 요청
         ResponseEntity<String> response
                 = this.restTemplate.exchange(
                 storageConfiguration.getAuthUrl(),

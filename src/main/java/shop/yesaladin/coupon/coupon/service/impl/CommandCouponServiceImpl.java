@@ -87,7 +87,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
         return !Objects.isNull(couponRequestDto.getImageFile());
-//        return !couponRequestDto.getImageFile().isEmpty();
     }
 
     private String upload(MultipartFile file) {
