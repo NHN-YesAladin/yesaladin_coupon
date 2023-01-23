@@ -17,8 +17,8 @@ import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
-import shop.yesaladin.coupon.coupon.service.impl.CommandCouponServiceImpl;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandCouponServiceImplTest {
@@ -28,6 +28,7 @@ class CommandCouponServiceImplTest {
     private CommandTriggerRepository triggerRepository;
     private CommandIssueCouponService issueCouponService;
     private CommandCouponServiceImpl couponService;
+    private ObjectStorageService objectStorageService;
     private Coupon coupon;
 
     @BeforeEach
@@ -36,12 +37,14 @@ class CommandCouponServiceImplTest {
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
         issueCouponService = Mockito.mock(CommandIssueCouponService.class);
+        objectStorageService = Mockito.mock(ObjectStorageService.class);
 
         couponService = new CommandCouponServiceImpl(
                 couponRepository,
                 couponBoundRepository,
                 triggerRepository,
-                issueCouponService
+                issueCouponService,
+                objectStorageService
         );
     }
 
@@ -49,7 +52,7 @@ class CommandCouponServiceImplTest {
     @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
     void createPointCoupon() {
         // given
-        Long couponId = 1l;
+        Long couponId = 1L;
         String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
                 .id(1L)
@@ -94,5 +97,4 @@ class CommandCouponServiceImplTest {
         verify(issueCouponService).issueCoupon(any());
         verify(couponBoundRepository).save(any());
     }
-
 }

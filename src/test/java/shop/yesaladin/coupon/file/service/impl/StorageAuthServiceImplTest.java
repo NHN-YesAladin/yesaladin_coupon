@@ -3,24 +3,16 @@ package shop.yesaladin.coupon.file.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 
 class StorageAuthServiceImplTest {
 
-    private String authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
-    private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
-    private String username = "mmmmm_s2@naver.com";
-    private String password = "yesaladin";
-
     private StorageAuthServiceImpl storageAuthService;
+    private StorageConfiguration storageConfiguration;
 
     @BeforeEach
     void setUp() {
-        storageAuthService = new StorageAuthServiceImpl(
-                authUrl,
-                tenantId,
-                username,
-                password
-        );
+        storageAuthService = new StorageAuthServiceImpl(storageConfiguration);
     }
 
     @Test

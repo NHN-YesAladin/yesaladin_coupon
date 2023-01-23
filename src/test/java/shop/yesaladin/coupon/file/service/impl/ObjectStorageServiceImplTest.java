@@ -7,31 +7,19 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.file.service.inter.StorageAuthService;
 
 class ObjectStorageServiceImplTest {
 
-
-    private String authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
-    private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
-    private String username = "mmmmm_s2@naver.com";
-    private String password = "yesaladin";
-    private String storageUrl = "https://api-storage.cloud.toast.com/v1/AUTH_fcb81f74e379456b8ca0e091d351a7af";
-    private String containerName = "yesaladinTest/coupon/test";
     private StorageAuthService storageAuthService;
     private ObjectStorageServiceImpl objectStorageService;
+    private StorageConfiguration storageConfiguration;
 
     @BeforeEach
     void setUp() {
-        storageAuthService = new StorageAuthServiceImpl(
-                authUrl,
-                tenantId,
-                username,
-                password
-        );
-        objectStorageService = new ObjectStorageServiceImpl(
-                storageUrl,
-                containerName,
+        storageAuthService = new StorageAuthServiceImpl(storageConfiguration);
+        objectStorageService = new ObjectStorageServiceImpl(storageConfiguration,
                 storageAuthService
         );
     }

@@ -1,23 +1,20 @@
 package shop.yesaladin.coupon.file.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
+@Data
 public class AccessTokenRequest {
 
     private Auth auth = new Auth();
 
-    @Setter
-    @Getter
+    @Data
     public class Auth {
 
         private String tenantId;
         private PasswordCredentials passwordCredentials = new PasswordCredentials();
     }
 
-    @Setter
-    @Getter
+    @Data
     public class PasswordCredentials {
 
         private String username;

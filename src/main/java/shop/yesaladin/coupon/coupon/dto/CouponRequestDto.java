@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
@@ -28,6 +29,7 @@ public abstract class CouponRequestDto {
     private Integer quantity;
 
     private MultipartFile imageFile;
+    @Setter
     private String imageFileUri;
 
     @PositiveOrZero(message = "invalid duration of use")

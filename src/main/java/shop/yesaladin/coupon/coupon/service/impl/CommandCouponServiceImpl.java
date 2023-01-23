@@ -1,24 +1,27 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
+import java.io.InputStream;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
+import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
-import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
-import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
-import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
-import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
@@ -35,38 +38,39 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
     private final CommandIssueCouponService issueCouponService;
+    private final ObjectStorageService objectStorageService;
 
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
+        if (hasImageFile(pointCouponRequestDto)) {
+            String url = upload(pointCouponRequestDto.getImageFile());
+            pointCouponRequestDto.setImageFileUri(url);
+        }
         Coupon coupon = issueCouponAfterCreate(pointCouponRequestDto);
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
-        if (!couponRequestDto.getImageFile().isEmpty()) {
-            return true;
-        }
-        return false;
+        return !couponRequestDto.getImageFile().isEmpty();
     }
 
     private String upload(MultipartFile file) {
-        // TODO upload file then return url
-        // 인증토큰 발급 받기
-        // 파일 업로드 하기
-        // url 받기
-        return null;
+        UUID randomUUID = UUID.randomUUID();
+        String contentType = file.getContentType();
+        InputStream inputStream = (InputStream) file;
+        String fileName = randomUUID + contentType;
+
+        return objectStorageService.uploadObject(null, fileName, inputStream);
     }
 
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
 
-
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(
-                amountCouponRequestDto.getISBN(),
+        createCouponBound(amountCouponRequestDto.getISBN(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -79,8 +83,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(
-                rateCouponRequestDto.getISBN(),
+        createCouponBound(rateCouponRequestDto.getISBN(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -92,8 +95,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                coupon.getId(),
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
         return coupon;

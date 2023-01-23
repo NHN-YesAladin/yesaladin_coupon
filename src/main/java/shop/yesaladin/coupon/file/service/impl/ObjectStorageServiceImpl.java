@@ -1,17 +1,16 @@
 package shop.yesaladin.coupon.file.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.InputStream;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.file.service.inter.StorageAuthService;
 
@@ -19,22 +18,18 @@ import shop.yesaladin.coupon.file.service.inter.StorageAuthService;
 @Service
 public class ObjectStorageServiceImpl implements ObjectStorageService {
 
-    @Value("${coupon.storage.url}")
-    private final String storageUrl;
-    @Value("${coupon.storage.container-name}")
-    private final String containerName;
+    private final StorageConfiguration storageConfiguration;
     private final StorageAuthService storageAuthService;
 
     @Override
     public String getUrl(String containerName, @NonNull String objectName) {
-        containerName = this.containerName;     // FIXME
-        return this.storageUrl + "/" + containerName + "/" + objectName;
+        containerName = storageConfiguration.getContainerName();     // FIXME
+        return storageConfiguration.getStorageUrl() + "/" + containerName + "/" + objectName;
     }
 
     // 발급받은 인증 토큰을 사용하여 파일을 업로드합니다.
     @Override
-    public void uploadObject(String containerName, String objectName, InputStream inputStream)
-            throws JsonProcessingException {
+    public String uploadObject(String containerName, String objectName, InputStream inputStream) {
         String tokenId = storageAuthService.requestToken();
         String url = getUrl(containerName, objectName);
 
@@ -49,13 +44,14 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         requestFactory.setBufferRequestBody(false);
         RestTemplate restTemplate = new RestTemplate(requestFactory);
 
-        HttpMessageConverterExtractor<String> responseExtractor = new HttpMessageConverterExtractor<>(String.class,
+        HttpMessageConverterExtractor<String> responseExtractor = new HttpMessageConverterExtractor<>(
+                String.class,
                 restTemplate.getMessageConverters()
         );
 
         // API 호출
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
 
-        System.out.println("성공");
+        return url;
     }
 }
