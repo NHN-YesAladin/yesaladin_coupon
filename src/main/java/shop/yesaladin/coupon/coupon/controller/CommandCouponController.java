@@ -4,8 +4,8 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +37,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createPointCoupon(@Valid @RequestBody PointCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createPointCoupon(@Valid @ModelAttribute PointCouponRequestDto couponRequestDto) {
         return commandCouponService.createPointCoupon(couponRequestDto);
     }
 
@@ -49,7 +49,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createAmountCoupon(@Valid @RequestBody AmountCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createAmountCoupon(@Valid @ModelAttribute AmountCouponRequestDto couponRequestDto) {
         return commandCouponService.createAmountCoupon(couponRequestDto);
     }
 
@@ -61,7 +61,7 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"rate"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createRateCoupon(@Valid @RequestBody RateCouponRequestDto couponRequestDto) {
+    public CouponResponseDto createRateCoupon(@Valid @ModelAttribute RateCouponRequestDto couponRequestDto) {
         return commandCouponService.createRateCoupon(couponRequestDto);
     }
 }

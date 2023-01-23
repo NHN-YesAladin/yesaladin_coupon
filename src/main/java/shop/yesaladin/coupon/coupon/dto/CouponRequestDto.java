@@ -34,9 +34,9 @@ public abstract class CouponRequestDto {
     @PositiveOrZero(message = "invalid coupon quantity")
     private Integer quantity;
 
-    private MultipartFile couponImage;
+    private MultipartFile imageFile;
     @Setter
-    private String fileUri;
+    private String imageFileUri;
 
     @PositiveOrZero(message = "invalid duration of use")
     private Integer duration;

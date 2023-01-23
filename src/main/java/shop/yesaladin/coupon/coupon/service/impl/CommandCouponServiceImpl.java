@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
+import java.util.Objects;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
         if (hasImageFile(pointCouponRequestDto)) {
-            pointCouponRequestDto.setFileUri(upload(pointCouponRequestDto.getCouponImage()));
+            pointCouponRequestDto.setImageFileUri(upload(pointCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(pointCouponRequestDto);
 
@@ -56,7 +57,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
         if (hasImageFile(amountCouponRequestDto)) {
-            amountCouponRequestDto.setFileUri(upload(amountCouponRequestDto.getCouponImage()));
+            amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
         createCouponBound(amountCouponRequestDto.getISBN(),
@@ -72,7 +73,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
         if (hasImageFile(rateCouponRequestDto)) {
-            rateCouponRequestDto.setFileUri(upload(rateCouponRequestDto.getCouponImage()));
+            rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
         createCouponBound(rateCouponRequestDto.getISBN(),
@@ -85,7 +86,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
-        return !couponRequestDto.getCouponImage().isEmpty();
+        return !Objects.isNull(couponRequestDto.getImageFile());
+//        return !couponRequestDto.getImageFile().isEmpty();
     }
 
     private String upload(MultipartFile file) {

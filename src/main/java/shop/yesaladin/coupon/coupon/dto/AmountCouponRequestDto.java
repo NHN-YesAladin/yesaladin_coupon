@@ -72,7 +72,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
         return AmountCoupon.builder()
                 .name(this.getName())
                 .isUnlimited(this.getIsUnlimited())
-                .fileUri(this.getFileUri())
+                .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
                 .couponTypeCode(this.getCouponTypeCode())
