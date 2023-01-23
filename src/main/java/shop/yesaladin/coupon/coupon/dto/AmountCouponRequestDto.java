@@ -61,7 +61,6 @@ public class AmountCouponRequestDto extends CouponRequestDto {
 
     @PositiveOrZero(message = "invalid minimum order amount")
     private int minOrderAmount;
-
     @Positive(message = "invalid discount amount")
     private int discountAmount;
     private boolean canBeOverlapped;
@@ -73,7 +72,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
         return AmountCoupon.builder()
                 .name(this.getName())
                 .isUnlimited(this.getIsUnlimited())
-                .fileUri(this.getImageFileUri())
+                .fileUri(this.getFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
                 .couponTypeCode(this.getCouponTypeCode())

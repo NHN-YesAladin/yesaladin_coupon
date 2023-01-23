@@ -1,11 +1,11 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
-import java.io.InputStream;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
@@ -39,38 +39,28 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandTriggerRepository triggerRepository;
     private final CommandIssueCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
+    private final StorageConfiguration storageConfiguration;
 
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
         if (hasImageFile(pointCouponRequestDto)) {
-            String url = upload(pointCouponRequestDto.getImageFile());
-            pointCouponRequestDto.setImageFileUri(url);
+            pointCouponRequestDto.setFileUri(upload(pointCouponRequestDto.getCouponImage()));
         }
         Coupon coupon = issueCouponAfterCreate(pointCouponRequestDto);
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
-    private boolean hasImageFile(CouponRequestDto couponRequestDto) {
-        return !couponRequestDto.getImageFile().isEmpty();
-    }
-
-    private String upload(MultipartFile file) {
-        UUID randomUUID = UUID.randomUUID();
-        String contentType = file.getContentType();
-        InputStream inputStream = (InputStream) file;
-        String fileName = randomUUID + contentType;
-
-        return objectStorageService.uploadObject(null, fileName, inputStream);
-    }
-
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
-
+        if (hasImageFile(amountCouponRequestDto)) {
+            amountCouponRequestDto.setFileUri(upload(amountCouponRequestDto.getCouponImage()));
+        }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(amountCouponRequestDto.getISBN(),
+        createCouponBound(
+                amountCouponRequestDto.getISBN(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -82,8 +72,12 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Override
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
+        if (hasImageFile(rateCouponRequestDto)) {
+            rateCouponRequestDto.setFileUri(upload(rateCouponRequestDto.getCouponImage()));
+        }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(rateCouponRequestDto.getISBN(),
+        createCouponBound(
+                rateCouponRequestDto.getISBN(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -92,10 +86,26 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    private boolean hasImageFile(CouponRequestDto couponRequestDto) {
+        return !couponRequestDto.getCouponImage().isEmpty();
+    }
+
+    private String upload(MultipartFile file) {
+        String contentType = file.getContentType();
+        String fileName = UUID.randomUUID() + "." + contentType;
+
+        return objectStorageService.uploadObject(
+                storageConfiguration.getContainerName(),
+                fileName,
+                file
+        );
+    }
+
     private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(coupon.getId(),
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
         return coupon;

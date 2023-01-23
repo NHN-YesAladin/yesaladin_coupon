@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
@@ -29,6 +30,7 @@ class CommandCouponServiceImplTest {
     private CommandIssueCouponService issueCouponService;
     private CommandCouponServiceImpl couponService;
     private ObjectStorageService objectStorageService;
+    private StorageConfiguration storageConfiguration;
     private Coupon coupon;
 
     @BeforeEach
@@ -44,7 +46,8 @@ class CommandCouponServiceImplTest {
                 couponBoundRepository,
                 triggerRepository,
                 issueCouponService,
-                objectStorageService
+                objectStorageService,
+                storageConfiguration
         );
     }
 

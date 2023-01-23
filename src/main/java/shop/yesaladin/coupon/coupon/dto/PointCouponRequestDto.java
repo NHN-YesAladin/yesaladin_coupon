@@ -55,7 +55,7 @@ public class PointCouponRequestDto extends CouponRequestDto {
         return PointCoupon.builder()
                 .name(this.getName())
                 .isUnlimited(this.getIsUnlimited())
-                .fileUri(this.getImageFileUri())
+                .fileUri(this.getFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
                 .couponTypeCode(this.getCouponTypeCode())
