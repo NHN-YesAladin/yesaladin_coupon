@@ -1,7 +1,6 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
 import java.util.Objects;
-import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(amountCouponRequestDto.getISBN(),
+        createCouponBound(
+                amountCouponRequestDto.getISBN(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -76,7 +76,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(rateCouponRequestDto.getISBN(),
+        createCouponBound(
+                rateCouponRequestDto.getISBN(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -90,11 +91,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private String upload(MultipartFile file) {
-        String contentType = file.getContentType();
-        String fileName = UUID.randomUUID() + "." + contentType;
-
-        return objectStorageService.uploadObject(storageConfiguration.getContainerName(),
-                fileName,
+        return objectStorageService.uploadObject(
+                storageConfiguration.getContainerName(),
                 file
         );
     }
@@ -102,7 +100,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(coupon.getId(),
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
         return coupon;

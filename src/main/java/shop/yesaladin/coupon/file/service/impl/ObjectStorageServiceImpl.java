@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.file.service.impl;
 
+import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -27,14 +28,13 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
     }
 
     @Override
-    public String uploadObject(String containerName, String objectName, MultipartFile multipartFile) {
+    public String uploadObject(String containerName, MultipartFile file) {
         String tokenId = storageAuthService.requestToken();
-        String url = getUrl(containerName, objectName);
 
         // InputStream 을 요청 본문에 추가할 수 있도록 RequestCallback 오버라이드
         final RequestCallback requestCallback = request -> {
             request.getHeaders().add("X-Auth-Token", tokenId);
-            IOUtils.copy(multipartFile.getInputStream(), request.getBody());
+            IOUtils.copy(file.getInputStream(), request.getBody());
         };
 
         // 오버라이드한 RequestCallback 을 사용할 수 있도록 설정
@@ -48,8 +48,13 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         );
 
         // API 호출
+        String url = getUrl(containerName, getRandomFileName(file.getName()));
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
 
         return url;
+    }
+
+    private String getRandomFileName(String fileName) {
+        return UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
     }
 }

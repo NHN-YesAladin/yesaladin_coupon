@@ -24,9 +24,8 @@ public interface ObjectStorageService {
      * 발급받은 인증 토큰을 사용하여 파일을 업로드합니다.
      *
      * @param containerName 파일을 저장할 컨테이너 이름
-     * @param objectName 저장할 파일의 이름
      * @param multipartFile 저장할 파일
      * @return 저장된 파일의 Url
      */
-    String uploadObject(String containerName, String objectName, MultipartFile multipartFile);
+    String uploadObject(String containerName, MultipartFile multipartFile);
 }
