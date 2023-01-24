@@ -1,18 +1,19 @@
 package shop.yesaladin.coupon.coupon.dto;
 
 import java.time.LocalDate;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
@@ -32,7 +33,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
-            @Future(message = "invalid coupon expiration date") LocalDate expirationDate,
+            @DateTimeFormat(iso = ISO.DATE) LocalDate expirationDate,
             CouponTypeCode couponTypeCode,
             int minOrderAmount,
             int maxDiscountAmount,
