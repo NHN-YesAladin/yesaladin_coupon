@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.file.service.impl;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         );
 
         // API 호출
-        String url = getUrl(containerName, getRandomFileName(file.getName()));
+        String url = getUrl(containerName, getRandomFileName(Objects.requireNonNull(file.getOriginalFilename())));
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
 
         return url;
