@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class CommandIssuedCouponController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponIssueResponseDto issueCoupon(@Valid @RequestBody CouponIssueRequestDto dto) {
+    public List<CouponIssueResponseDto> issueCoupon(@Valid @RequestBody CouponIssueRequestDto dto) {
         return issuanceCommandService.issueCoupon(dto);
     }
 }

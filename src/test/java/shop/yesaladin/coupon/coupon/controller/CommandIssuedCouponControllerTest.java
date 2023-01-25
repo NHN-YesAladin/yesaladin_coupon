@@ -26,7 +26,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import shop.yesaladin.coupon.coupon.controller.CommandIssuedCouponController;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 
@@ -59,7 +58,7 @@ class CommandIssuedCouponControllerTest {
                 "fd2f0f65-2fdc-4ea4-8ea4-ef4d20a1418d"
         );
         Mockito.when(service.issueCoupon(Mockito.any()))
-                .thenReturn(new CouponIssueResponseDto(response));
+                .thenReturn(List.of(new CouponIssueResponseDto(response)));
 
         // when
         ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
@@ -68,7 +67,7 @@ class CommandIssuedCouponControllerTest {
         // then
         actual.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.createdCouponCodes").isArray());
+                .andExpect(jsonPath("$[0].createdCouponCodes").isArray());
 
         // docs
         actual.andDo(document(
@@ -83,7 +82,7 @@ class CommandIssuedCouponControllerTest {
                                 .optional()
                                 .description("쿠폰 데이터에 저장된 수량")
                 ),
-                responseFields(fieldWithPath("createdCouponCodes").type(JsonFieldType.ARRAY)
+                responseFields(fieldWithPath("[].createdCouponCodes").type(JsonFieldType.ARRAY)
                         .description("발행된 쿠폰의 코드"))
         ));
     }

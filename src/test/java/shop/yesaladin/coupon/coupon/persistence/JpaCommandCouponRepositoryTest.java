@@ -9,17 +9,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.coupon.persistence.JpaCommandCouponRepository;
-import shop.yesaladin.coupon.coupon.persistence.JpaQueryCouponRepository;
 
 @DataJpaTest
 class JpaCommandCouponRepositoryTest {
 
     @Autowired
     private JpaCommandCouponRepository commandCouponRepository;
-
-    @Autowired
-    private JpaQueryCouponRepository queryCouponRepository;
     private Coupon coupon;
 
     @BeforeEach
