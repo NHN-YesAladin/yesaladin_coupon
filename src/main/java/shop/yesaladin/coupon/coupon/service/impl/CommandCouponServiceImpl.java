@@ -60,7 +60,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
         createCouponBound(
-                amountCouponRequestDto.getISBN(),
+                amountCouponRequestDto.getIsbn(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -77,7 +77,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
         createCouponBound(
-                rateCouponRequestDto.getISBN(),
+                rateCouponRequestDto.getIsbn(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -109,11 +109,11 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private void createCouponBound(
-            String ISBN, Long categoryId, CouponBoundCode couponBoundCode, Coupon coupon
+            String isbn, Long categoryId, CouponBoundCode couponBoundCode, Coupon coupon
     ) {
         CouponBound couponBound = CouponBound.builder()
                 .coupon(coupon)
-                .ISBN(ISBN)
+                .isbn(isbn)
                 .categoryId(categoryId)
                 .couponBoundCode(couponBoundCode)
                 .build();

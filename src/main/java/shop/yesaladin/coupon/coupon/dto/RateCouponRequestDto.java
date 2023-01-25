@@ -40,7 +40,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
             int discountRate,
             boolean canBeOverlapped,
             CouponBoundCode couponBoundCode,
-            String ISBN,
+            String isbn,
             Long categoryId
     ) {
         super(
@@ -59,7 +59,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
         this.discountRate = discountRate;
         this.canBeOverlapped = canBeOverlapped;
         this.couponBoundCode = couponBoundCode;
-        this.ISBN = ISBN;
+        this.isbn = isbn;
         this.categoryId = categoryId;
     }
 
@@ -74,7 +74,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
     private int discountRate;
     private boolean canBeOverlapped;
     private CouponBoundCode couponBoundCode;
-    private String ISBN;
+    private String isbn;
     private Long categoryId;
 
     public Coupon toEntity() {

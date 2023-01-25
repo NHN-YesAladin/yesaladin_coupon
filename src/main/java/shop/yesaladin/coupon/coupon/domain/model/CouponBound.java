@@ -40,7 +40,7 @@ public class CouponBound {
     private Coupon coupon;
 
     @Column(length = 50)
-    private String ISBN;
+    private String isbn;
 
     @Column
     private Long categoryId;
