@@ -101,6 +101,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
         issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                null,
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));

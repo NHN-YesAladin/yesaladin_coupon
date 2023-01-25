@@ -27,7 +27,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.coupon.exception.InvalidCouponDataException;
-import shop.yesaladin.coupon.coupon.service.impl.CommandIssueCouponServiceImpl;
+import shop.yesaladin.coupon.coupon.exception.TriggerCouponNotExistException;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandIssueCouponServiceImplTest {
@@ -81,11 +81,12 @@ class CommandIssueCouponServiceImplTest {
                 .thenReturn(Optional.of(coupon));
 
         // when
-        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
 
         // then
         ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(500);
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(500);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(argumentCaptor.capture());
         List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
@@ -118,11 +119,12 @@ class CommandIssueCouponServiceImplTest {
         Mockito.when(issuanceConfig.getUnlimitedFlag()).thenReturn(-1);
 
         // when
-        CouponIssueResponseDto actual = service.issueCoupon(requestDto);
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
 
         // then
         ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual.getCreatedCouponCodes()).hasSize(100);
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(100);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(argumentCaptor.capture());
         List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
@@ -146,6 +148,61 @@ class CommandIssueCouponServiceImplTest {
         // then
         Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
                 .isInstanceOf(CouponNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("트리거로 쿠폰 발행에 성공한다.")
+    void issueCouponWithTriggerCodeSuccessTest() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP,
+                null,
+                1
+        );
+        long couponId = 1L;
+        Coupon coupon = PointCoupon.builder()
+                .id(couponId)
+                .name("test coupon")
+                .isUnlimited(false)
+                .chargePointAmount(1000)
+                .expirationDate(LocalDate.of(2023, 1, 4))
+                .couponTypeCode(CouponTypeCode.POINT)
+                .triggerList(Collections.emptyList())
+                .build();
+        Mockito.when(queryCouponRepository.findCouponByTriggerCode(requestDto.getTriggerTypeCode()))
+                .thenReturn(List.of(coupon));
+
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes())
+                .hasSize(requestDto.getQuantity());
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(argumentCaptor.capture());
+        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
+        Assertions.assertThat(actualArgs).hasSize(requestDto.getQuantity());
+    }
+
+    @Test
+    @DisplayName("트리거에 해당되는 쿠폰이 없다면 예외가 발생한다.")
+    void couponIssueWithTriggerFailCauseByTriggerCouponNotExist() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP,
+                null,
+                1
+        );
+        Mockito.when(queryCouponRepository.findCouponByTriggerCode(requestDto.getTriggerTypeCode()))
+                .thenReturn(Collections.emptyList());
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
+                .isInstanceOf(TriggerCouponNotExistException.class);
+
     }
 
     @Test
