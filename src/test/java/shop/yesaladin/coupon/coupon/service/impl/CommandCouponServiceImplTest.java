@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.assertj.core.api.Assertions;
@@ -97,7 +98,8 @@ class CommandCouponServiceImplTest {
                 .isEqualTo(CouponTypeCode.FIXED_RATE);
         verify(couponRepository).save(any());
         verify(triggerRepository).save(any());
-        verify(issueCouponService).issueCoupon(any());
+        // 생일쿠폰이므로 생성시 쿠폰 발행이 동작하지 않음
+        verify(issueCouponService, times(0)).issueCoupon(any());
         verify(couponBoundRepository).save(any());
     }
 }
