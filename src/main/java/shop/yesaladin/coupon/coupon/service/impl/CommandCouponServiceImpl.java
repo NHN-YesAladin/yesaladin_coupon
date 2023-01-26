@@ -1,5 +1,8 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
+import static shop.yesaladin.coupon.trigger.TriggerTypeCode.BIRTHDAY;
+import static shop.yesaladin.coupon.trigger.TriggerTypeCode.SIGN_UP;
+
 import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +62,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(
-                amountCouponRequestDto.getIsbn(),
+        createCouponBound(amountCouponRequestDto.getIsbn(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -76,8 +78,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(
-                rateCouponRequestDto.getIsbn(),
+        createCouponBound(rateCouponRequestDto.getIsbn(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -91,20 +92,25 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private String upload(MultipartFile file) {
-        return objectStorageService.uploadObject(
-                storageConfiguration.getContainerName(),
-                file
-        );
+        return objectStorageService.uploadObject(storageConfiguration.getContainerName(), file);
     }
 
     private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
-        createTrigger(couponRequestDto.getTriggerTypeCode(), coupon);
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                null,
+        TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
+
+        createTrigger(triggerTypeCode, coupon);
+
+        // 생일 쿠폰, 회원가입 쿠폰의 경우 쿠폰 요청에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
+        if (BIRTHDAY.equals(triggerTypeCode) || SIGN_UP.equals(triggerTypeCode)) {
+            return coupon;
+        }
+
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(null,
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
+
         return coupon;
     }
 
