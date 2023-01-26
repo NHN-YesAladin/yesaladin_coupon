@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
@@ -22,6 +21,7 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
 
     private final StorageConfiguration storageConfiguration;
     private final StorageAuthService storageAuthService;
+    private final RestTemplate restTemplate;
 
     @Override
     public String getUrl(String containerName, @NonNull String objectName) {
@@ -39,10 +39,6 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         };
 
         // 오버라이드한 RequestCallback 을 사용할 수 있도록 설정
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setBufferRequestBody(false);
-        RestTemplate restTemplate = new RestTemplate(requestFactory);
-
         HttpMessageConverterExtractor<String> responseExtractor = new HttpMessageConverterExtractor<>(
                 String.class,
                 restTemplate.getMessageConverters()
