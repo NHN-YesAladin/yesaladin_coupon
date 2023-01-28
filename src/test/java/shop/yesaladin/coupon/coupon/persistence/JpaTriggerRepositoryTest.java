@@ -38,8 +38,6 @@ class JpaTriggerRepositoryTest {
                 .id(savedCoupon.getId())
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .coupon(savedCoupon)
-                .groupCode("2a189dfa-9ece-11ed-a8fc-0242ac120002")
-                .isActivated(true)
                 .build();
 
         // when

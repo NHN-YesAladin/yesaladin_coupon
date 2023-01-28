@@ -43,10 +43,4 @@ public class Trigger {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
-
-    @Column(nullable = false, length = 36)
-    private String groupCode;
-
-    @Column(nullable = false)
-    private boolean isActivated;
 }
