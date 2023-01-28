@@ -56,7 +56,6 @@ class CommandCouponServiceImplTest {
     @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
     void createPointCoupon() {
         // given
-        Long couponId = 1L;
         String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
                 .id(1L)

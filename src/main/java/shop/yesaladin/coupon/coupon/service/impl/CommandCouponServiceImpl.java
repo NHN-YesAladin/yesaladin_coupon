@@ -4,6 +4,7 @@ import static shop.yesaladin.coupon.trigger.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.trigger.TriggerTypeCode.SIGN_UP;
 
 import java.util.Objects;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(amountCouponRequestDto.getIsbn(),
+        createCouponBound(
+                amountCouponRequestDto.getIsbn(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -78,7 +80,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(rateCouponRequestDto.getIsbn(),
+        createCouponBound(
+                rateCouponRequestDto.getIsbn(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -106,7 +109,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             return coupon;
         }
 
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(null,
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                null,
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
@@ -131,6 +135,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         Trigger trigger = triggerRepository.save(Trigger.builder()
                 .triggerTypeCode(couponRequestDto)
                 .coupon(coupon)
+                .groupCode(UUID.randomUUID().toString())
+                .isActivated(true)
                 .build());
         coupon.addTrigger(trigger);
     }
