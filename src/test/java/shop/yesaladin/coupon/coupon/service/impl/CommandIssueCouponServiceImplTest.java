@@ -155,7 +155,7 @@ class CommandIssueCouponServiceImplTest {
     void issueCouponWithTriggerCodeSuccessTest() {
         // given
         CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                TriggerTypeCode.SIGN_UP,
+                TriggerTypeCode.SIGN_UP.name(),
                 null,
                 1
         );
@@ -169,7 +169,8 @@ class CommandIssueCouponServiceImplTest {
                 .couponTypeCode(CouponTypeCode.POINT)
                 .triggerList(Collections.emptyList())
                 .build();
-        Mockito.when(queryCouponRepository.findCouponByTriggerCode(requestDto.getTriggerTypeCode()))
+        Mockito.when(queryCouponRepository.findCouponByTriggerCode(TriggerTypeCode.valueOf(
+                        requestDto.getTriggerTypeCode())))
                 .thenReturn(List.of(coupon));
 
         // when
@@ -191,11 +192,12 @@ class CommandIssueCouponServiceImplTest {
     void couponIssueWithTriggerFailCauseByTriggerCouponNotExist() {
         // given
         CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                TriggerTypeCode.SIGN_UP,
+                TriggerTypeCode.SIGN_UP.name(),
                 null,
                 1
         );
-        Mockito.when(queryCouponRepository.findCouponByTriggerCode(requestDto.getTriggerTypeCode()))
+        Mockito.when(queryCouponRepository.findCouponByTriggerCode(TriggerTypeCode.valueOf(
+                        requestDto.getTriggerTypeCode())))
                 .thenReturn(Collections.emptyList());
 
         // when

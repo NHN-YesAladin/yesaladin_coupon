@@ -60,9 +60,11 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
     }
 
     private List<CouponIssueResponseDto> issueCouponByTriggerCode(CouponIssueRequestDto requestDto) {
-        List<Coupon> couponList = queryCouponRepository.findCouponByTriggerCode(requestDto.getTriggerTypeCode());
+        TriggerTypeCode triggerTypeCode = TriggerTypeCode.valueOf(requestDto.getTriggerTypeCode());
+
+        List<Coupon> couponList = queryCouponRepository.findCouponByTriggerCode(triggerTypeCode);
         if (couponList.isEmpty()) {
-            throw new TriggerCouponNotExistException(requestDto.getTriggerTypeCode());
+            throw new TriggerCouponNotExistException(triggerTypeCode);
         }
         return couponList.stream()
                 .map(coupon -> createIssuanceDataList(coupon, requestDto.getQuantity()))
