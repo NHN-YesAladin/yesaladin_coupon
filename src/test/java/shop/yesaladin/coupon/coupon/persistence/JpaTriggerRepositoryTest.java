@@ -9,8 +9,6 @@ import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.coupon.persistence.JpaCommandCouponRepository;
-import shop.yesaladin.coupon.coupon.persistence.JpaTriggerRepository;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @DataJpaTest
@@ -40,6 +38,8 @@ class JpaTriggerRepositoryTest {
                 .id(savedCoupon.getId())
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .coupon(savedCoupon)
+                .groupCode("2a189dfa-9ece-11ed-a8fc-0242ac120002")
+                .isActivated(true)
                 .build();
 
         // when
