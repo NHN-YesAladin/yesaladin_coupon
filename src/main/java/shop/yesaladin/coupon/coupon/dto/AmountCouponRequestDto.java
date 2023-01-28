@@ -76,6 +76,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
                 .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
+                .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
                 .minOrderAmount(this.minOrderAmount)
                 .canBeOverlapped(this.canBeOverlapped)

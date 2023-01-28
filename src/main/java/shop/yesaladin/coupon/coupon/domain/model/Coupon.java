@@ -1,12 +1,14 @@
 package shop.yesaladin.coupon.coupon.domain.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.yesaladin.coupon.coupon.persistence.converter.CouponTypeCodeConverter;
 
 /**
@@ -34,6 +38,7 @@ import shop.yesaladin.coupon.coupon.persistence.converter.CouponTypeCodeConverte
 @Table(name = "coupons")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@EntityListeners(AuditingEntityListener.class)
 public abstract class Coupon {
 
     @Id
@@ -54,6 +59,9 @@ public abstract class Coupon {
 
     @Column
     private LocalDate expirationDate;
+
+    @CreatedDate
+    private LocalDateTime createdDatetime;
 
     @Column(name = "coupon_type_code_id")
     @Convert(converter = CouponTypeCodeConverter.class)
