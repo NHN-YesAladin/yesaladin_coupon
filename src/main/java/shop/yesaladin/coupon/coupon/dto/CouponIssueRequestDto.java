@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.ScriptAssert;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 import shop.yesaladin.coupon.validator.annotation.EnumValue;
 
@@ -19,6 +20,7 @@ import shop.yesaladin.coupon.validator.annotation.EnumValue;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@ScriptAssert(lang = "javascript", script = "!_this.triggerTypeCode || !_this.couponId", message = "The request must have either triggerTypeCode or couponId.")
 public class CouponIssueRequestDto {
 
     @EnumValue(enumClass = TriggerTypeCode.class)

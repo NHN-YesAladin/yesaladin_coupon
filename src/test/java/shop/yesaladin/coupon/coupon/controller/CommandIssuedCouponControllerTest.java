@@ -169,11 +169,49 @@ class CommandIssuedCouponControllerTest {
 
     @Test
     @DisplayName("트리거 코드 유효성 검증 실패로 쿠폰 발행에 실패한다.")
-    void issueCouponFail() throws Exception {
+    void issueCouponFailCauseByInvalidTriggerTypeCode() throws Exception {
         // given
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("quantity", 1);
         requestBody.put("triggerTypeCode", "invalid code");
+
+        // when
+        ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestBody)));
+
+        // then
+        actual.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessageList").isArray());
+
+        // docs
+        actual.andDo(document(
+                "issue-coupon-fail-cause-by-quantity-validation-fail",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestFields(
+                        fieldWithPath("couponId").type(JsonFieldType.NUMBER)
+                                .optional()
+                                .description("발행할 쿠폰 ID"),
+                        fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)
+                                .optional()
+                                .description("발행할 쿠폰 트리거 코드"),
+                        fieldWithPath("quantity").type(JsonFieldType.NUMBER)
+                                .description("발행할 쿠폰 수")
+                                .optional()
+                ),
+                responseFields(fieldWithPath("errorMessageList").type(JsonFieldType.ARRAY)
+                        .description("오류 메시지 리스트"))
+        ));
+    }
+
+    @Test
+    @DisplayName("요청에 트리거 코드와 쿠폰 아이디를 모두 포함하여 쿠폰 발행에 실패한다.")
+    void issueCouponFailCauseByHasMultiIssuanceConditions() throws Exception {
+        // given
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("quantity", 1);
+        requestBody.put("triggerTypeCode", "SIGN_UP");
+        requestBody.put("couponId", 1);
 
         // when
         ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
