@@ -84,6 +84,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
                 .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
+                .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
                 .minOrderAmount(this.minOrderAmount)
                 .maxDiscountAmount(this.maxDiscountAmount)

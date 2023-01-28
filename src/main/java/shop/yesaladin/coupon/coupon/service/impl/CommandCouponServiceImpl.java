@@ -4,6 +4,7 @@ import static shop.yesaladin.coupon.trigger.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.trigger.TriggerTypeCode.SIGN_UP;
 
 import java.util.Objects;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,10 @@ import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
@@ -40,6 +43,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponRepository couponRepository;
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
+    private final CommandCouponGroupRepository couponGroupRepository;
     private final CommandIssueCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
@@ -62,7 +66,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(amountCouponRequestDto.getIsbn(),
+        createCouponBound(
+                amountCouponRequestDto.getIsbn(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -78,7 +83,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(rateCouponRequestDto.getIsbn(),
+        createCouponBound(
+                rateCouponRequestDto.getIsbn(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -100,13 +106,15 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
 
         createTrigger(triggerTypeCode, coupon);
+        createCouponGroup(triggerTypeCode, coupon);
 
         // 생일 쿠폰, 회원가입 쿠폰의 경우 쿠폰 요청에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
         if (BIRTHDAY.equals(triggerTypeCode) || SIGN_UP.equals(triggerTypeCode)) {
             return coupon;
         }
 
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(null,
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                null,
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
@@ -127,11 +135,19 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         couponBoundRepository.save(couponBound);
     }
 
-    private void createTrigger(TriggerTypeCode couponRequestDto, Coupon coupon) {
+    private void createTrigger(TriggerTypeCode triggerTypeCode, Coupon coupon) {
         Trigger trigger = triggerRepository.save(Trigger.builder()
-                .triggerTypeCode(couponRequestDto)
+                .triggerTypeCode(triggerTypeCode)
                 .coupon(coupon)
                 .build());
         coupon.addTrigger(trigger);
+    }
+
+    private void createCouponGroup(TriggerTypeCode triggerTypeCode, Coupon coupon) {
+        couponGroupRepository.save(CouponGroup.builder()
+                .triggerTypeCode(triggerTypeCode)
+                .coupon(coupon)
+                .groupCode(UUID.randomUUID().toString())
+                .build());
     }
 }

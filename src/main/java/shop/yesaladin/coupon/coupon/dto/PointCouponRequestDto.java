@@ -61,6 +61,7 @@ public class PointCouponRequestDto extends CouponRequestDto {
                 .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
+                .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
                 .chargePointAmount(this.chargePointAmount)
                 .build();

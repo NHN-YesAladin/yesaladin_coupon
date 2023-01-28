@@ -15,6 +15,7 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
@@ -28,6 +29,7 @@ class CommandCouponServiceImplTest {
     private CommandCouponRepository couponRepository;
     private CommandCouponBoundRepository couponBoundRepository;
     private CommandTriggerRepository triggerRepository;
+    private CommandCouponGroupRepository couponGroupRepository;
     private CommandIssueCouponService issueCouponService;
     private CommandCouponServiceImpl couponService;
     private ObjectStorageService objectStorageService;
@@ -39,6 +41,7 @@ class CommandCouponServiceImplTest {
         couponRepository = Mockito.mock(CommandCouponRepository.class);
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
+        couponGroupRepository = Mockito.mock(CommandCouponGroupRepository.class);
         issueCouponService = Mockito.mock(CommandIssueCouponService.class);
         objectStorageService = Mockito.mock(ObjectStorageService.class);
 
@@ -46,6 +49,7 @@ class CommandCouponServiceImplTest {
                 couponRepository,
                 couponBoundRepository,
                 triggerRepository,
+                couponGroupRepository,
                 issueCouponService,
                 objectStorageService,
                 storageConfiguration
@@ -56,7 +60,6 @@ class CommandCouponServiceImplTest {
     @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
     void createPointCoupon() {
         // given
-        Long couponId = 1L;
         String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
                 .id(1L)
@@ -98,6 +101,7 @@ class CommandCouponServiceImplTest {
                 .isEqualTo(CouponTypeCode.FIXED_RATE);
         verify(couponRepository).save(any());
         verify(triggerRepository).save(any());
+        verify(couponGroupRepository).save(any());
         // 생일쿠폰이므로 생성시 쿠폰 발행이 동작하지 않음
         verify(issueCouponService, times(0)).issueCoupon(any());
         verify(couponBoundRepository).save(any());
