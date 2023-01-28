@@ -44,5 +44,5 @@ public class CouponGroup {
     private String groupCode;
 
     @CreatedDate
-    private LocalDateTime createdDateTime;
+    private LocalDateTime createdDatetime;
 }
