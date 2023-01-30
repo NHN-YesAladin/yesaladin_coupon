@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shop.yesaladin.common.dto.ResponseDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
@@ -34,7 +35,12 @@ public class CommandIssuedCouponController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<CouponIssueResponseDto> issueCoupon(@Valid @RequestBody CouponIssueRequestDto dto) {
-        return issuanceCommandService.issueCoupon(dto);
+    public ResponseDto<List<CouponIssueResponseDto>> issueCoupon(@Valid @RequestBody CouponIssueRequestDto dto) {
+        List<CouponIssueResponseDto> body = issuanceCommandService.issueCoupon(dto);
+        return ResponseDto.<List<CouponIssueResponseDto>>builder()
+                .status(HttpStatus.CREATED)
+                .data(body)
+                .success(true)
+                .build();
     }
 }
