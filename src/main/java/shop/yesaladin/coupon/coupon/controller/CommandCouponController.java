@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import shop.yesaladin.common.dto.ResponseDto;
 import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
@@ -37,8 +38,15 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createPointCoupon(@Valid @ModelAttribute PointCouponRequestDto couponRequestDto) {
-        return commandCouponService.createPointCoupon(couponRequestDto);
+    public ResponseDto<CouponResponseDto> createPointCoupon(@Valid @ModelAttribute PointCouponRequestDto couponRequestDto) {
+        CouponResponseDto data = commandCouponService.createPointCoupon(
+                couponRequestDto);
+
+        return ResponseDto.<CouponResponseDto>builder()
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .data(data)
+                .build();
     }
 
     /**
@@ -49,8 +57,15 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createAmountCoupon(@Valid @ModelAttribute AmountCouponRequestDto couponRequestDto) {
-        return commandCouponService.createAmountCoupon(couponRequestDto);
+    public ResponseDto<CouponResponseDto> createAmountCoupon(@Valid @ModelAttribute AmountCouponRequestDto couponRequestDto) {
+        CouponResponseDto data = commandCouponService.createAmountCoupon(
+                couponRequestDto);
+
+        return ResponseDto.<CouponResponseDto>builder()
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .data(data)
+                .build();
     }
 
     /**
@@ -61,7 +76,13 @@ public class CommandCouponController {
      */
     @PostMapping(params = {"rate"})
     @ResponseStatus(HttpStatus.CREATED)
-    public CouponResponseDto createRateCoupon(@Valid @ModelAttribute RateCouponRequestDto couponRequestDto) {
-        return commandCouponService.createRateCoupon(couponRequestDto);
+    public ResponseDto<CouponResponseDto> createRateCoupon(@Valid @ModelAttribute RateCouponRequestDto couponRequestDto) {
+        CouponResponseDto data = commandCouponService.createRateCoupon(couponRequestDto);
+
+        return ResponseDto.<CouponResponseDto>builder()
+                .success(true)
+                .status(HttpStatus.CREATED)
+                .data(data)
+                .build();
     }
 }

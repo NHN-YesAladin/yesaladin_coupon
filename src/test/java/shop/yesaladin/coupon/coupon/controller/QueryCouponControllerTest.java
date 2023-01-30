@@ -90,9 +90,9 @@ class QueryCouponControllerTest {
         // then
         actual.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.currentPage").value(0))
-                .andExpect(jsonPath("$.totalDataCount").value(1))
-                .andExpect(jsonPath("$.dataList[0].name").value(name));
+                .andExpect(jsonPath("$.data.currentPage").value(0))
+                .andExpect(jsonPath("$.data.totalDataCount").value(1))
+                .andExpect(jsonPath("$.data.dataList[0].name").value(name));
 
         // docs
         actual.andDo(document(
@@ -108,50 +108,59 @@ class QueryCouponControllerTest {
                                 .attributes(defaultValue(10))
                 ),
                 responseFields(
-                        fieldWithPath("currentPage").type(JsonFieldType.NUMBER)
+                        fieldWithPath("success").type(JsonFieldType.BOOLEAN)
+                                .description("응답 성공 여부"),
+                        fieldWithPath("status").type(JsonFieldType.NUMBER)
+                                .description("응답 status code"),
+                        fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                .description("응답 본문 데이터"),
+                        fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
+                                .optional()
+                                .description("에러 메시지 내용"),
+                        fieldWithPath("data.currentPage").type(JsonFieldType.NUMBER)
                                 .description("현재 페이지 번호"),
-                        fieldWithPath("totalPage").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER)
                                 .description("총 페이지 수"),
-                        fieldWithPath("totalDataCount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.totalDataCount").type(JsonFieldType.NUMBER)
                                 .description("조회된 총 쿠폰 수"),
-                        fieldWithPath("dataList").type(JsonFieldType.ARRAY)
+                        fieldWithPath("data.dataList").type(JsonFieldType.ARRAY)
                                 .optional()
                                 .description("조회된 쿠폰 요약 정보"),
-                        fieldWithPath("dataList.[].id").type(JsonFieldType.NUMBER).optional()
+                        fieldWithPath("data.dataList.[].id").type(JsonFieldType.NUMBER).optional()
                                 .description("조회된 쿠폰 id"),
-                        fieldWithPath("dataList.[].name").type(JsonFieldType.STRING).optional()
+                        fieldWithPath("data.dataList.[].name").type(JsonFieldType.STRING).optional()
                                 .description("조회된 쿠폰 이름"),
-                        fieldWithPath("dataList.[].triggerTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("data.dataList.[].triggerTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 트리거 타입"),
-                        fieldWithPath("dataList.[].couponTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("data.dataList.[].couponTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰 타입"),
-                        fieldWithPath("dataList.[].duration").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰의 유효기간"),
-                        fieldWithPath("dataList.[].expirationDate").type(JsonFieldType.STRING)
+                        fieldWithPath("data.dataList.[].expirationDate").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 만료일"),
-                        fieldWithPath("dataList.[].createdDateTime").type(JsonFieldType.STRING)
+                        fieldWithPath("data.dataList.[].createdDateTime").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 생성일자"),
-                        fieldWithPath("dataList.[].minOrderAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].minOrderAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 할인 쿠폰의 최소 주문금액"),
-                        fieldWithPath("dataList.[].discountAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].discountAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정액할인 쿠폰의 할인금액"),
-                        fieldWithPath("dataList.[].chargePointAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].chargePointAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 포인트 쿠폰의 충전 포인트 금액"),
-                        fieldWithPath("dataList.[].maxDiscountAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].maxDiscountAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정율할인 쿠폰의 최대 할인금액"),
-                        fieldWithPath("dataList.[].discountRate").type(JsonFieldType.NUMBER)
+                        fieldWithPath("data.dataList.[].discountRate").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정율할인 쿠폰의 할인율"),
-                        fieldWithPath("dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("data.dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
                                 .description("조회된 쿠폰의 무제한 여부")
                 )
