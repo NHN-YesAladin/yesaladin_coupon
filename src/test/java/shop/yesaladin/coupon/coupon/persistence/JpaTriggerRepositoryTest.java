@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,5 +48,4 @@ class JpaTriggerRepositoryTest {
         Assertions.assertThat(save.getTriggerTypeCode()).isEqualTo(trigger.getTriggerTypeCode());
         Assertions.assertThat(save.getCoupon().getId()).isEqualTo(savedCoupon.getId());
     }
-
 }
