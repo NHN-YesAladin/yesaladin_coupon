@@ -14,7 +14,7 @@ public interface ObjectStorageService {
     /**
      * 오브젝트 스토리지의 Url 을 구성합니다.
      *
-     * @param container 파일이 저장된 컨테이너 이름
+     * @param container  파일이 저장된 컨테이너 이름
      * @param objectName 파일의 이름
      * @return 파일의 Url
      */

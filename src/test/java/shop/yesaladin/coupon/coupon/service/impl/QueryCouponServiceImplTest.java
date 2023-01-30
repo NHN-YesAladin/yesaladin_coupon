@@ -21,7 +21,6 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
-@Slf4j
 class QueryCouponServiceImplTest {
 
     private QueryTriggerRepository queryTriggerRepository;

@@ -43,7 +43,7 @@ public class CouponSummaryDto {
      * Coupon(포인트/정액할인/정율할인)을 CouponSummaryDto 로 변환하는 메서드 입니다.
      *
      * @param triggerTypeCode coupon 의 triggerTypeCode
-     * @param coupon 요약할 Coupon entity
+     * @param coupon          요약할 Coupon entity
      * @return coupon 타입별로 필요한 정보를 담은 dto
      */
     public CouponSummaryDto toDto(TriggerTypeCode triggerTypeCode, Coupon coupon) {

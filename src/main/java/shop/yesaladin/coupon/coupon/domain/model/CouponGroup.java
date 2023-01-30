@@ -28,6 +28,7 @@ import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 public class CouponGroup {
+
     @Id
     @Column
     private Long id;

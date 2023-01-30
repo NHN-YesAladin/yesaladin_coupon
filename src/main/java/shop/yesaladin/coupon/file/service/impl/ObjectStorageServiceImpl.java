@@ -45,7 +45,10 @@ public class ObjectStorageServiceImpl implements ObjectStorageService {
         );
 
         // API 호출
-        String url = getUrl(containerName, getRandomFileName(Objects.requireNonNull(file.getOriginalFilename())));
+        String url = getUrl(
+                containerName,
+                getRandomFileName(Objects.requireNonNull(file.getOriginalFilename()))
+        );
         restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
 
         return url;
