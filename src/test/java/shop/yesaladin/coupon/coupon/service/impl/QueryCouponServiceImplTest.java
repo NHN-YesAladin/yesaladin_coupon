@@ -58,7 +58,7 @@ class QueryCouponServiceImplTest {
         List<Trigger> triggerList = new ArrayList<>();
         triggerList.add(trigger);
         PageImpl<Trigger> triggers = new PageImpl<>(triggerList);
-        Mockito.when(queryTriggerRepository.findTriggers(Mockito.any())).thenReturn(triggers);
+        Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(triggers);
 
         // when
         Page<CouponSummaryDto> result = queryCouponService.getTriggeredCouponList(

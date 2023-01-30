@@ -13,6 +13,12 @@ import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
+/**
+ * 쿠폰에 대한 요약 정보를 담기 위해 사용하는 dto 클래스 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @NoArgsConstructor
@@ -33,6 +39,13 @@ public class CouponSummaryDto {
     private Integer maxDiscountAmount;
     private Integer discountRate;
 
+    /**
+     * Coupon(포인트/정액할인/정율할인)을 CouponSummaryDto 로 변환하는 메서드 입니다.
+     *
+     * @param triggerTypeCode coupon 의 triggerTypeCode
+     * @param coupon 요약할 Coupon entity
+     * @return coupon 타입별로 필요한 정보를 담은 dto
+     */
     public CouponSummaryDto toDto(TriggerTypeCode triggerTypeCode, Coupon coupon) {
         CouponTypeCode couponTypeCode = coupon.getCouponTypeCode();
 

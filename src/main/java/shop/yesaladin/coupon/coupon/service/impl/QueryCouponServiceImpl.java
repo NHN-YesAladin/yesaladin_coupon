@@ -9,6 +9,12 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 import shop.yesaladin.coupon.coupon.service.inter.QueryCouponService;
 
+/**
+ * QueryCouponService 인터페이스의 구현체 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Service
 public class QueryCouponServiceImpl implements QueryCouponService {
@@ -17,7 +23,7 @@ public class QueryCouponServiceImpl implements QueryCouponService {
 
     @Override
     public Page<CouponSummaryDto> getTriggeredCouponList(Pageable pageable) {
-        Page<Trigger> triggerList = queryTriggerRepository.findTriggers(pageable);
+        Page<Trigger> triggerList = queryTriggerRepository.findAll(pageable);
         return triggerList.map(trigger -> {
             return new CouponSummaryDto().toDto(trigger.getTriggerTypeCode(), trigger.getCoupon());
         });
