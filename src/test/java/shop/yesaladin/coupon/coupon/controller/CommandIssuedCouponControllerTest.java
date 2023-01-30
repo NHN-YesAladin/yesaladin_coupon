@@ -2,6 +2,7 @@ package shop.yesaladin.coupon.coupon.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -71,7 +72,7 @@ class CommandIssuedCouponControllerTest {
         // then
         actual.andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].createdCouponCodes").isArray());
+                .andExpect(jsonPath("$.data.[0].createdCouponCodes").isArray());
 
         // docs
         actual.andDo(document(
@@ -89,8 +90,11 @@ class CommandIssuedCouponControllerTest {
                                 .description("발행할 쿠폰 수")
                                 .optional()
                 ),
-                responseFields(fieldWithPath("[].createdCouponCodes").type(JsonFieldType.ARRAY)
-                        .description("발행된 쿠폰의 코드"))
+                responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("createdCouponCodes").type(JsonFieldType.ARRAY)
+                                .description("발행된 쿠폰의 코드")
+                )
         ));
     }
 
