@@ -12,7 +12,6 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
-@Slf4j
 @DataJpaTest
 class JpaTriggerRepositoryTest {
 
