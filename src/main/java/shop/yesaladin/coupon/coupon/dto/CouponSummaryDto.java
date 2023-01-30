@@ -47,22 +47,22 @@ public class CouponSummaryDto {
      * @return coupon 타입별로 필요한 정보를 담은 dto
      */
     public CouponSummaryDto toDto(TriggerTypeCode triggerTypeCode, Coupon coupon) {
-        CouponTypeCode couponTypeCode = coupon.getCouponTypeCode();
+        CouponTypeCode couponType = coupon.getCouponTypeCode();
 
         CouponSummaryDtoBuilder builder = CouponSummaryDto.builder()
                 .id(coupon.getId())
                 .name(coupon.getName())
                 .triggerTypeCode(triggerTypeCode)
-                .couponTypeCode(couponTypeCode)
+                .couponTypeCode(couponType)
                 .isUnlimited(coupon.isUnlimited())
                 .duration(coupon.getDuration())
                 .expirationDate(coupon.getExpirationDate())
                 .createdDateTime(coupon.getCreatedDatetime());
 
-        if (CouponTypeCode.POINT.equals(couponTypeCode)) {
+        if (CouponTypeCode.POINT.equals(couponType)) {
             PointCoupon pointCoupon = (PointCoupon) coupon;
             return builder.chargePointAmount(pointCoupon.getChargePointAmount()).build();
-        } else if (CouponTypeCode.FIXED_PRICE.equals(couponTypeCode)) {
+        } else if (CouponTypeCode.FIXED_PRICE.equals(couponType)) {
             RateCoupon rateCoupon = (RateCoupon) coupon;
             return builder.minOrderAmount(rateCoupon.getMinOrderAmount())
                     .maxDiscountAmount(rateCoupon.getMaxDiscountAmount())

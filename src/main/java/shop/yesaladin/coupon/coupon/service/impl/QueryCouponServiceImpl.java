@@ -24,8 +24,9 @@ public class QueryCouponServiceImpl implements QueryCouponService {
     @Override
     public Page<CouponSummaryDto> getTriggeredCouponList(Pageable pageable) {
         Page<Trigger> triggerList = queryTriggerRepository.findAll(pageable);
-        return triggerList.map(trigger -> {
-            return new CouponSummaryDto().toDto(trigger.getTriggerTypeCode(), trigger.getCoupon());
-        });
+        return triggerList.map(trigger -> new CouponSummaryDto().toDto(
+                trigger.getTriggerTypeCode(),
+                trigger.getCoupon()
+        ));
     }
 }

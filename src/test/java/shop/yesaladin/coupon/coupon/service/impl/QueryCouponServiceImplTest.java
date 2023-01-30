@@ -35,7 +35,7 @@ class QueryCouponServiceImplTest {
 
     @Test
     @DisplayName("triggered 쿠폰 조회 성공")
-    void test() {
+    void getTriggeredCouponListTest() {
         // given
         String name = "test point coupon";
         long couponId = 1L;
