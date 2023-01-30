@@ -62,7 +62,7 @@ public class CouponSummaryDto {
         if (CouponTypeCode.POINT.equals(couponType)) {
             PointCoupon pointCoupon = (PointCoupon) coupon;
             return builder.chargePointAmount(pointCoupon.getChargePointAmount()).build();
-        } else if (CouponTypeCode.FIXED_PRICE.equals(couponType)) {
+        } else if (CouponTypeCode.FIXED_RATE.equals(couponType)) {
             RateCoupon rateCoupon = (RateCoupon) coupon;
             return builder.minOrderAmount(rateCoupon.getMinOrderAmount())
                     .maxDiscountAmount(rateCoupon.getMaxDiscountAmount())
