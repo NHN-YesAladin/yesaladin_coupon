@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 import shop.yesaladin.coupon.coupon.service.inter.QueryCouponService;
@@ -23,10 +22,11 @@ public class QueryCouponServiceImpl implements QueryCouponService {
 
     @Override
     public Page<CouponSummaryDto> getTriggeredCouponList(Pageable pageable) {
-        Page<Trigger> triggerList = queryTriggerRepository.findAll(pageable);
-        return triggerList.map(trigger -> new CouponSummaryDto().toDto(
-                trigger.getTriggerTypeCode(),
-                trigger.getCoupon()
-        ));
+        return queryTriggerRepository.findAll(pageable);
+//        Page<Trigger> triggerList = queryTriggerRepository.findAll(pageable);
+//        return triggerList.map(trigger -> new CouponSummaryDto().toDto(
+//                trigger.getTriggerTypeCode(),
+//                trigger.getCoupon()
+//        ));
     }
 }

@@ -2,7 +2,7 @@ package shop.yesaladin.coupon.coupon.domain.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 /**
  * 트리거를 조회하기 위한 Repository 인터페이스입니다.
@@ -18,5 +18,5 @@ public interface QueryTriggerRepository {
      * @param pageable 페이지네이션 정보
      * @return 페이지네이션 된 Trigger
      */
-    Page<Trigger> findAll(Pageable pageable);
+    Page<CouponSummaryDto> findAll(Pageable pageable);
 }
