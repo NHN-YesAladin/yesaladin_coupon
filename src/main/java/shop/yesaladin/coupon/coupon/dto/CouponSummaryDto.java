@@ -66,7 +66,7 @@ public class CouponSummaryDto {
             RateCoupon rateCoupon = (RateCoupon) coupon;
             return builder.minOrderAmount(rateCoupon.getMinOrderAmount())
                     .maxDiscountAmount(rateCoupon.getMaxDiscountAmount())
-                    .discountAmount(rateCoupon.getDiscountRate())
+                    .discountRate(rateCoupon.getDiscountRate())
                     .build();
         } else {
             AmountCoupon amountCoupon = (AmountCoupon) coupon;
