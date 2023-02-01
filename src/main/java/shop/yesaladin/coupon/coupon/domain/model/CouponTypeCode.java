@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CouponTypeCode {
 
-    FIXED_PRICE(1), FIXED_RATE(2), POINT(3);  // 쿠폰 종류 코드
+    FIXED_PRICE(1, AmountCoupon.class), FIXED_RATE(2, RateCoupon.class), POINT(3, PointCoupon.class);  // 쿠폰 종류 코드
     private final int code;
+    private final Class<? extends Coupon> couponClass;
 }

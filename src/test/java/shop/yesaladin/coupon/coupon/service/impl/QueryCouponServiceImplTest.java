@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +56,8 @@ class QueryCouponServiceImplTest {
         List<Trigger> triggerList = new ArrayList<>();
         triggerList.add(trigger);
         PageImpl<Trigger> triggers = new PageImpl<>(triggerList);
-        Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(triggers);
+        // FIXME
+//        Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(triggers);
 
         // when
         Page<CouponSummaryDto> result = queryCouponService.getTriggeredCouponList(

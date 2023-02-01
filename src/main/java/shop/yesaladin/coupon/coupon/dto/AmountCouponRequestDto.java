@@ -78,6 +78,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
                 .expirationDate(this.getExpirationDate())
                 .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
+                .discountAmount(this.discountAmount)
                 .minOrderAmount(this.minOrderAmount)
                 .canBeOverlapped(this.canBeOverlapped)
                 .build();
