@@ -14,8 +14,7 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 public interface CommandCouponService {
 
     /**
-     * 포인트 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다.
-     * 쿠폰, 포인트 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
+     * 포인트 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다. 쿠폰, 포인트 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
      *
      * @param couponRequestDto 쿠폰 생성 요청 정보를 담은 dto
      * @return 생성된 쿠폰 정보를 담은 dto
@@ -23,8 +22,7 @@ public interface CommandCouponService {
     CouponResponseDto createPointCoupon(PointCouponRequestDto couponRequestDto);
 
     /**
-     * 정액할인 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다.
-     * 쿠폰, 정액할인 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
+     * 정액할인 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다. 쿠폰, 정액할인 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
      *
      * @param couponRequestDto 쿠폰 생성 요청 정보를 담은 dto
      * @return 생성된 쿠폰 정보를 담은 dto
@@ -32,8 +30,7 @@ public interface CommandCouponService {
     CouponResponseDto createAmountCoupon(AmountCouponRequestDto couponRequestDto);
 
     /**
-     * 정율할인 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다.
-     * 쿠폰, 정율할인 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
+     * 정율할인 쿠폰 생성 요청으로 포인트 쿠폰을 생성합니다. 쿠폰, 정율할인 쿠폰, 쿠폰 적용 범위, 트리거 테이블에 레코드가 삽입됩니다.
      *
      * @param couponRequestDto 쿠폰 생성 요청 정보를 담은 dto
      * @return 생성된 쿠폰 정보를 담은 dto

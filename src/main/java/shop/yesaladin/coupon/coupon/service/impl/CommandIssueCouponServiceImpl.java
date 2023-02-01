@@ -12,14 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.coupon.exception.CouponNotFoundException;
 import shop.yesaladin.coupon.coupon.exception.InvalidCouponDataException;
+import shop.yesaladin.coupon.coupon.exception.TriggerCouponNotExistException;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
-import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
-import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
@@ -39,7 +40,14 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
 
     @Override
     @Transactional
-    public CouponIssueResponseDto issueCoupon(CouponIssueRequestDto requestDto) {
+    public List<CouponIssueResponseDto> issueCoupon(CouponIssueRequestDto requestDto) {
+        if (requestDto.requestWithTriggerCode()) {
+            return issueCouponByTriggerCode(requestDto);
+        }
+        return issueCouponByCouponId(requestDto);
+    }
+
+    private List<CouponIssueResponseDto> issueCouponByCouponId(CouponIssueRequestDto requestDto) {
         Coupon coupon = tryGetCouponById(requestDto.getCouponId());
         List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
                 coupon,
@@ -48,7 +56,23 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
 
         issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
 
-        return createResponse(issuanceDataList);
+        return List.of(createResponse(issuanceDataList));
+    }
+
+    private List<CouponIssueResponseDto> issueCouponByTriggerCode(CouponIssueRequestDto requestDto) {
+        TriggerTypeCode triggerTypeCode = TriggerTypeCode.valueOf(requestDto.getTriggerTypeCode());
+
+        List<Coupon> couponList = queryCouponRepository.findCouponByTriggerCode(triggerTypeCode);
+        if (couponList.isEmpty()) {
+            throw new TriggerCouponNotExistException(triggerTypeCode);
+        }
+        return couponList.stream()
+                .map(coupon -> createIssuanceDataList(coupon, requestDto.getQuantity()))
+                .map(issuanceDataList -> {
+                    issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
+                    return createResponse(issuanceDataList);
+                })
+                .collect(Collectors.toList());
     }
 
     private List<IssuedCouponInsertDto> createIssuanceDataList(

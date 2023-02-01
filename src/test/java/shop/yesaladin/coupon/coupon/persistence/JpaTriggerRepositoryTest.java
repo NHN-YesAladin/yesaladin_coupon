@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,6 @@ import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.coupon.persistence.JpaCommandCouponRepository;
-import shop.yesaladin.coupon.coupon.persistence.JpaTriggerRepository;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @DataJpaTest
@@ -49,5 +48,4 @@ class JpaTriggerRepositoryTest {
         Assertions.assertThat(save.getTriggerTypeCode()).isEqualTo(trigger.getTriggerTypeCode());
         Assertions.assertThat(save.getCoupon().getId()).isEqualTo(savedCoupon.getId());
     }
-
 }

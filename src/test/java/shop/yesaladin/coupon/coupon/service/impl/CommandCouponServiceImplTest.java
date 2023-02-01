@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.assertj.core.api.Assertions;
@@ -8,17 +9,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
-import shop.yesaladin.coupon.coupon.service.impl.CommandCouponServiceImpl;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandCouponServiceImplTest {
@@ -26,8 +29,11 @@ class CommandCouponServiceImplTest {
     private CommandCouponRepository couponRepository;
     private CommandCouponBoundRepository couponBoundRepository;
     private CommandTriggerRepository triggerRepository;
+    private CommandCouponGroupRepository couponGroupRepository;
     private CommandIssueCouponService issueCouponService;
     private CommandCouponServiceImpl couponService;
+    private ObjectStorageService objectStorageService;
+    private StorageConfiguration storageConfiguration;
     private Coupon coupon;
 
     @BeforeEach
@@ -35,13 +41,18 @@ class CommandCouponServiceImplTest {
         couponRepository = Mockito.mock(CommandCouponRepository.class);
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
+        couponGroupRepository = Mockito.mock(CommandCouponGroupRepository.class);
         issueCouponService = Mockito.mock(CommandIssueCouponService.class);
+        objectStorageService = Mockito.mock(ObjectStorageService.class);
 
         couponService = new CommandCouponServiceImpl(
                 couponRepository,
                 couponBoundRepository,
                 triggerRepository,
-                issueCouponService
+                couponGroupRepository,
+                issueCouponService,
+                objectStorageService,
+                storageConfiguration
         );
     }
 
@@ -49,7 +60,6 @@ class CommandCouponServiceImplTest {
     @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
     void createPointCoupon() {
         // given
-        Long couponId = 1l;
         String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
                 .id(1L)
@@ -91,8 +101,9 @@ class CommandCouponServiceImplTest {
                 .isEqualTo(CouponTypeCode.FIXED_RATE);
         verify(couponRepository).save(any());
         verify(triggerRepository).save(any());
-        verify(issueCouponService).issueCoupon(any());
+        verify(couponGroupRepository).save(any());
+        // 생일쿠폰이므로 생성시 쿠폰 발행이 동작하지 않음
+        verify(issueCouponService, times(0)).issueCoupon(any());
         verify(couponBoundRepository).save(any());
     }
-
 }

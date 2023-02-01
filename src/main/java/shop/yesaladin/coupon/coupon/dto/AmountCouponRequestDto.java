@@ -1,17 +1,18 @@
 package shop.yesaladin.coupon.coupon.dto;
 
 import java.time.LocalDate;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
@@ -31,13 +32,13 @@ public class AmountCouponRequestDto extends CouponRequestDto {
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
-            @Future(message = "invalid coupon expiration date") LocalDate expirationDate,
+            @DateTimeFormat(iso = ISO.DATE) LocalDate expirationDate,
             CouponTypeCode couponTypeCode,
             int minOrderAmount,
             int discountAmount,
             boolean canBeOverlapped,
             CouponBoundCode couponBoundCode,
-            String ISBN,
+            String isbn,
             Long categoryId
     ) {
         super(
@@ -55,18 +56,17 @@ public class AmountCouponRequestDto extends CouponRequestDto {
         this.discountAmount = discountAmount;
         this.canBeOverlapped = canBeOverlapped;
         this.couponBoundCode = couponBoundCode;
-        this.ISBN = ISBN;
+        this.isbn = isbn;
         this.categoryId = categoryId;
     }
 
     @PositiveOrZero(message = "invalid minimum order amount")
     private int minOrderAmount;
-
     @Positive(message = "invalid discount amount")
     private int discountAmount;
     private boolean canBeOverlapped;
     private CouponBoundCode couponBoundCode;
-    private String ISBN;
+    private String isbn;
     private Long categoryId;
 
     public Coupon toEntity() {
@@ -76,6 +76,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
                 .fileUri(this.getImageFileUri())
                 .duration(this.getDuration())
                 .expirationDate(this.getExpirationDate())
+                .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
                 .minOrderAmount(this.minOrderAmount)
                 .canBeOverlapped(this.canBeOverlapped)
