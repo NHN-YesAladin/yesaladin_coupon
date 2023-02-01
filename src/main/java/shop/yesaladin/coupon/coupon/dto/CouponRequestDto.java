@@ -1,17 +1,25 @@
 package shop.yesaladin.coupon.coupon.dto;
 
 import java.time.LocalDate;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
+/**
+ * 쿠폰 생성 요청 시 사용하는 dto 추상 클래스 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @AllArgsConstructor
 public abstract class CouponRequestDto {
@@ -28,12 +36,13 @@ public abstract class CouponRequestDto {
     private Integer quantity;
 
     private MultipartFile imageFile;
+    @Setter
     private String imageFileUri;
 
     @PositiveOrZero(message = "invalid duration of use")
     private Integer duration;
 
-    @Future(message = "invalid coupon expiration date")
+    @DateTimeFormat(iso = ISO.DATE)
     private LocalDate expirationDate;
 
     private CouponTypeCode couponTypeCode;

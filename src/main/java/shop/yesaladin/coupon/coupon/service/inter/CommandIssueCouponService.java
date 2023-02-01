@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.service.inter;
 
+import java.util.List;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 
@@ -15,7 +16,7 @@ public interface CommandIssueCouponService {
      * 쿠폰 테이블에 있는 데이터를 바탕으로 쿠폰을 발행하는 메서드입니다.
      *
      * @param requestDto 발행 요청 정보를 담은 dto
-     * @return 발행된 쿠폰의 코드 리스트를 담은 dto
+     * @return 발행된 쿠폰의 코드 리스트를 담은 dto 리스트
      */
-    CouponIssueResponseDto issueCoupon(CouponIssueRequestDto requestDto);
+    List<CouponIssueResponseDto> issueCoupon(CouponIssueRequestDto requestDto);
 }

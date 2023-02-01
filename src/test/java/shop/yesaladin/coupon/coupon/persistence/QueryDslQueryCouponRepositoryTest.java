@@ -7,19 +7,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.coupon.persistence.JpaQueryCouponRepository;
 
-@DataJpaTest
-class JpaQueryCouponRepositoryTest {
+@Transactional
+@SpringBootTest
+class QueryDslQueryCouponRepositoryTest {
 
     @Autowired
     private EntityManager em;
     @Autowired
-    private JpaQueryCouponRepository repository;
+    private QueryDslQueryCouponRepository repository;
     private Coupon coupon;
 
     @BeforeEach

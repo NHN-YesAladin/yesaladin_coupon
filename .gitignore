@@ -37,3 +37,4 @@ build/
 
 ### DEV ###
 application-dev.yml
+src/test/resources/application.yml

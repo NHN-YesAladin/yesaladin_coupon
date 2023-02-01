@@ -115,3 +115,27 @@ include::{snippets}/issue-coupon-fail-cause-validation-fail/response-fields.adoc
 ===== Example
 
 include::{snippets}/issue-coupon-fail-cause-validation-fail/http-response.adoc[]
+
+== Coupon Query
+
+=== 쿠폰 조회
+
+==== curl
+
+include::{snippets}/get-triggered-coupons-success/curl-request.adoc[]
+
+==== request
+
+===== Example
+
+include::{snippets}/get-triggered-coupons-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/get-triggered-coupons-success/response-fields.adoc[]
+
+===== Example
+
+include::{snippets}/get-triggered-coupons-success/http-response.adoc[]
