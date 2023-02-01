@@ -29,7 +29,7 @@ public class CouponSummaryDto {
     private String name;
     private TriggerTypeCode triggerTypeCode;
     private CouponTypeCode couponTypeCode;
-    private boolean isUnlimited;
+    private Boolean isUnlimited;
     private Integer duration;
     private LocalDate expirationDate;
     private LocalDateTime createdDateTime;
