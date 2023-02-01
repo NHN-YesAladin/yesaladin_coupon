@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,5 +109,20 @@ class QueryTriggerRepositoryTest {
             Assertions.assertThat(actualDto.getDiscountRate())
                     .isEqualTo(expectedCoupon.getDiscountRate());
         }
+    }
+
+    @Test
+    @DisplayName("트리거 타입 코드와 쿠폰 entity로 트리거를 가져온다.")
+    void findTriggerByTriggerTypeCodeAndCouponTest() {
+        // when
+        Optional<Trigger> actual = triggerRepository.findTriggerByTriggerTypeCodeAndCoupon(
+                TriggerTypeCode.SIGN_UP,
+                couponList.get(0)
+        );
+        // then
+        Assertions.assertThat(actual).isPresent();
+        Assertions.assertThat(actual.get().getCoupon().getId())
+                .isEqualTo(couponList.get(0).getId());
+        Assertions.assertThat(actual.get().getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);
     }
 }
