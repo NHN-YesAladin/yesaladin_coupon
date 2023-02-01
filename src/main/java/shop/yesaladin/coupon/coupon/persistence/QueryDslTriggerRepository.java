@@ -28,6 +28,8 @@ public class QueryDslTriggerRepository implements QueryTriggerRepository {
                 .from(trigger)
                 .innerJoin(trigger.coupon)
                 .fetchJoin()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
         List<CouponSummaryDto> list = triggerList.stream()
