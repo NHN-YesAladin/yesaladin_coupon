@@ -15,4 +15,5 @@ import lombok.Getter;
 public class CouponIssueResponseDto {
 
     private final List<String> createdCouponCodes;
+    private final String couponGroupCode;
 }
