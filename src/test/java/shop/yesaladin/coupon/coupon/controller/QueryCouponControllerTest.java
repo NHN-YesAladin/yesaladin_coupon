@@ -73,7 +73,7 @@ class QueryCouponControllerTest {
                 .duration(coupon.getDuration())
                 .expirationDate(coupon.getExpirationDate())
                 .createdDateTime(coupon.getCreatedDatetime())
-                .amountMinOrderAmount(coupon.getMinOrderAmount())
+                .minOrderAmount(coupon.getMinOrderAmount())
                 .discountAmount(coupon.getDiscountAmount())
                 .build();
 
