@@ -2,8 +2,8 @@ package shop.yesaladin.coupon.file.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 오브젝트 스토리지의 인증 토큰 발급 응답으로부터 토큰 아이디를 저장하는 클래스입니다.

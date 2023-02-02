@@ -1,40 +1,36 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
-import java.lang.reflect.Field;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ReflectionUtils;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
-import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
+import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
-import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
-import shop.yesaladin.coupon.coupon.exception.CouponNotFoundException;
-import shop.yesaladin.coupon.coupon.exception.InvalidCouponDataException;
-import shop.yesaladin.coupon.coupon.exception.TriggerCouponNotExistException;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandIssueCouponServiceImplTest {
 
     private IssuanceConfiguration issuanceConfig;
-    private QueryCouponRepository queryCouponRepository;
     private InsertIssuedCouponRepository insertRepository;
+    private QueryTriggerRepository queryTriggerRepository;
+    private QueryCouponGroupRepository queryCouponGroupRepository;
     private CommandIssueCouponServiceImpl service;
     private final Clock clock = Clock.fixed(
             Instant.parse("2023-01-01T00:00:00.00Z"),
@@ -44,11 +40,13 @@ class CommandIssueCouponServiceImplTest {
     @BeforeEach
     void setUp() {
         issuanceConfig = Mockito.mock(IssuanceConfiguration.class);
-        queryCouponRepository = Mockito.mock(QueryCouponRepository.class);
         insertRepository = Mockito.mock(InsertIssuedCouponRepository.class);
+        queryTriggerRepository = Mockito.mock(QueryTriggerRepository.class);
+        queryCouponGroupRepository = Mockito.mock(QueryCouponGroupRepository.class);
         service = new CommandIssueCouponServiceImpl(
                 issuanceConfig,
-                queryCouponRepository,
+                queryTriggerRepository,
+                queryCouponGroupRepository,
                 insertRepository,
                 clock
         );
@@ -56,223 +54,353 @@ class CommandIssueCouponServiceImplTest {
 
     @Test
     @DisplayName("수량 제한 쿠폰 발행에 성공한다.")
-    void issueLimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .isUnlimited(false)
-                .chargePointAmount(1000)
-                .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(Collections.emptyList())
-                .build();
-
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
-        couponIdField.setAccessible(true);
-        quantityField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-        quantityField.set(requestDto, 500);
-
-        Mockito.when(queryCouponRepository.findCouponById(couponId))
-                .thenReturn(Optional.of(coupon));
-
-        // when
-        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
-
-        // then
-        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual).hasSize(1);
-        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(500);
-        Mockito.verify(insertRepository, Mockito.times(1))
-                .insertIssuedCoupon(argumentCaptor.capture());
-        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
-        Assertions.assertThat(actualArgs).hasSize(500);
-    }
-
-    @Test
-    @DisplayName("수량 무제한 쿠폰 발헹에 성공한다.")
-    void issueUnlimitedCouponSuccessTest() throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .isUnlimited(true)
-                .chargePointAmount(1000)
-                .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(Collections.emptyList())
-                .build();
-
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        couponIdField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-
-        Mockito.when(queryCouponRepository.findCouponById(couponId))
-                .thenReturn(Optional.of(coupon));
-        Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
-        Mockito.when(issuanceConfig.getUnlimitedFlag()).thenReturn(-1);
-
-        // when
-        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
-
-        // then
-        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual).hasSize(1);
-        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(100);
-        Mockito.verify(insertRepository, Mockito.times(1))
-                .insertIssuedCoupon(argumentCaptor.capture());
-        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
-        Assertions.assertThat(actualArgs).hasSize(100);
-    }
-
-    @Test
-    @DisplayName("쿠폰 데이터가 없어 쿠폰 발행에 실패한다")
-    void issueCouponFailCauseByCouponNotFound()
-            throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        couponIdField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-
-        Mockito.when(queryCouponRepository.findCouponById(couponId)).thenReturn(Optional.empty());
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
-                .isInstanceOf(CouponNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("트리거로 쿠폰 발행에 성공한다.")
-    void issueCouponWithTriggerCodeSuccessTest() {
+    void limitedCouponIssuanceSuccess() {
         // given
         CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
                 TriggerTypeCode.SIGN_UP.name(),
-                null,
-                1
+                1L,
+                1000
         );
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .isUnlimited(false)
-                .chargePointAmount(1000)
-                .expirationDate(LocalDate.of(2023, 1, 4))
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(Collections.emptyList())
-                .build();
-        Mockito.when(queryCouponRepository.findCouponByTriggerCode(TriggerTypeCode.valueOf(
-                        requestDto.getTriggerTypeCode())))
-                .thenReturn(List.of(coupon));
-
-        // when
-        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
-
-        // then
-        ArgumentCaptor<List<IssuedCouponInsertDto>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        Assertions.assertThat(actual).hasSize(1);
-        Assertions.assertThat(actual.get(0).getCreatedCouponCodes())
-                .hasSize(requestDto.getQuantity());
-        Mockito.verify(insertRepository, Mockito.times(1))
-                .insertIssuedCoupon(argumentCaptor.capture());
-        List<IssuedCouponInsertDto> actualArgs = argumentCaptor.getValue();
-        Assertions.assertThat(actualArgs).hasSize(requestDto.getQuantity());
-    }
-
-    @Test
-    @DisplayName("트리거에 해당되는 쿠폰이 없다면 예외가 발생한다.")
-    void couponIssueWithTriggerFailCauseByTriggerCouponNotExist() {
-        // given
-        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                TriggerTypeCode.SIGN_UP.name(),
-                null,
-                1
-        );
-        Mockito.when(queryCouponRepository.findCouponByTriggerCode(TriggerTypeCode.valueOf(
-                        requestDto.getTriggerTypeCode())))
-                .thenReturn(Collections.emptyList());
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
-                .isInstanceOf(TriggerCouponNotExistException.class);
-
-    }
-
-    @Test
-    @DisplayName("기간 필드에 값이 없어 자동 지급 쿠폰 발행에 실패한다.")
-    void issueAutoIssuanceCouponFailCauseByDurationIsNull()
-            throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .chargePointAmount(1000)
-                .expirationDate(LocalDate.of(2023, 1, 4))
-                .isUnlimited(false)
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(List.of(Trigger.builder()
-                        .triggerTypeCode(TriggerTypeCode.BIRTHDAY)
-                        .build()))
-                .build();
-
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
-        couponIdField.setAccessible(true);
-        quantityField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-        quantityField.set(requestDto, 500);
-
-        Mockito.when(queryCouponRepository.findCouponById(couponId))
-                .thenReturn(Optional.of(coupon));
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
-                .isInstanceOf(InvalidCouponDataException.class);
-    }
-
-    @Test
-    @DisplayName("만료일 필드에 값이 없어 유저 다운로드 쿠폰 발행에 실패한다.")
-    void issueUserDownloadCouponFailCauseByExpirationDateIsNull()
-            throws NoSuchFieldException, IllegalAccessException {
-        // given
-        long couponId = 1L;
-        Coupon coupon = PointCoupon.builder()
-                .id(couponId)
-                .name("test coupon")
-                .chargePointAmount(1000)
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
                 .isUnlimited(false)
                 .duration(10)
-                .couponTypeCode(CouponTypeCode.POINT)
-                .triggerList(Collections.emptyList())
+                .expirationDate(null)
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .groupCode("test-group")
                 .build();
 
-        CouponIssueRequestDto requestDto = ReflectionUtils.newInstance(CouponIssueRequestDto.class);
-        Field couponIdField = requestDto.getClass().getDeclaredField("couponId");
-        Field quantityField = requestDto.getClass().getDeclaredField("quantity");
-        couponIdField.setAccessible(true);
-        quantityField.setAccessible(true);
-        couponIdField.set(requestDto, couponId);
-        quantityField.set(requestDto, 500);
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCodeAndCouponId(
+                TriggerTypeCode.SIGN_UP,
+                1L
+        )).thenReturn(Optional.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
 
-        Mockito.when(queryCouponRepository.findCouponById(couponId))
-                .thenReturn(Optional.of(coupon));
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        Mockito.verify(queryTriggerRepository, Mockito.times(1))
+                .findTriggerByTriggerTypeCodeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
+        Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
+                .findCouponGroupByTrigger(trigger);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 1000));
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(1000);
+    }
+
+    @Test
+    @DisplayName("수량 무제한 쿠폰 발행에 성공한다.")
+    void unlimitedCouponIssuanceSuccess() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP.name(),
+                1L,
+                null
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(true)
+                .duration(10)
+                .expirationDate(null)
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCodeAndCouponId(
+                TriggerTypeCode.SIGN_UP,
+                1L
+        )).thenReturn(Optional.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
+
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        Mockito.verify(queryTriggerRepository, Mockito.times(1))
+                .findTriggerByTriggerTypeCodeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
+        Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
+                .findCouponGroupByTrigger(trigger);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 100));
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(100);
+    }
+
+    @Test
+    @DisplayName("트리거 타입 코드만으로 쿠폰 발행에 성공한다.")
+    void couponIssuanceWithOnlyTriggerTypeCodeSuccess() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP.name(),
+                null,
+                1000
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(false)
+                .duration(10)
+                .expirationDate(null)
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
+                .thenReturn(List.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
+
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        Mockito.verify(queryTriggerRepository, Mockito.times(1))
+                .findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP);
+        Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
+                .findCouponGroupByTrigger(trigger);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 1000));
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(1000);
+    }
+
+    @Test
+    @DisplayName("자동 발행 쿠폰 발행에 성공한다.")
+    void autoIssuanceCouponIssuanceSuccess() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP.name(),
+                null,
+                1000
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(false)
+                .duration(10)
+                .expirationDate(null)
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
+                .thenReturn(List.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
+
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        Mockito.verify(queryTriggerRepository, Mockito.times(1))
+                .findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP);
+        Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
+                .findCouponGroupByTrigger(trigger);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(Mockito.argThat(arg -> arg.get(0)
+                        .getExpirationDate()
+                        .equals(LocalDate.now(clock).plusDays(10))));
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(1000);
+    }
+
+    @Test
+    @DisplayName("기간 필드에 값이 없어 자동 발행 쿠폰 발행에 실패한다.")
+    void autoIssuanceCouponIssuanceFailCauseByDurationFieldIsNull() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.SIGN_UP.name(),
+                null,
+                1000
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(false)
+                .duration(null)
+                .expirationDate(null)
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
+                .thenReturn(List.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
 
         // when
         // then
         Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
-                .isInstanceOf(InvalidCouponDataException.class);
+                .isInstanceOf(ClientException.class);
+    }
+
+
+    @Test
+    @DisplayName("일반 발행 쿠폰 발행에 성공한다.")
+    void NonAutoIssuanceCouponIssuanceSuccess() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.MEMBER_GRADE_GOLD.name(),
+                null,
+                1000
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(false)
+                .duration(null)
+                .expirationDate(LocalDate.now(clock))
+                .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD))
+                .thenReturn(List.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
+
+        // when
+        List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
+
+        // then
+        Mockito.verify(queryTriggerRepository, Mockito.times(1))
+                .findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD);
+        Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
+                .findCouponGroupByTrigger(trigger);
+        Mockito.verify(insertRepository, Mockito.times(1))
+                .insertIssuedCoupon(Mockito.argThat(arg -> arg.get(0)
+                        .getExpirationDate()
+                        .equals(LocalDate.now(clock))));
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getCreatedCouponCodes()).hasSize(1000);
+    }
+
+    @Test
+    @DisplayName("기간 필드에 값이 없어 일반 발행 쿠폰 발행에 실패한다.")
+    void nonAutoIssuanceCouponIssuanceFailCauseByDurationFieldIsNull() {
+        // given
+        CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                TriggerTypeCode.MEMBER_GRADE_BRONZE.name(),
+                null,
+                1000
+        );
+        RateCoupon coupon = RateCoupon.builder()
+                .id(1L)
+                .name("테스트용 쿠폰")
+                .isUnlimited(false)
+                .duration(null)
+                .expirationDate(null)
+                .createdDatetime(null)
+                .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                .minOrderAmount(1000)
+                .maxDiscountAmount(10000)
+                .discountRate(10)
+                .canBeOverlapped(true)
+                .build();
+        Trigger trigger = Trigger.builder()
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_BRONZE)
+                .coupon(coupon)
+                .build();
+        CouponGroup couponGroup = CouponGroup.builder()
+                .coupon(coupon)
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_BRONZE)
+                .groupCode("test-group")
+                .build();
+
+        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_BRONZE))
+                .thenReturn(List.of(trigger));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
+                .thenReturn(Optional.of(couponGroup));
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> service.issueCoupon(requestDto))
+                .isInstanceOf(ClientException.class);
     }
 
 }

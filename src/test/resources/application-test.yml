@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: yesaladin-coupon
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+coupon:
+  issue:
+    unlimited-coupon-issue-size: 100
+    unlimited-flag-value: -1
+  storage:
+    url: " "
+    account: " "
+    container-name: " "
+  storage-token:
+    auth:
+      url: " "
+      tenant-id: " "
+      username: " "
+      password: " "
