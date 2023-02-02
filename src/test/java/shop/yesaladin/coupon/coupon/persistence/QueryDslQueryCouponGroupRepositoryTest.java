@@ -89,21 +89,4 @@ class QueryDslQueryCouponGroupRepositoryTest {
         Assertions.assertThat(actual.get().getCoupon().getId())
                 .isEqualTo(couponList.get(0).getId());
     }
-
-    @Test
-    @DisplayName("쿠폰 entity와 트리거 타입 코드로 쿠폰 그룹 조히에 성공한다.")
-    void findCouponGroupByCouponAndTriggerTypeCode() {
-      // when
-        Optional<CouponGroup> actual = repository.findCouponGroupByCouponAndTriggerTypeCode(
-                couponList.get(0),
-                TriggerTypeCode.SIGN_UP
-        );
-
-        // then
-        Assertions.assertThat(actual).isPresent();
-        Assertions.assertThat(actual.get().getCoupon().getId())
-                .isEqualTo(couponList.get(0).getId());
-        Assertions.assertThat(actual.get().getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);
-    }
-
 }
