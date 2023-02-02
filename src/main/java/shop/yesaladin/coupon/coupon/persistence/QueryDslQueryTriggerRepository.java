@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QTrigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
@@ -45,15 +44,25 @@ public class QueryDslQueryTriggerRepository implements QueryTriggerRepository {
     }
 
     @Override
-    public Optional<Trigger> findTriggerByTriggerTypeCodeAndCoupon(
-            TriggerTypeCode triggerTypeCode, Coupon coupon
+    public Optional<Trigger> findTriggerByTriggerTypeCodeAndCouponId(
+            TriggerTypeCode triggerTypeCode, long couponId
     ) {
         QTrigger trigger = QTrigger.trigger;
 
         return Optional.ofNullable(queryFactory.select(trigger)
                 .from(trigger)
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
-                .where(trigger.coupon.eq(coupon))
+                .where(trigger.coupon.id.eq(couponId))
                 .fetchFirst());
+    }
+
+    @Override
+    public List<Trigger> findTriggerByTriggerTypeCode(TriggerTypeCode triggerTypeCode) {
+        QTrigger trigger = QTrigger.trigger;
+
+        return queryFactory.select(trigger)
+                .from(trigger)
+                .where(trigger.triggerTypeCode.eq(triggerTypeCode))
+                .fetch();
     }
 }

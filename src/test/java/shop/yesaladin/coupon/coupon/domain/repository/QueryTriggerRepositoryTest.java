@@ -112,12 +112,12 @@ class QueryTriggerRepositoryTest {
     }
 
     @Test
-    @DisplayName("트리거 타입 코드와 쿠폰 entity로 트리거를 가져온다.")
+    @DisplayName("트리거 타입 코드와 쿠폰 id로 트리거를 가져온다.")
     void findTriggerByTriggerTypeCodeAndCouponTest() {
         // when
-        Optional<Trigger> actual = triggerRepository.findTriggerByTriggerTypeCodeAndCoupon(
+        Optional<Trigger> actual = triggerRepository.findTriggerByTriggerTypeCodeAndCouponId(
                 TriggerTypeCode.SIGN_UP,
-                couponList.get(0)
+                couponList.get(0).getId()
         );
         // then
         Assertions.assertThat(actual).isPresent();
