@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 트리거를 조회하기 위한 Repository 인터페이스입니다.

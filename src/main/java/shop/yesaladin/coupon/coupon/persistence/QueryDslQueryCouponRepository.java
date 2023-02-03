@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QTrigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * QueryDsl을 사용하여 쿠폰 관련 정보를 가져오기 위한 Repository 인터페이스입니다.

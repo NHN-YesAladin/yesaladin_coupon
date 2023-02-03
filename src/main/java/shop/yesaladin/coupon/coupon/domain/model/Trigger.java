@@ -15,8 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.TriggerTypeCodeCodeConverter;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 쿠폰 트리거 엔터티 입니다.
