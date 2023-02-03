@@ -1,7 +1,8 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
-import static shop.yesaladin.coupon.trigger.TriggerTypeCode.BIRTHDAY;
-import static shop.yesaladin.coupon.trigger.TriggerTypeCode.SIGN_UP;
+
+import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
+import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
@@ -28,7 +30,6 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
