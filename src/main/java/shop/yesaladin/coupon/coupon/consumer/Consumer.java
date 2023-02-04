@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
@@ -23,7 +22,6 @@ import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 public class Consumer {
 
     private final KafkaTemplate<String, Object> template;
-    private final CommandCouponService commandCouponService;
     private final CommandIssuedCouponService commandIssuedCouponService;
 
     /**
