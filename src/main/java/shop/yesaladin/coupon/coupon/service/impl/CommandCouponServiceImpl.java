@@ -4,7 +4,6 @@ package shop.yesaladin.coupon.coupon.service.impl;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -16,7 +15,6 @@ import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
-import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
@@ -30,7 +28,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 
 /**
@@ -47,7 +45,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
     private final CommandCouponGroupRepository couponGroupRepository;
-    private final CommandIssueCouponService issueCouponService;
+    private final CommandIssuedCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
 
@@ -92,14 +90,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         );
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
-    }
-
-    @Override
-    @Transactional
-    public long updateCouponGivenState(
-            List<String> couponCodeList, CouponGivenStateCode givenStateCode
-    ) {
-        return couponRepository.updateCouponGivenState(couponCodeList, givenStateCode);
     }
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {

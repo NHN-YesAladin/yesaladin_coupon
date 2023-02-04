@@ -10,7 +10,7 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
@@ -24,7 +24,7 @@ public class Consumer {
 
     private final KafkaTemplate<String, Object> template;
     private final CommandCouponService commandCouponService;
-    private final CommandIssueCouponService commandIssueCouponService;
+    private final CommandIssuedCouponService commandIssuedCouponService;
 
     /**
      * 쿠폰 지급 요청 메시지 처리
@@ -41,7 +41,7 @@ public class Consumer {
                     (int) message.getQuantity()
             );
 
-            List<CouponIssueResponseDto> couponIssueResponseDtoList = commandIssueCouponService.issueCoupon(
+            List<CouponIssueResponseDto> couponIssueResponseDtoList = commandIssuedCouponService.issueCoupon(
                     couponIssueRequestDto);
 
             // 동일한 requestId 를 포함하는 지급 요청 응답 메시지를 보낸다.
@@ -84,7 +84,7 @@ public class Consumer {
             if (message.isSuccess()) {
                 givenStateCode = CouponGivenStateCode.GIVEN;
             }
-            commandCouponService.updateCouponGivenState(message.getCouponCodes(), givenStateCode);
+            commandIssuedCouponService.updateCouponGivenState(message.getCouponCodes(), givenStateCode);
         }
     }
 
@@ -96,7 +96,7 @@ public class Consumer {
     @KafkaListener(id = "yesaladin_coupon_give_request_cancel", topics = "${coupon.topic.give-request-cancel}")
     public void giveRequestCancelListener(List<CouponCodesMessage> records) {
         for (CouponCodesMessage message : records) {
-            commandCouponService.updateCouponGivenState(
+            commandIssuedCouponService.updateCouponGivenState(
                     message.getCouponCodes(),
                     CouponGivenStateCode.NOT_GIVEN
             );

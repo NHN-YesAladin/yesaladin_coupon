@@ -1,7 +1,5 @@
 package shop.yesaladin.coupon.coupon.service.inter;
 
-import java.util.List;
-import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
@@ -38,6 +36,4 @@ public interface CommandCouponService {
      * @return 생성된 쿠폰 정보를 담은 dto
      */
     CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto);
-
-    long updateCouponGivenState(List<String> couponCodeList, CouponGivenStateCode givenStateCode);
 }

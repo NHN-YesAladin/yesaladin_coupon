@@ -19,19 +19,21 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 
-class CommandIssueCouponServiceImplTest {
+class CommandIssuedCouponServiceImplTest {
 
     private IssuanceConfiguration issuanceConfig;
+    private CommandIssuedCouponRepository issuedCouponRepository;
     private InsertIssuedCouponRepository insertRepository;
     private QueryTriggerRepository queryTriggerRepository;
     private QueryCouponGroupRepository queryCouponGroupRepository;
-    private CommandIssueCouponServiceImpl service;
+    private CommandIssuedCouponServiceImpl service;
     private final Clock clock = Clock.fixed(
             Instant.parse("2023-01-01T00:00:00.00Z"),
             ZoneId.of("UTC")
@@ -40,11 +42,13 @@ class CommandIssueCouponServiceImplTest {
     @BeforeEach
     void setUp() {
         issuanceConfig = Mockito.mock(IssuanceConfiguration.class);
+        issuedCouponRepository = Mockito.mock(CommandIssuedCouponRepository.class);
         insertRepository = Mockito.mock(InsertIssuedCouponRepository.class);
         queryTriggerRepository = Mockito.mock(QueryTriggerRepository.class);
         queryCouponGroupRepository = Mockito.mock(QueryCouponGroupRepository.class);
-        service = new CommandIssueCouponServiceImpl(
+        service = new CommandIssuedCouponServiceImpl(
                 issuanceConfig,
+                issuedCouponRepository,
                 queryTriggerRepository,
                 queryCouponGroupRepository,
                 insertRepository,

@@ -10,13 +10,12 @@ import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 
 @DataJpaTest
 class JpaTriggerRepositoryTest {
 
     @Autowired
-    private CommandCouponRepository commandCouponRepository;
+    private JpaCommandCouponRepository commandCouponRepository;
     @Autowired
     private JpaTriggerRepository triggerRepository;
     private Coupon coupon;

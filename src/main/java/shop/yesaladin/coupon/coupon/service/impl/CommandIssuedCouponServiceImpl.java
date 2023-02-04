@@ -16,8 +16,10 @@ import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
@@ -25,7 +27,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.coupon.dto.TriggerWithCouponGroupCodeDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 /**
  * CouponIssuanceCommandService 인터페이스의 구현체입니다.
@@ -35,9 +37,10 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
  */
 @RequiredArgsConstructor
 @Service
-public class CommandIssueCouponServiceImpl implements CommandIssueCouponService {
+public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponService {
 
     private final IssuanceConfiguration issuanceConfig;
+    private final CommandIssuedCouponRepository commandIssuedCouponRepository;
     private final QueryTriggerRepository queryTriggerRepository;
     private final QueryCouponGroupRepository queryCouponGroupRepository;
     private final InsertIssuedCouponRepository issuanceInsertRepository;
@@ -50,6 +53,14 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
             return issueCouponByTriggerCodeAndCouponId(requestDto);
         }
         return issueCouponByTriggerTypeCode(requestDto);
+    }
+
+    @Override
+    @Transactional
+    public long updateCouponGivenState(
+            List<String> couponCodeList, CouponGivenStateCode givenStateCode
+    ) {
+        return commandIssuedCouponRepository.updateCouponGivenState(couponCodeList, givenStateCode);
     }
 
     private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {

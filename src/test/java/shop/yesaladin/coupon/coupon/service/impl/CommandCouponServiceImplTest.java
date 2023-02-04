@@ -20,7 +20,7 @@ import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
@@ -30,7 +30,7 @@ class CommandCouponServiceImplTest {
     private CommandCouponBoundRepository couponBoundRepository;
     private CommandTriggerRepository triggerRepository;
     private CommandCouponGroupRepository couponGroupRepository;
-    private CommandIssueCouponService issueCouponService;
+    private CommandIssuedCouponService issueCouponService;
     private CommandCouponServiceImpl couponService;
     private ObjectStorageService objectStorageService;
     private StorageConfiguration storageConfiguration;
@@ -42,7 +42,7 @@ class CommandCouponServiceImplTest {
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
         couponGroupRepository = Mockito.mock(CommandCouponGroupRepository.class);
-        issueCouponService = Mockito.mock(CommandIssueCouponService.class);
+        issueCouponService = Mockito.mock(CommandIssuedCouponService.class);
         objectStorageService = Mockito.mock(ObjectStorageService.class);
 
         couponService = new CommandCouponServiceImpl(
