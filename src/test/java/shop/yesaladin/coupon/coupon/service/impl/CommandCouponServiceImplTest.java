@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
@@ -22,7 +23,6 @@ import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class CommandCouponServiceImplTest {
 

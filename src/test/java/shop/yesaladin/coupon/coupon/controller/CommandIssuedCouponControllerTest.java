@@ -27,9 +27,9 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @WebMvcTest(CommandIssuedCouponController.class)
 @AutoConfigureRestDocs
