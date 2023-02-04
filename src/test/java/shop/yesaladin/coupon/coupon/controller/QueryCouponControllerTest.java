@@ -30,11 +30,11 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 import shop.yesaladin.coupon.coupon.service.inter.QueryCouponService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 
 @WebMvcTest(QueryCouponController.class)
@@ -136,6 +136,9 @@ class QueryCouponControllerTest {
                         fieldWithPath("data.dataList.[].couponTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰 타입"),
+                        fieldWithPath("data.dataList.[].isUnlimited").type(JsonFieldType.BOOLEAN)
+                                .optional()
+                                .description("조회된 쿠폰의 무제한 여부"),
                         fieldWithPath("data.dataList.[].duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰의 유효기간"),
