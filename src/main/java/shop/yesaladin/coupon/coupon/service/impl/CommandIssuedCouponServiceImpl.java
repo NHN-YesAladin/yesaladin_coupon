@@ -18,6 +18,7 @@ import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
+import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
@@ -63,6 +64,14 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
         return commandIssuedCouponRepository.updateCouponGivenState(couponCodeList, givenStateCode);
     }
 
+    @Override
+    public long updateCouponUsageState(
+            List<String> couponCodeList,
+            CouponUsageStateCode usageStateCode
+    ) {
+        return commandIssuedCouponRepository.updateCouponUsageState(couponCodeList, usageStateCode);
+    }
+    
     private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {
         Trigger trigger = tryGetTriggerByTriggerTypeCodeAndCouponId(TriggerTypeCode.valueOf(
                 requestDto.getTriggerTypeCode()), requestDto.getCouponId());

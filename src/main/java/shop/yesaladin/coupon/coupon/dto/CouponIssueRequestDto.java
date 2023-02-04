@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
+import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.validator.annotation.EnumValue;
 
 /**
@@ -34,5 +35,13 @@ public class CouponIssueRequestDto {
 
     public boolean requestWithTriggerCodeAndCouponId() {
         return Objects.nonNull(this.triggerTypeCode) && Objects.nonNull(this.couponId);
+    }
+
+    public static CouponIssueRequestDto fromCouponGiveRequestMessage(CouponGiveRequestMessage message) {
+        return new CouponIssueRequestDto(
+                message.getTriggerTypeCode().toString(),
+                message.getCouponId(),
+                1
+        );
     }
 }
