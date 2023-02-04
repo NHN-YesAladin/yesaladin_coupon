@@ -115,7 +115,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         }
 
         issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                null,
+                couponRequestDto.getCouponTypeCode().toString(),
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));

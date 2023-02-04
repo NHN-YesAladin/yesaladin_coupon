@@ -19,7 +19,6 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
-import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 
 @Transactional
 @SpringBootTest
@@ -34,12 +33,12 @@ class QueryDslQueryCouponGroupRepositoryTest {
 
     List<Coupon> couponList;
 
-    List<Trigger> triggerList;
+    List<CouponGroup> couponGroupList;
 
     @BeforeEach
     void setup() {
         couponList = new ArrayList<>();
-        triggerList = new ArrayList<>();
+        couponGroupList = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             RateCoupon coupon = RateCoupon.builder()
                     .name("테스트용 쿠폰" + i)
@@ -58,12 +57,6 @@ class QueryDslQueryCouponGroupRepositoryTest {
 
             TriggerTypeCode[] triggerTypeCodeArray = TriggerTypeCode.values();
             TriggerTypeCode triggerTypeCode = triggerTypeCodeArray[i % triggerTypeCodeArray.length];
-            Trigger trigger = Trigger.builder()
-                    .coupon(coupon)
-                    .triggerTypeCode(triggerTypeCode)
-                    .build();
-            em.persist(trigger);
-            triggerList.add(trigger);
 
             CouponGroup couponGroup = CouponGroup.builder()
                     .coupon(coupon)
@@ -71,6 +64,7 @@ class QueryDslQueryCouponGroupRepositoryTest {
                     .groupCode(triggerTypeCode.name() + "-" + coupon.getId())
                     .build();
             em.persist(couponGroup);
+            couponGroupList.add(couponGroup);
         }
 
         em.flush();
@@ -78,10 +72,13 @@ class QueryDslQueryCouponGroupRepositoryTest {
     }
 
     @Test
-    @DisplayName("트리거 entity로 쿠폰 그룹 조회에 성공한다.")
-    void findCouponGroupByTriggerTest() {
+    @DisplayName("트리거 코드와 쿠폰 ID로 쿠폰 그룹 조회에 성공한다.")
+    void findCouponGroupByTriggerTypeCodeAndCouponIdTest() {
         // when
-        Optional<CouponGroup> actual = repository.findCouponGroupByTrigger(triggerList.get(0));
+        Optional<CouponGroup> actual = repository.findCouponGroupByTriggerTypeAndCouponId(
+                couponGroupList.get(0).getTriggerTypeCode(),
+                couponGroupList.get(0).getCoupon().getId()
+        );
 
         // then
         Assertions.assertThat(actual).isPresent();
