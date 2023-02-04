@@ -4,6 +4,7 @@ package shop.yesaladin.coupon.coupon.service.impl;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -31,7 +32,6 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
-import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
@@ -69,8 +69,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
-        createCouponBound(
-                amountCouponRequestDto.getIsbn(),
+        createCouponBound(amountCouponRequestDto.getIsbn(),
                 amountCouponRequestDto.getCategoryId(),
                 amountCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -86,8 +85,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
         }
         Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
-        createCouponBound(
-                rateCouponRequestDto.getIsbn(),
+        createCouponBound(rateCouponRequestDto.getIsbn(),
                 rateCouponRequestDto.getCategoryId(),
                 rateCouponRequestDto.getCouponBoundCode(),
                 coupon
@@ -98,17 +96,10 @@ public class CommandCouponServiceImpl implements CommandCouponService {
 
     @Override
     @Transactional
-    public long updateCouponGivenState(CouponCodesAndResultMessage codesAndResultMessage) {
-        CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
-
-        if (codesAndResultMessage.isSuccess()) {
-            givenStateCode = CouponGivenStateCode.GIVEN;
-        }
-
-        return couponRepository.updateCouponGivenState(
-                codesAndResultMessage.getCouponCodes(),
-                givenStateCode
-        );
+    public long updateCouponGivenState(
+            List<String> couponCodeList, CouponGivenStateCode givenStateCode
+    ) {
+        return couponRepository.updateCouponGivenState(couponCodeList, givenStateCode);
     }
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
@@ -131,8 +122,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             return coupon;
         }
 
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                triggerTypeCode.toString(),
+        issueCouponService.issueCoupon(new CouponIssueRequestDto(triggerTypeCode.toString(),
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));
