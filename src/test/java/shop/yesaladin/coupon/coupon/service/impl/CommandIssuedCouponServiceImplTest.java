@@ -78,31 +78,23 @@ class CommandIssuedCouponServiceImplTest {
                 .discountRate(10)
                 .canBeOverlapped(true)
                 .build();
-        Trigger trigger = Trigger.builder()
-                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
-                .coupon(coupon)
-                .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
                 .build();
 
-        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCodeAndCouponId(
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
                 TriggerTypeCode.SIGN_UP,
                 1L
-        )).thenReturn(Optional.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
 
         // then
-        Mockito.verify(queryTriggerRepository, Mockito.times(1))
-                .findTriggerByTriggerTypeCodeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTrigger(trigger);
+                .findCouponGroupByTriggerTypeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 1000));
         Assertions.assertThat(actual).hasSize(1);
@@ -131,32 +123,24 @@ class CommandIssuedCouponServiceImplTest {
                 .discountRate(10)
                 .canBeOverlapped(true)
                 .build();
-        Trigger trigger = Trigger.builder()
-                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
-                .coupon(coupon)
-                .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
                 .build();
 
-        Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCodeAndCouponId(
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
                 TriggerTypeCode.SIGN_UP,
                 1L
-        )).thenReturn(Optional.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        )).thenReturn(Optional.of(couponGroup));
         Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
 
         // when
         List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
 
         // then
-        Mockito.verify(queryTriggerRepository, Mockito.times(1))
-                .findTriggerByTriggerTypeCodeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTrigger(trigger);
+                .findCouponGroupByTriggerTypeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 100));
         Assertions.assertThat(actual).hasSize(1);
@@ -197,8 +181,10 @@ class CommandIssuedCouponServiceImplTest {
 
         Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
                 .thenReturn(List.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
+                trigger.getTriggerTypeCode(),
+                1L
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
@@ -207,7 +193,7 @@ class CommandIssuedCouponServiceImplTest {
         Mockito.verify(queryTriggerRepository, Mockito.times(1))
                 .findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP);
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTrigger(trigger);
+                .findCouponGroupByTriggerTypeAndCouponId(trigger.getTriggerTypeCode(), 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 1000));
         Assertions.assertThat(actual).hasSize(1);
@@ -248,8 +234,10 @@ class CommandIssuedCouponServiceImplTest {
 
         Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
                 .thenReturn(List.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
+                trigger.getTriggerTypeCode(),
+                1L
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
@@ -258,7 +246,7 @@ class CommandIssuedCouponServiceImplTest {
         Mockito.verify(queryTriggerRepository, Mockito.times(1))
                 .findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP);
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTrigger(trigger);
+                .findCouponGroupByTriggerTypeAndCouponId(trigger.getTriggerTypeCode(), 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.get(0)
                         .getExpirationDate()
@@ -301,8 +289,10 @@ class CommandIssuedCouponServiceImplTest {
 
         Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.SIGN_UP))
                 .thenReturn(List.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
+                trigger.getTriggerTypeCode(),
+                1L
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         // then
@@ -345,8 +335,10 @@ class CommandIssuedCouponServiceImplTest {
 
         Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD))
                 .thenReturn(List.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
+                trigger.getTriggerTypeCode(),
+                1L
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         List<CouponIssueResponseDto> actual = service.issueCoupon(requestDto);
@@ -355,7 +347,7 @@ class CommandIssuedCouponServiceImplTest {
         Mockito.verify(queryTriggerRepository, Mockito.times(1))
                 .findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD);
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTrigger(trigger);
+                .findCouponGroupByTriggerTypeAndCouponId(trigger.getTriggerTypeCode(), 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.get(0)
                         .getExpirationDate()
@@ -398,8 +390,10 @@ class CommandIssuedCouponServiceImplTest {
 
         Mockito.when(queryTriggerRepository.findTriggerByTriggerTypeCode(TriggerTypeCode.MEMBER_GRADE_BRONZE))
                 .thenReturn(List.of(trigger));
-        Mockito.when(queryCouponGroupRepository.findCouponGroupByTrigger(trigger))
-                .thenReturn(Optional.of(couponGroup));
+        Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
+                trigger.getTriggerTypeCode(),
+                1L
+        )).thenReturn(Optional.of(couponGroup));
 
         // when
         // then

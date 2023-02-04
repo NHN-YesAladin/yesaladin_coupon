@@ -4,8 +4,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
-import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QCouponGroup;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
 
@@ -22,12 +22,16 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<CouponGroup> findCouponGroupByTrigger(Trigger trigger) {
+    public Optional<CouponGroup> findCouponGroupByTriggerTypeAndCouponId(
+            TriggerTypeCode triggerTypeCode,
+            long couponId
+    ) {
+
         QCouponGroup couponGroup = QCouponGroup.couponGroup;
         return Optional.ofNullable(queryFactory.select(couponGroup)
                 .from(couponGroup)
-                .where(couponGroup.coupon.eq(trigger.getCoupon()))
-                .where(couponGroup.triggerTypeCode.eq(trigger.getTriggerTypeCode()))
+                .where(couponGroup.coupon.id.eq(couponId))
+                .where(couponGroup.triggerTypeCode.eq(triggerTypeCode))
                 .orderBy(couponGroup.createdDatetime.desc())
                 .fetchFirst());
     }

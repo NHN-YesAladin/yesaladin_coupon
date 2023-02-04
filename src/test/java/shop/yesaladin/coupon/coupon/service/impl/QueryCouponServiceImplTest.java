@@ -67,6 +67,7 @@ class QueryCouponServiceImplTest {
         PageImpl<CouponSummaryDto> couponSummaryDtoPage = new PageImpl<>(couponSummaryDtos);
         Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(couponSummaryDtoPage);
 
+
         // when
         Page<CouponSummaryDto> result = queryCouponService.getTriggeredCouponList(
                 PageRequest.of(0, 5));
@@ -78,4 +79,3 @@ class QueryCouponServiceImplTest {
     }
 
 }
-
