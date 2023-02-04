@@ -11,14 +11,13 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.coupon.persistence.JpaCommandCouponRepository;
-import shop.yesaladin.coupon.coupon.persistence.JpaCouponBoundRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 
 @DataJpaTest
 class JpaCouponBoundRepositoryTest {
 
     @Autowired
-    private JpaCommandCouponRepository commandCouponRepository;
+    private CommandCouponRepository commandCouponRepository;
     @Autowired
     private JpaCouponBoundRepository couponBoundRepository;
     private Coupon coupon;

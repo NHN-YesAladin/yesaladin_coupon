@@ -4,6 +4,7 @@ import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
+import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 
 /**
  * 쿠폰과 관련된 CUD 작업을 하는 서비스 인터페이스입니다.
@@ -36,4 +37,11 @@ public interface CommandCouponService {
      * @return 생성된 쿠폰 정보를 담은 dto
      */
     CouponResponseDto createRateCoupon(RateCouponRequestDto couponRequestDto);
+
+    /**
+     * TODO
+     * @param codesAndResultMessage
+     * @return
+     */
+    long updateCouponGivenState(CouponCodesAndResultMessage codesAndResultMessage);
 }

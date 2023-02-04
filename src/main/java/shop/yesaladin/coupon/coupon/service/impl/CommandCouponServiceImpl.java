@@ -15,6 +15,7 @@ import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
@@ -30,6 +31,7 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
+import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
@@ -94,6 +96,21 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    @Override
+    @Transactional
+    public long updateCouponGivenState(CouponCodesAndResultMessage codesAndResultMessage) {
+        CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
+
+        if (codesAndResultMessage.isSuccess()) {
+            givenStateCode = CouponGivenStateCode.GIVEN;
+        }
+
+        return couponRepository.updateCouponGivenState(
+                codesAndResultMessage.getCouponCodes(),
+                givenStateCode
+        );
+    }
+
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
         return !Objects.isNull(couponRequestDto.getImageFile());
     }
@@ -115,7 +132,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         }
 
         issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                null,
+                triggerTypeCode.toString(),
                 coupon.getId(),
                 couponRequestDto.getQuantity()
         ));

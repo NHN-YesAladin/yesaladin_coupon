@@ -11,13 +11,14 @@ import shop.yesaladin.coupon.config.JpaAuditingConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 
 @Import(JpaAuditingConfiguration.class)
 @DataJpaTest
-class JpaCommandCouponRepositoryTest {
+class CommandCouponRepositoryTest {
 
     @Autowired
-    private JpaCommandCouponRepository commandCouponRepository;
+    private CommandCouponRepository commandCouponRepository;
     private Coupon coupon;
 
     @BeforeEach
