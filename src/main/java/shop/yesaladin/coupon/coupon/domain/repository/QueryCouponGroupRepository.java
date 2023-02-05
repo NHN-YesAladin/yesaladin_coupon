@@ -32,7 +32,7 @@ public interface QueryCouponGroupRepository {
      * @param couponId 조회할 쿠폰 id(nullable)
      * @return 조회된 쿠폰의 그룹 id와 무제한 여부를 가지는 DTO 리스트
      */
-    List<CouponGroupAndLimitDto> findAllCouponGroupWithLimitByTriggerTypeAndCouponId(
+    List<CouponGroupAndLimitDto> findCouponGroupAndLimitMeta(
             TriggerTypeCode triggerTypeCode,
             Long couponId
     );

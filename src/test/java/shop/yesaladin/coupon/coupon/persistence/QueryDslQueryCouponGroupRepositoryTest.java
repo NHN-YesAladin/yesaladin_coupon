@@ -112,7 +112,7 @@ class QueryDslQueryCouponGroupRepositoryTest {
     @DisplayName("트리거 타입으로 그룹 코드, 무제한 여부 조회에 성공한다.")
     void findAllCouponGroupWithLimitByTriggerTypeAndCouponId() {
         // when
-        List<CouponGroupAndLimitDto> actual = repository.findAllCouponGroupWithLimitByTriggerTypeAndCouponId(
+        List<CouponGroupAndLimitDto> actual = repository.findCouponGroupAndLimitMeta(
                 TriggerTypeCode.SIGN_UP, null);
 
         // then
@@ -123,7 +123,7 @@ class QueryDslQueryCouponGroupRepositoryTest {
     @DisplayName("트리거 코드와 쿠폰 Id로 그룹코드, 무제한 여부 조회 시 활성화된 트리거가 존재하지 않는다면 조회되지 않는다.")
     void findAllCouponGroupWithLimitByTriggerTypeAndCouponIdWithInvalidTrigger() {
         // when
-        List<CouponGroupAndLimitDto> actual = repository.findAllCouponGroupWithLimitByTriggerTypeAndCouponId(
+        List<CouponGroupAndLimitDto> actual = repository.findCouponGroupAndLimitMeta(
                 TriggerTypeCode.BIRTHDAY, couponList.get(0).getId());
 
         // then

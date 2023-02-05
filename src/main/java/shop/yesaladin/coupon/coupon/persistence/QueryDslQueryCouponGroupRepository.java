@@ -41,7 +41,7 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
     }
 
     @Override
-    public List<CouponGroupAndLimitDto> findAllCouponGroupWithLimitByTriggerTypeAndCouponId(
+    public List<CouponGroupAndLimitDto> findCouponGroupAndLimitMeta(
             TriggerTypeCode triggerTypeCode, Long couponId
     ) {
         QCouponGroup couponGroup = QCouponGroup.couponGroup;
