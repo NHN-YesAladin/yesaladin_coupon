@@ -1,10 +1,11 @@
 package shop.yesaladin.coupon.coupon.kafka;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import shop.yesaladin.coupon.config.KafkaTopicConfig;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
@@ -18,10 +19,11 @@ import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 @Component
 public class CouponConsumer {
 
-    private final KafkaTopicConfig kafkaTopicConfig;
     private final CouponProducer couponProducer;
     private final CommandIssuedCouponService commandIssuedCouponService;
     private final CouponConsumerService couponConsumerService;
+    @Getter
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     /**
      * 쿠폰(무제한) 지급요청 메시지를 처리합니다.
@@ -32,7 +34,9 @@ public class CouponConsumer {
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
             couponConsumerService.responseCouponGiveRequestMessage(message);
+            countDownLatch.countDown();
         }
+        resetCountDownLatch();
     }
 
     /**
@@ -94,7 +98,7 @@ public class CouponConsumer {
         // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태가 모두 미지급이고, 지급 상태가 모두 지급 완료 상태이고 메시지 발행 일시 기준 만료일이 지나지 않았으면
         // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 사용 대기 상태로 변경합니다.
         // 요청 메시지의 requestId 와 성공여부를 포함하는 응답 메시지를 보냅니다.
-        couponProducer.send(kafkaTopicConfig.getUseRequestResponse(), null);
+        couponProducer.responseUseRequest(null);
     }
 
     /**
@@ -130,5 +134,9 @@ public class CouponConsumer {
                     CouponUsageStateCode.NOT_USED
             );
         }
+    }
+
+    private void resetCountDownLatch() {
+        this.countDownLatch = new CountDownLatch(1);
     }
 }

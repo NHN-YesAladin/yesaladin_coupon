@@ -18,7 +18,6 @@ import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 @Service
 public class CouponConsumerServiceImpl implements CouponConsumerService {
 
-    private final KafkaTopicConfig kafkaTopicConfig;
     private final CouponProducer couponProducer;
     private final QueryIssuedCouponService queryIssuedCouponService;
 
@@ -27,8 +26,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
         List<CouponIssueResponseDto> responseDtoList = null;
         try {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
-                    CouponIssueRequestDto.fromCouponGiveRequestMessage(
-                            message));
+                    CouponIssueRequestDto.fromCouponGiveRequestMessage(message));
         } catch (Exception e) {
             // 쿠폰 발행 실패 응답
             CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
@@ -36,10 +34,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                     .success(false)
                     .errorMessage(e.getMessage())
                     .build();
-            couponProducer.send(
-                    kafkaTopicConfig.getGiveRequestResponse(),
-                    giveRequestResponseMessage
-            );
+            couponProducer.responseGiveRequest(giveRequestResponseMessage);
             return;
         }
 
@@ -55,6 +50,6 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                 .success(true)
                 .build();
 
-        couponProducer.send(kafkaTopicConfig.getGiveRequestResponse(), giveRequestResponseMessage);
-    };
+        couponProducer.responseGiveRequest(giveRequestResponseMessage);
+    }
 }
