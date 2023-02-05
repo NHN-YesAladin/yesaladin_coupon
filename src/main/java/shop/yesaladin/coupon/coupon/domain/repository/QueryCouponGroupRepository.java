@@ -23,4 +23,6 @@ public interface QueryCouponGroupRepository {
             TriggerTypeCode triggerTypeCode,
             long couponId
     );
+
+    Optional<CouponGroup> findCouponGroupByTriggerType(TriggerTypeCode triggerTypeCode);
 }

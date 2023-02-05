@@ -2,6 +2,7 @@ package shop.yesaladin.coupon.coupon.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 
@@ -12,6 +13,7 @@ import shop.yesaladin.coupon.dto.CouponGiveDto;
  * @since 1.0
  */
 @Getter
+@Builder
 @AllArgsConstructor
 public class CouponIssueResponseDto {
 

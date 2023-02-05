@@ -11,6 +11,7 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
@@ -25,6 +26,7 @@ public class Consumer {
     private final KafkaTopicConfig kafkaTopicConfig;
     private final Producer producer;
     private final CommandIssuedCouponService commandIssuedCouponService;
+    private final QueryIssuedCouponService queryIssuedCouponService;
 
     /**
      * 쿠폰(무제한) 지급요청 메시지를 처리합니다.
@@ -34,12 +36,24 @@ public class Consumer {
     @KafkaListener(id = "yesaladin_coupon_give_request", topics = "${coupon.topic.give-request}")
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
-            // triggerTypeCode, couponId 에 따라 발행된 쿠폰코드와 그룹 코드를 응답 메시지로 전달한다.
-            // 발행된 쿠폰이 없는 경우 해당 쿠폰을 발행한 후 응답 메시지를 전달한다.
-            // 지급 요청 메시지에 따라 쿠폰을 발행한 후
-            List<CouponIssueResponseDto> responseDtoList = commandIssuedCouponService.issueCoupon(
-                    CouponIssueRequestDto.fromCouponGiveRequestMessage(message));
+            List<CouponIssueResponseDto> responseDtoList = null;
+            try {
+                responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
+                        CouponIssueRequestDto.fromCouponGiveRequestMessage(
+                                message));
+            } catch (Exception e) {
+                // 쿠폰 발행 실패 응답
+                CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
+                        .requestId(message.getRequestId())
+                        .success(false)
+                        .build();
+                producer.send(
+                        kafkaTopicConfig.getGiveRequestResponse(),
+                        giveRequestResponseMessage
+                );
+            }
 
+            assert responseDtoList != null;
             List<CouponGiveDto> coupons = responseDtoList.stream()
                     .map(CouponIssueResponseDto::toCouponGiveDto)
                     .collect(Collectors.toList());
@@ -51,14 +65,12 @@ public class Consumer {
                     .success(true)
                     .build();
 
-            // TODO 쿠폰 발행 실패 응답
-
             producer.send(kafkaTopicConfig.getGiveRequestResponse(), giveRequestResponseMessage);
         }
     }
 
     /**
-     * 쿠폰(제한) 지급요청 메시지를 처리합니다.[][
+     * 쿠폰(제한) 지급요청 메시지를 처리합니다.
      *
      * @param records 쿠폰(제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
@@ -68,8 +80,8 @@ public class Consumer {
     }
 
     /**
-     * 쿠폰 지급 메시지 처리 성공 여부에 따라 발행된 쿠폰의 지급 상태를 미지급/지급완료 상태로 업데이트합니다.
-     *m
+     * 쿠폰 지급 메시지 처리 성공 여부에 따라 발행된 쿠폰의 지급 상태를 미지급/지급완료 상태로 업데이트합니다. m
+     *
      * @param records
      */
     @KafkaListener(id = "yesaladin_coupon_given", topics = "${coupon.topic.given}")

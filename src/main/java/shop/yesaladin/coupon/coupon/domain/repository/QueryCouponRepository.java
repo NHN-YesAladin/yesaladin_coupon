@@ -29,4 +29,6 @@ public interface QueryCouponRepository {
      * @return 해당 트리거를 가진 모든 쿠폰 리스트
      */
     List<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode);
+
+    boolean isUnlimitedCoupon(long couponId);
 }

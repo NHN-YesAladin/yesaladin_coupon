@@ -58,7 +58,7 @@ class MyBatisInsertCouponIssuanceMapperTest {
         List<IssuedCouponInsertDto> insertList = new ArrayList<>();
         for (int i = 0; i < 500; i++) {
             IssuedCouponInsertDto issuedCouponInsertDto = new IssuedCouponInsertDto(
-                    coupon.getId(),
+                    couponGroup.getId(),
                     UUID.randomUUID().toString().substring(0, 20),
                     LocalDate.now().plusDays(coupon.getDuration())
             );

@@ -41,4 +41,13 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
                 .fetch();
     }
+
+    @Override
+    public boolean isUnlimitedCoupon(long couponId) {
+        QCoupon coupon = QCoupon.coupon;
+        return queryFactory.select(coupon.isUnlimited)
+                .from(coupon)
+                .where(coupon.id.eq(couponId))
+                .fetchFirst();
+    }
 }

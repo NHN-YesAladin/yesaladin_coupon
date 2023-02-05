@@ -111,16 +111,14 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         createTrigger(triggerTypeCode, coupon);
         createCouponGroup(triggerTypeCode, coupon);
 
-        // 생일 쿠폰, 회원가입 쿠폰의 경우 쿠폰 요청에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
-        if (notToBeIssued(triggerTypeCode)) {
-            return coupon;
+        // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
+        if (!notToBeIssued(triggerTypeCode)) {
+            issueCouponService.issueCoupon(new CouponIssueRequestDto(
+                    couponRequestDto.getCouponTypeCode().toString(),
+                    coupon.getId(),
+                    couponRequestDto.getQuantity()
+            ));
         }
-
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                couponRequestDto.getCouponTypeCode().toString(),
-                coupon.getId(),
-                couponRequestDto.getQuantity()
-        ));
 
         return coupon;
     }

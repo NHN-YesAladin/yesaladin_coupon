@@ -35,4 +35,13 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
                 .orderBy(couponGroup.createdDatetime.desc())
                 .fetchFirst());
     }
+
+    @Override
+    public Optional<CouponGroup> findCouponGroupByTriggerType(TriggerTypeCode triggerTypeCode) {
+        QCouponGroup couponGroup = QCouponGroup.couponGroup;
+        return Optional.ofNullable(queryFactory.selectFrom(couponGroup)
+                .where(couponGroup.triggerTypeCode.eq(triggerTypeCode))
+                .orderBy(couponGroup.createdDatetime.desc())
+                .fetchFirst());
+    }
 }

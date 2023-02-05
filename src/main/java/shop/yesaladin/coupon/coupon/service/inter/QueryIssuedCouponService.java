@@ -6,5 +6,5 @@ import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 
 public interface QueryIssuedCouponService {
 
-    List<CouponIssueResponseDto> getIssuedCoupon(CouponIssueRequestDto issueRequestDto);
+    List<CouponIssueResponseDto> getCouponIssueResponseDtoList(CouponIssueRequestDto issueRequestDto);
 }
