@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.config.JpaAuditingConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 
 @Import(JpaAuditingConfiguration.class)
 @DataJpaTest

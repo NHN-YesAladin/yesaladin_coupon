@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 
 @Transactional
 @SpringBootTest

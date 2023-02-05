@@ -9,12 +9,14 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.CouponTypeCodeConverter;
 
 /**
@@ -70,10 +73,24 @@ public abstract class Coupon {
     @OneToMany(mappedBy = "coupon")
     private List<Trigger> triggerList = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private CouponBound couponBound;
+
     public void addTrigger(Trigger trigger) {
         if (Objects.isNull(triggerList)) {
             this.triggerList = new ArrayList<>();
         }
         this.triggerList.add(trigger);
+    }
+
+    public long getAmount() {
+        CouponTypeCode typeCode = this.couponTypeCode;
+        if (typeCode.equals(CouponTypeCode.FIXED_PRICE)) {
+            return ((AmountCoupon) this).getDiscountAmount();
+        } else if (typeCode.equals(CouponTypeCode.FIXED_RATE)) {
+            return ((RateCoupon) this).getDiscountRate();
+        } else {
+            return ((PointCoupon) this).getChargePointAmount();
+        }
     }
 }

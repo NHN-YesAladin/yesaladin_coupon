@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.CouponBoundCodeConverter;
 
 /**
@@ -48,4 +49,16 @@ public class CouponBound {
     @Column(name = "coupon_bound_code_id")
     @Convert(converter = CouponBoundCodeConverter.class)
     private CouponBoundCode couponBoundCode;
+
+    public String getBound() {
+        CouponBoundCode boundCode = this.couponBoundCode;
+
+        if (boundCode.equals(CouponBoundCode.ALL)) {
+            return null;
+        } else if (boundCode.equals(CouponBoundCode.CATEGORY)) {
+            return this.categoryId.toString();
+        } else {
+            return this.isbn;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package shop.yesaladin.coupon.coupon.dummy;
 
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 
 public class CouponDummy {
