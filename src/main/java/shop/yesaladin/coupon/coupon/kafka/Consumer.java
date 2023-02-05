@@ -1,22 +1,17 @@
 package shop.yesaladin.coupon.coupon.kafka;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import shop.yesaladin.coupon.config.KafkaTopicConfig;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
-import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
-import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
-import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
-import shop.yesaladin.coupon.dto.CouponGiveDto;
+import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
-import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 
 @RequiredArgsConstructor
@@ -26,7 +21,7 @@ public class Consumer {
     private final KafkaTopicConfig kafkaTopicConfig;
     private final Producer producer;
     private final CommandIssuedCouponService commandIssuedCouponService;
-    private final QueryIssuedCouponService queryIssuedCouponService;
+    private final CouponConsumerService couponConsumerService;
 
     /**
      * 쿠폰(무제한) 지급요청 메시지를 처리합니다.
@@ -36,36 +31,7 @@ public class Consumer {
     @KafkaListener(id = "yesaladin_coupon_give_request", topics = "${coupon.topic.give-request}")
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
-            List<CouponIssueResponseDto> responseDtoList = null;
-            try {
-                responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
-                        CouponIssueRequestDto.fromCouponGiveRequestMessage(
-                                message));
-            } catch (Exception e) {
-                // 쿠폰 발행 실패 응답
-                CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
-                        .requestId(message.getRequestId())
-                        .success(false)
-                        .build();
-                producer.send(
-                        kafkaTopicConfig.getGiveRequestResponse(),
-                        giveRequestResponseMessage
-                );
-            }
-
-            assert responseDtoList != null;
-            List<CouponGiveDto> coupons = responseDtoList.stream()
-                    .map(CouponIssueResponseDto::toCouponGiveDto)
-                    .collect(Collectors.toList());
-
-            // 동일한 requestId 를 포함하는 지급 요청 응답 메시지를 보낸다.
-            CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
-                    .requestId(message.getRequestId())
-                    .coupons(coupons)
-                    .success(true)
-                    .build();
-
-            producer.send(kafkaTopicConfig.getGiveRequestResponse(), giveRequestResponseMessage);
+            couponConsumerService.responseCouponGiveRequestMessage(message);
         }
     }
 
@@ -76,11 +42,14 @@ public class Consumer {
      */
     @KafkaListener(id = "yesaladin_coupon_give_request_limit", topics = "${coupon.topic.give-request-limit}")
     public void giveRequestLimitListener(List<CouponGiveRequestMessage> records) {
-        //
+        for (CouponGiveRequestMessage message : records) {
+            // TODO 제한 쿠폰이므로 issuedCoupon 이 empty 여도 발행 확인을 하지 않도록 만들어보기
+            couponConsumerService.responseCouponGiveRequestMessage(message);
+        }
     }
 
     /**
-     * 쿠폰 지급 메시지 처리 성공 여부에 따라 발행된 쿠폰의 지급 상태를 미지급/지급완료 상태로 업데이트합니다. m
+     * 쿠폰 지급 메시지 처리 성공 여부에 따라 발행된 쿠폰의 지급 상태를 미지급/지급완료 상태로 업데이트합니다.
      *
      * @param records
      */
