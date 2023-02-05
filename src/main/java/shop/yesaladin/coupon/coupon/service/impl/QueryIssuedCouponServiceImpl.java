@@ -53,7 +53,6 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
         return List.of(CouponIssueResponseDto.builder()
                 .createdCouponCodes(List.of(issuedCoupon.getCouponCode()))
                 .couponGroupCode(couponGroup.getGroupCode()).build());
-
     }
 
     // 트리거 타입과 쿠폰 아이디로 쿠폰그룹을 조회합니다.
