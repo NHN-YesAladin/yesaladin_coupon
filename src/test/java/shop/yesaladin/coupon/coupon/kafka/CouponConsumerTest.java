@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,20 +11,22 @@ import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.KafkaTopicConfig;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 
+@Slf4j
 @Transactional
 @SpringBootTest
 @EmbeddedKafka(partitions = 3, brokerProperties = {
         "listeners=PLAINTEXT://localhost:9092", "port=9092"})
-class ConsumerTest {
+class CouponConsumerTest {
 
     @Autowired
     private KafkaTopicConfig kafkaTopicConfig;
     @Autowired
-    private Producer producer;
+    private CouponProducer couponProducer;
     @Autowired
-    private Consumer consumer;
+    private CouponConsumer couponConsumer;
     @Autowired
     private ObjectMapper objectMapper;
+
 
     @Test
     void giveRequestTest() {
@@ -35,8 +38,8 @@ class ConsumerTest {
                 .build();
 
         // when
-        producer.send(kafkaTopicConfig.getGiveRequest(), message);
-//        consumer.
+        String giveRequestResponse = kafkaTopicConfig.getGiveRequestResponse();
+        log.info("########### {}", giveRequestResponse);
     }
 
 }

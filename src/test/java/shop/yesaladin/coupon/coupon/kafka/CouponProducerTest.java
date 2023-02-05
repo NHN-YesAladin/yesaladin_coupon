@@ -1,7 +1,5 @@
 package shop.yesaladin.coupon.coupon.kafka;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,16 +11,16 @@ import shop.yesaladin.coupon.config.KafkaTopicConfig;
 @SpringBootTest
 @EmbeddedKafka(partitions = 3, brokerProperties = {
         "listeners=PLAINTEXT://localhost:9092", "port=9092"})
-class ProducerTest {
+class CouponProducerTest {
 
     @Autowired
     private KafkaTopicConfig kafkaTopicConfig;
 
     @Autowired
-    private Producer producer;
+    private CouponProducer couponProducer;
 
     @Autowired
-    private Consumer consumer;
+    private CouponConsumer couponConsumer;
 
     @Test
     void test() {

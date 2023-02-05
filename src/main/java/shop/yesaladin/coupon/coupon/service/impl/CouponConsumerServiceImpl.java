@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import shop.yesaladin.coupon.config.KafkaTopicConfig;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.kafka.Producer;
+import shop.yesaladin.coupon.coupon.kafka.CouponProducer;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
@@ -19,7 +19,7 @@ import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 public class CouponConsumerServiceImpl implements CouponConsumerService {
 
     private final KafkaTopicConfig kafkaTopicConfig;
-    private final Producer producer;
+    private final CouponProducer couponProducer;
     private final QueryIssuedCouponService queryIssuedCouponService;
 
     @Override
@@ -36,7 +36,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                     .success(false)
                     .errorMessage(e.getMessage())
                     .build();
-            producer.send(
+            couponProducer.send(
                     kafkaTopicConfig.getGiveRequestResponse(),
                     giveRequestResponseMessage
             );
@@ -55,6 +55,6 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                 .success(true)
                 .build();
 
-        producer.send(kafkaTopicConfig.getGiveRequestResponse(), giveRequestResponseMessage);
+        couponProducer.send(kafkaTopicConfig.getGiveRequestResponse(), giveRequestResponseMessage);
     };
 }
