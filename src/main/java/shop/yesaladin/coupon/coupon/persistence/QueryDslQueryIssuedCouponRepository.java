@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
-import shop.yesaladin.coupon.coupon.domain.model.querydsl.QCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QIssuedCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryIssuedCouponRepository;
 
@@ -16,16 +15,6 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryIssuedCouponRepositor
 public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRepository {
 
     private final JPAQueryFactory queryFactory;
-
-    @Override
-    public Optional<IssuedCoupon> findValidCouponByCouponId(long couponId) {
-        QCoupon coupon = QCoupon.coupon;
-//        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
-//        queryFactory.selectFrom(issuedCoupon).innerJoin(issuedCoupon.coupon).fetchJoin()
-//                .where(issuedCoupon.coupon.id.eq(couponId), issuedCoupon.couponGivenStateCode.eq(
-//                        CouponGivenStateCode.NOT_GIVEN));
-        return Optional.ofNullable(null);
-    }
 
     @Override
     public Optional<IssuedCoupon> findIssuedCouponByGroupCodeId(long groupCodeId) {

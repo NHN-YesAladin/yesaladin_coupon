@@ -40,6 +40,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                     kafkaTopicConfig.getGiveRequestResponse(),
                     giveRequestResponseMessage
             );
+            return;
         }
 
         assert responseDtoList != null;
