@@ -1,8 +1,10 @@
 package shop.yesaladin.coupon.coupon.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
+import shop.yesaladin.coupon.coupon.dto.CouponGroupAndLimitDto;
 
 /**
  * 쿠폰 그룹 데이터 조회용 레포지토리 인터페이스입니다.
@@ -13,7 +15,7 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 public interface QueryCouponGroupRepository {
 
     /**
-     * 트리거 entity를 받아 해당 정보로 쿠폰 그룹을 조회합니다.
+     * 트리거 타입 코드와 쿠폰 id를 받아 해당 정보로 쿠폰 그룹을 조회합니다.
      *
      * @param triggerTypeCode 조회할 트리거 타입 코드
      * @param couponId        조회할 쿠폰 id
@@ -22,5 +24,16 @@ public interface QueryCouponGroupRepository {
     Optional<CouponGroup> findCouponGroupByTriggerTypeAndCouponId(
             TriggerTypeCode triggerTypeCode,
             long couponId
+    );
+
+    /**
+     * 트리거 타입 코드와 쿠폰 id를 받아 해당 정보로 쿠폰의 활성화된 그룹 id와 무제한 여부를 가지는 DTO 리스트를 반환합니다.
+     * @param triggerTypeCode 조회할 트리거 타입 코드
+     * @param couponId 조회할 쿠폰 id(nullable)
+     * @return 조회된 쿠폰의 그룹 id와 무제한 여부를 가지는 DTO 리스트
+     */
+    List<CouponGroupAndLimitDto> findAllCouponGroupWithLimitByTriggerTypeAndCouponId(
+            TriggerTypeCode triggerTypeCode,
+            Long couponId
     );
 }
