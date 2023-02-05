@@ -139,3 +139,27 @@ include::{snippets}/get-triggered-coupons-success/response-fields.adoc[]
 ===== Example
 
 include::{snippets}/get-triggered-coupons-success/http-response.adoc[]
+
+== Coupon Group Code And Limit Meta
+
+=== 쿠폰 그룹 코드 및 무제한 여부 조회
+
+==== curl
+
+include::{snippets}/get-coupon-group-code-and-limit/curl-request.adoc[]
+
+==== request
+
+===== parameter
+
+include::{snippets}/get-coupon-group-code-and-limit/request-parameters.adoc[]
+
+===== Example
+
+include::{snippets}/get-coupon-group-code-and-limit/http-request.adoc[]
+
+==== response
+
+===== Example
+
+include::{snippets}/get-coupon-group-code-and-limit/http-response.adoc[]
