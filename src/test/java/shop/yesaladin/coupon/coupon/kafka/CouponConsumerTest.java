@@ -27,7 +27,6 @@ class CouponConsumerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
     void giveRequestTest() {
         // given
@@ -41,5 +40,4 @@ class CouponConsumerTest {
         String giveRequestResponse = kafkaTopicConfig.getGiveRequestResponse();
         log.info("########### {}", giveRequestResponse);
     }
-
 }
