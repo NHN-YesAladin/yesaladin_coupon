@@ -12,7 +12,7 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository
 /**
  * 쿠폰 그룹을 조회하기 위한 레포지토리 인터페이스의 구현체입니다.
  *
- * @author 김홍대
+ * @author 김홍대, 서민지
  * @since 1.0
  */
 @RequiredArgsConstructor
@@ -21,6 +21,9 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<CouponGroup> findCouponGroupByTriggerTypeAndCouponId(
             TriggerTypeCode triggerTypeCode,
@@ -31,6 +34,18 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
         return Optional.ofNullable(queryFactory.select(couponGroup)
                 .from(couponGroup)
                 .where(couponGroup.coupon.id.eq(couponId))
+                .where(couponGroup.triggerTypeCode.eq(triggerTypeCode))
+                .orderBy(couponGroup.createdDatetime.desc())
+                .fetchFirst());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<CouponGroup> findCouponGroupByTriggerType(TriggerTypeCode triggerTypeCode) {
+        QCouponGroup couponGroup = QCouponGroup.couponGroup;
+        return Optional.ofNullable(queryFactory.selectFrom(couponGroup)
                 .where(couponGroup.triggerTypeCode.eq(triggerTypeCode))
                 .orderBy(couponGroup.createdDatetime.desc())
                 .fetchFirst());

@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 
 @Transactional
@@ -58,7 +58,7 @@ class MyBatisInsertCouponIssuanceMapperTest {
         List<IssuedCouponInsertDto> insertList = new ArrayList<>();
         for (int i = 0; i < 500; i++) {
             IssuedCouponInsertDto issuedCouponInsertDto = new IssuedCouponInsertDto(
-                    coupon.getId(),
+                    couponGroup.getId(),
                     UUID.randomUUID().toString().substring(0, 20),
                     LocalDate.now().plusDays(coupon.getDuration())
             );

@@ -6,9 +6,11 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
+import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.validator.annotation.EnumValue;
 
 /**
@@ -18,6 +20,7 @@ import shop.yesaladin.coupon.validator.annotation.EnumValue;
  * @since 1.0
  */
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CouponIssueRequestDto {
@@ -34,5 +37,13 @@ public class CouponIssueRequestDto {
 
     public boolean requestWithTriggerCodeAndCouponId() {
         return Objects.nonNull(this.triggerTypeCode) && Objects.nonNull(this.couponId);
+    }
+
+    public static CouponIssueRequestDto fromCouponGiveRequestMessage(CouponGiveRequestMessage message) {
+        return new CouponIssueRequestDto(
+                message.getTriggerTypeCode().toString(),
+                message.getCouponId(),
+                1
+        );
     }
 }
