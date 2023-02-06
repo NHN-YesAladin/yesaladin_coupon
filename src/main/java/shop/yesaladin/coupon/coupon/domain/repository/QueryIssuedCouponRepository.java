@@ -23,6 +23,7 @@ public interface QueryIssuedCouponRepository {
 
     /**
      * 쿠폰코드로 회원쿠폰 목록에 사용할 쿠폰 요약 정보를 조회합니다.
+     *
      * @param couponCodeList 회원이 가진 쿠폰코드 리스트
      * @return 회원이 가진 쿠폰의 요약 정보 리스트
      */

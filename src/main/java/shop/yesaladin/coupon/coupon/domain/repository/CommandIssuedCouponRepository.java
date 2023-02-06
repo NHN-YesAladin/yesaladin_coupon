@@ -13,7 +13,7 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 public interface CommandIssuedCouponRepository {
 
     /**
-     * 쿠폰코드로 조회한 발행쿠폰의 지급상태를 수정합니다.
+     * 쿠폰코드로 조회한 발행쿠폰의 지급상태와 지급일시를 수정합니다.
      *
      * @param couponCodeList 수정할 발행쿠폰의 쿠폰코드 리스트
      * @param givenStateCode 수정할 지급상태 코드
@@ -22,7 +22,7 @@ public interface CommandIssuedCouponRepository {
     long updateCouponGivenStateAndDateTime(List<String> couponCodeList, CouponGivenStateCode givenStateCode);
 
     /**
-     * 쿠폰코드로 조회한 발행쿠폰의 사용상태를 수정합니다.
+     * 쿠폰코드로 조회한 발행쿠폰의 사용상태와 사용일시를 수정합니다.
      *
      * @param couponCodeList 수정할 발행쿠폰의 쿠폰코드 리스트
      * @param usageStateCode 수정할 사용상태 코드

@@ -9,9 +9,11 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 public class CouponGroupDummy {
 
     public static CouponGroup dummyCouponGroup(Coupon coupon) {
-        return CouponGroup.builder().triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_WHITE)
-                .coupon(coupon).groupCode(UUID.randomUUID().toString()).createdDatetime(
-                        LocalDateTime.now()).build();
+        return CouponGroup.builder()
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_WHITE)
+                .coupon(coupon)
+                .groupCode(UUID.randomUUID().toString())
+                .createdDatetime(LocalDateTime.now())
+                .build();
     }
-
 }

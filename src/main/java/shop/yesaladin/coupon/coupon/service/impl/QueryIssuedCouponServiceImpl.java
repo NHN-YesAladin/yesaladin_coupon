@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.common.code.ErrorCode;
-import shop.yesaladin.common.exception.ServerException;
+import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
@@ -53,7 +53,7 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
             issuedCouponOptional = getIssuedCouponByGroupCodeId(couponGroup);
         }
 
-        IssuedCoupon issuedCoupon = issuedCouponOptional.orElseThrow(() -> new ServerException(
+        IssuedCoupon issuedCoupon = issuedCouponOptional.orElseThrow(() -> new ClientException(
                 // FIXME VALID_ISSUED_COUPON_NOT_FOUND 에러코드로 수정
                 ErrorCode.COUPON_NOT_FOUND,
                 ErrorCode.COUPON_NOT_FOUND.getDisplayName()
@@ -78,7 +78,7 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
             );
         }
 
-        return couponGroupOptional.orElseThrow(() -> new ServerException(
+        return couponGroupOptional.orElseThrow(() -> new ClientException(
                 // FIXME COUPON_GROUP_NOT_FOUND 에러코드로 수정
                 ErrorCode.COUPON_NOT_FOUND,
                 ErrorCode.COUPON_NOT_FOUND.getDisplayName()

@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
-import shop.yesaladin.coupon.config.KafkaTopicConfig;
+import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 
@@ -23,7 +23,7 @@ import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 class CouponProducerTest {
 
     @Autowired
-    private KafkaTopicConfig kafkaTopicConfig;
+    private KafkaTopicProperties kafkaTopicProperties;
     @Autowired
     private CouponProducer couponProducer;
     private Consumer<String, Object> consumer;
@@ -42,7 +42,7 @@ class CouponProducerTest {
         String requestId = "test requestId";
         String couponCode = UUID.randomUUID().toString();
         String couponGroupCode = UUID.randomUUID().toString();
-        String giveRequestResponseTopic = kafkaTopicConfig.getGiveRequestResponse();
+        String giveRequestResponseTopic = kafkaTopicProperties.getGiveRequestResponse();
 
         CouponGiveDto couponGiveDto = CouponGiveDto.builder()
                 .couponCodes(List.of(couponCode))

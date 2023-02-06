@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import shop.yesaladin.common.code.ErrorCode;
-import shop.yesaladin.common.exception.ServerException;
+import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
@@ -207,8 +207,8 @@ class QueryIssuedCouponServiceImplTest {
 
         // then
         verify(commandIssuedCouponService, times(0)).issueCoupon(any());
-        ServerException result = Assertions.assertThrows(
-                ServerException.class,
+        ClientException result = Assertions.assertThrows(
+                ClientException.class,
                 () -> service.getCouponIssueResponseDtoList(couponIssueRequestDto2)
         );
         assertThat(result.getErrorCode()).isEqualTo(ErrorCode.COUPON_NOT_FOUND);

@@ -20,7 +20,7 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
-import shop.yesaladin.coupon.config.KafkaTopicConfig;
+import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 
@@ -30,7 +30,7 @@ import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 class CouponConsumerTest {
 
     @Autowired
-    private KafkaTopicConfig kafkaTopicConfig;
+    private KafkaTopicProperties kafkaTopicProperties;
     private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
     private CouponConsumer couponConsumer;
@@ -61,7 +61,7 @@ class CouponConsumerTest {
                 .build();
 
         // when
-        kafkaTemplate.send(kafkaTopicConfig.getGiveRequest(), message);
+        kafkaTemplate.send(kafkaTopicProperties.getGiveRequest(), message);
 
         // then
         boolean isConsumed = couponConsumer.getCountDownLatch()

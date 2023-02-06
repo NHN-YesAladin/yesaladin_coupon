@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import shop.yesaladin.coupon.config.KafkaTopicConfig;
+import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 import shop.yesaladin.coupon.message.CouponUseRequestResponseMessage;
 
@@ -19,7 +19,7 @@ import shop.yesaladin.coupon.message.CouponUseRequestResponseMessage;
 @Component
 public class CouponProducer {
 
-    private final KafkaTopicConfig kafkaTopicConfig;
+    private final KafkaTopicProperties kafkaTopicProperties;
     private final KafkaTemplate<String, Object> template;
 
     /**
@@ -28,7 +28,7 @@ public class CouponProducer {
      * @param message 쿠폰 지급 요청에 대한 응답 메시지
      */
     public void responseGiveRequest(CouponGiveRequestResponseMessage message) {
-        String topic = kafkaTopicConfig.getGiveRequestResponse();
+        String topic = kafkaTopicProperties.getGiveRequestResponse();
         log.info("sending payload='{}' to topic='{}'", message.toString(), topic);
         template.send(topic, message);
     }
@@ -39,7 +39,7 @@ public class CouponProducer {
      * @param message 쿠폰 사용 요청에 대한 응답 메시지
      */
     public void responseUseRequest(CouponUseRequestResponseMessage message) {
-        String topic = kafkaTopicConfig.getUseRequestResponse();
+        String topic = kafkaTopicProperties.getUseRequestResponse();
         log.info("sending payload='{}' to topic='{}'", message.toString(), topic);
         template.send(topic, message);
     }
