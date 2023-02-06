@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.CouponTypeCodeConverter;
 
 /**
@@ -75,5 +76,16 @@ public abstract class Coupon {
             this.triggerList = new ArrayList<>();
         }
         this.triggerList.add(trigger);
+    }
+
+    public int getAmount() {
+        CouponTypeCode typeCode = this.couponTypeCode;
+        if (typeCode.equals(CouponTypeCode.FIXED_PRICE)) {
+            return ((AmountCoupon) this).getDiscountAmount();
+        } else if (typeCode.equals(CouponTypeCode.FIXED_RATE)) {
+            return ((RateCoupon) this).getDiscountRate();
+        } else {
+            return ((PointCoupon) this).getChargePointAmount();
+        }
     }
 }

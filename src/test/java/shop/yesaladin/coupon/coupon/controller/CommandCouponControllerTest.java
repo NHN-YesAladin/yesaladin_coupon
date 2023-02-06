@@ -23,7 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 

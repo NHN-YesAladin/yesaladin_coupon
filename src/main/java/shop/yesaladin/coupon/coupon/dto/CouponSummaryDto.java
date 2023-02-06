@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 

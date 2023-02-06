@@ -3,7 +3,7 @@ package shop.yesaladin.coupon.coupon.persistence.converter;
 import java.util.Arrays;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
+import shop.yesaladin.coupon.code.CouponBoundCode;
 
 /**
  * 쿠폰 범위 코드 변환을 위한 컨버터입니다.

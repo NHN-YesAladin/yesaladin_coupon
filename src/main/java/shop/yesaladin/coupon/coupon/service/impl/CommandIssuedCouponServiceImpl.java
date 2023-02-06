@@ -16,32 +16,39 @@ import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
+import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.InsertIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 /**
  * CouponIssuanceCommandService 인터페이스의 구현체입니다.
  *
- * @author 김홍대
+ * @author 김홍대, 서민지
  * @since 1.0
  */
 @RequiredArgsConstructor
 @Service
-public class CommandIssueCouponServiceImpl implements CommandIssueCouponService {
+public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponService {
 
     private final IssuanceConfiguration issuanceConfig;
+    private final CommandIssuedCouponRepository commandIssuedCouponRepository;
     private final QueryTriggerRepository queryTriggerRepository;
     private final QueryCouponGroupRepository queryCouponGroupRepository;
     private final InsertIssuedCouponRepository issuanceInsertRepository;
     private final Clock clock;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public List<CouponIssueResponseDto> issueCoupon(CouponIssueRequestDto requestDto) {
@@ -51,14 +58,33 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
         return issueCouponByTriggerTypeCode(requestDto);
     }
 
-    private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {
-        CouponGroup couponGroup = tryGetCouponGroupByTriggerTypeAndCouponId(
-                TriggerTypeCode.valueOf(requestDto.getTriggerTypeCode()),
-                requestDto.getCouponId()
-        );
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public long updateCouponGivenStateAndDateTime(
+            List<String> couponCodeList, CouponGivenStateCode givenStateCode
+    ) {
+        return commandIssuedCouponRepository.updateCouponGivenStateAndDateTime(couponCodeList, givenStateCode);
+    }
 
-        List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
-                couponGroup,
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public long updateCouponUsageStateAndDateTime(
+            List<String> couponCodeList, CouponUsageStateCode usageStateCode
+    ) {
+        return commandIssuedCouponRepository.updateCouponUsageStateAndDateTime(couponCodeList, usageStateCode);
+    }
+
+    private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {
+        CouponGroup couponGroup = tryGetCouponGroupByTriggerTypeAndCouponId(TriggerTypeCode.valueOf(
+                requestDto.getTriggerTypeCode()), requestDto.getCouponId());
+
+        List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(couponGroup,
                 requestDto.getQuantity()
         );
 
@@ -69,12 +95,10 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
 
 
     private List<CouponIssueResponseDto> issueCouponByTriggerTypeCode(CouponIssueRequestDto requestDto) {
-        List<CouponGroup> couponGroupList = getCouponGroupByRequestDto(
-                requestDto);
+        List<CouponGroup> couponGroupList = getCouponGroupByRequestDto(requestDto);
 
         return couponGroupList.stream().map(couponGroup -> {
-            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
-                    couponGroup,
+            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(couponGroup,
                     requestDto.getQuantity()
             );
             issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
@@ -85,15 +109,14 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
     private List<IssuedCouponInsertDto> createIssuanceDataList(
             CouponGroup couponGroup, Integer requestedQuantity
     ) {
-        int issueQuantity = getCouponQuantityWillBeIssued(
-                couponGroup.getCoupon(),
+        int issueQuantity = getCouponQuantityWillBeIssued(couponGroup.getCoupon(),
                 requestedQuantity
         );
 
         List<IssuedCouponInsertDto> issuanceDataList = new ArrayList<>();
         for (int count = 0; count < issueQuantity; count++) {
-            IssuedCouponInsertDto insertDto = new IssuedCouponInsertDto(
-                    couponGroup.getCoupon().getId(),
+            IssuedCouponInsertDto insertDto = new IssuedCouponInsertDto(couponGroup.getCoupon()
+                    .getId(),
                     UUID.randomUUID().toString(),
                     calculateExpirationDate(couponGroup)
             );
@@ -102,21 +125,16 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
         return issuanceDataList;
     }
 
-
     private CouponGroup tryGetCouponGroupByTriggerTypeAndCouponId(
-            TriggerTypeCode triggerTypeCode,
-            long couponId
+            TriggerTypeCode triggerTypeCode, long couponId
     ) {
 
-        return queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
-                        triggerTypeCode,
-                        couponId
-                )
-                .orElseThrow(() -> new ClientException(
-                        ErrorCode.NOT_FOUND,
-                        "Coupon group not exists. Trigger type : " + triggerTypeCode
-                                + " Coupon : " + couponId
-                ));
+        return queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(triggerTypeCode,
+                couponId
+        ).orElseThrow(() -> new ClientException(ErrorCode.NOT_FOUND,
+                "Coupon group not exists. Trigger type : " + triggerTypeCode + " Coupon : "
+                        + couponId
+        ));
     }
 
     private List<CouponGroup> getCouponGroupByRequestDto(
@@ -128,15 +146,13 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
                 triggerTypeCode);
 
         if (triggerList.isEmpty()) {
-            throw new ClientException(
-                    ErrorCode.TRIGGER_COUPON_NOT_FOUND,
+            throw new ClientException(ErrorCode.TRIGGER_COUPON_NOT_FOUND,
                     "Trigger not exists for tirgger type " + triggerTypeCode
             );
         }
 
         return triggerList.stream()
-                .map(trigger -> tryGetCouponGroupByTriggerTypeAndCouponId(
-                        trigger.getTriggerTypeCode(),
+                .map(trigger -> tryGetCouponGroupByTriggerTypeAndCouponId(trigger.getTriggerTypeCode(),
                         trigger.getCoupon().getId()
                 ))
                 .collect(Collectors.toList());
@@ -152,16 +168,14 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
     private LocalDate calculateExpirationDate(CouponGroup couponGroup) {
         if (isAutoIssuanceCoupon(couponGroup)) {
             Integer duration = Optional.ofNullable(couponGroup.getCoupon().getDuration())
-                    .orElseThrow(() -> new ClientException(
-                            ErrorCode.INVALID_COUPON_DATA,
+                    .orElseThrow(() -> new ClientException(ErrorCode.INVALID_COUPON_DATA,
                             "Invalid coupon data. coupon : " + couponGroup.getCoupon().getId()
                     ));
             return LocalDate.now(clock).plusDays(duration);
         }
 
         return Optional.ofNullable(couponGroup.getCoupon().getExpirationDate())
-                .orElseThrow(() -> new ClientException(
-                        ErrorCode.INVALID_COUPON_DATA,
+                .orElseThrow(() -> new ClientException(ErrorCode.INVALID_COUPON_DATA,
                         "Invalid coupon data. coupon : " + couponGroup.getCoupon().getId()
                 ));
     }
@@ -176,8 +190,7 @@ public class CommandIssueCouponServiceImpl implements CommandIssueCouponService 
     }
 
     private boolean isAutoIssuanceCoupon(CouponGroup couponGroup) {
-        Set<TriggerTypeCode> autoIssuanceCouponTriggerList = Set.of(
-                TriggerTypeCode.BIRTHDAY,
+        Set<TriggerTypeCode> autoIssuanceCouponTriggerList = Set.of(TriggerTypeCode.BIRTHDAY,
                 TriggerTypeCode.SIGN_UP
         );
 

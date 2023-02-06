@@ -16,12 +16,21 @@ import shop.yesaladin.coupon.coupon.domain.model.querydsl.QTrigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
+/**
+ * QueryDsl 을 사용하여 트리거 관련 정보를 조회하기 위한 Repository 구현체입니다.
+ *
+ * @author 서민지, 김홍대
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Repository
 public class QueryDslQueryTriggerRepository implements QueryTriggerRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<CouponSummaryDto> findAll(Pageable pageable) {
         QTrigger trigger = QTrigger.trigger;
@@ -43,6 +52,9 @@ public class QueryDslQueryTriggerRepository implements QueryTriggerRepository {
         return PageableExecutionUtils.getPage(list, pageable, countQuery::fetchFirst);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Trigger> findTriggerByTriggerTypeCodeAndCouponId(
             TriggerTypeCode triggerTypeCode, long couponId
@@ -56,6 +68,9 @@ public class QueryDslQueryTriggerRepository implements QueryTriggerRepository {
                 .fetchFirst());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Trigger> findTriggerByTriggerTypeCode(TriggerTypeCode triggerTypeCode) {
         QTrigger trigger = QTrigger.trigger;

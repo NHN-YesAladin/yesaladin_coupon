@@ -1,8 +1,10 @@
 package shop.yesaladin.coupon.coupon.service.inter;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
+import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryDto;
 
 /**
  * 쿠폰 조회 관련 서비스 인터페이스입니다.
@@ -19,4 +21,12 @@ public interface QueryCouponService {
      * @return 페이지네이션 된 트리거를 가진 쿠폰 요약 정보
      */
     Page<CouponSummaryDto> getTriggeredCouponList(Pageable pageable);
+
+    /**
+     * 쿠폰코드로 회원쿠폰 목록에 사용할 쿠폰 요약 정보를 조회합니다.
+     *
+     * @param couponCodeList 회원이 가진 쿠폰코드 리스트
+     * @return 회원이 가진 쿠폰의 요약 정보 리스트
+     */
+    List<MemberCouponSummaryDto> getMemberCouponList(List<String> couponCodeList);
 }

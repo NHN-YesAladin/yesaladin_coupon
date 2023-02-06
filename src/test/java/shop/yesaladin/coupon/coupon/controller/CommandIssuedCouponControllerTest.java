@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 @WebMvcTest(CommandIssuedCouponController.class)
 @AutoConfigureRestDocs
@@ -38,7 +38,7 @@ class CommandIssuedCouponControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CommandIssueCouponService service;
+    private CommandIssuedCouponService service;
     @Autowired
     private ObjectMapper objectMapper;
 
