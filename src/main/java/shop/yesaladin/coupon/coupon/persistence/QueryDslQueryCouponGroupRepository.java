@@ -43,7 +43,9 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
                 .fetchFirst());
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CouponGroupAndLimitDto> findCouponGroupAndLimitMeta(
             TriggerTypeCode triggerTypeCode, Long couponId
@@ -64,7 +66,7 @@ public class QueryDslQueryCouponGroupRepository implements QueryCouponGroupRepos
                         .and(trigger.coupon.eq(couponGroup.coupon)))
                 .fetchJoin()
                 .fetch();
-
+    }
 
     /**
      * {@inheritDoc}
