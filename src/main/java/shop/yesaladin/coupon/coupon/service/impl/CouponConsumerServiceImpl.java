@@ -5,12 +5,17 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.kafka.CouponProducer;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
+import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
+import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 
@@ -25,6 +30,7 @@ import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 public class CouponConsumerServiceImpl implements CouponConsumerService {
 
     private final CouponProducer couponProducer;
+    private final CommandIssuedCouponService commandIssuedCouponService;
     private final QueryIssuedCouponService queryIssuedCouponService;
 
     /**
@@ -32,7 +38,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
      */
     @Override
     @Transactional(readOnly = true)
-    public void responseCouponGiveRequestMessage(CouponGiveRequestMessage message) {
+    public void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
         List<CouponIssueResponseDto> responseDtoList;
         try {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
@@ -61,5 +67,63 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                 .build();
 
         couponProducer.responseGiveRequest(giveRequestResponseMessage);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void consumeCouponGivenMessage(CouponCodesAndResultMessage message) {
+        CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
+
+        if (message.isSuccess()) {
+            givenStateCode = CouponGivenStateCode.GIVEN;
+        }
+        commandIssuedCouponService.updateCouponGivenStateAndDateTime(
+                message.getCouponCodes(),
+                givenStateCode
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void consumeCouponGiveRequestCancelMessage(CouponCodesMessage message) {
+        commandIssuedCouponService.updateCouponGivenStateAndDateTime(
+                message.getCouponCodes(),
+                CouponGivenStateCode.NOT_GIVEN
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void consumeCouponUsedMessage(CouponCodesAndResultMessage message) {
+        CouponUsageStateCode usageStateCode = CouponUsageStateCode.NOT_USED;
+
+        if (message.isSuccess()) {
+            usageStateCode = CouponUsageStateCode.USED;
+        }
+        commandIssuedCouponService.updateCouponUsageStateAndDateTime(
+                message.getCouponCodes(),
+                usageStateCode
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void consumeCouponUseRequestCancelMessage(CouponCodesMessage message) {
+        commandIssuedCouponService.updateCouponUsageStateAndDateTime(
+                message.getCouponCodes(),
+                CouponUsageStateCode.NOT_USED
+        );
     }
 }

@@ -19,6 +19,7 @@ import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.KafkaTopicConfig;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.kafka.CouponProducer;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
@@ -28,6 +29,7 @@ class CouponCouponConsumerServiceImplTest {
 
     private KafkaTopicConfig kafkaTopicConfig;
     private CouponProducer couponProducer;
+    private CommandIssuedCouponService commandIssuedCouponService;
     private QueryIssuedCouponService queryIssuedCouponService;
     private CouponConsumerService service;
     private List<String> createdCouponCodeList;
@@ -40,9 +42,11 @@ class CouponCouponConsumerServiceImplTest {
     void setUp() {
         kafkaTopicConfig = Mockito.mock(KafkaTopicConfig.class);
         couponProducer = Mockito.mock(CouponProducer.class);
+        commandIssuedCouponService = Mockito.mock(CommandIssuedCouponService.class);
         queryIssuedCouponService = Mockito.mock(QueryIssuedCouponServiceImpl.class);
         service = new CouponConsumerServiceImpl(
                 couponProducer,
+                commandIssuedCouponService,
                 queryIssuedCouponService
         );
 
@@ -70,7 +74,7 @@ class CouponCouponConsumerServiceImplTest {
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenReturn(List.of(couponIssueResponseDto));
         when(kafkaTopicConfig.getGiveRequestResponse()).thenReturn(topic);
-        service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
+        service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
         Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
@@ -96,7 +100,7 @@ class CouponCouponConsumerServiceImplTest {
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenThrow(new ServerException(
                 ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
         when(kafkaTopicConfig.getGiveRequestResponse()).thenReturn(topic);
-        service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
+        service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
         Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());

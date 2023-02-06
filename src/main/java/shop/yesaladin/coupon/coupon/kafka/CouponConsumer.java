@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
-import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
@@ -26,27 +23,26 @@ import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 public class CouponConsumer {
 
     private final CouponProducer couponProducer;
-    private final CommandIssuedCouponService commandIssuedCouponService;
     private final CouponConsumerService couponConsumerService;
     @Getter
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     /**
-     * 쿠폰(무제한) 지급요청 메시지를 처리합니다.
+     * (무제한)쿠폰 지급요청 메시지를 처리합니다.
      *
      * @param records 쿠폰(무제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_give_request", topics = "${coupon.topic.give-request}")
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
-            couponConsumerService.responseCouponGiveRequestMessage(message);
+            couponConsumerService.consumeCouponGiveRequestMessage(message);
             countDownLatch.countDown(); // for test
         }
         resetCountDownLatch();
     }
 
     /**
-     * 쿠폰(제한) 지급요청 메시지를 처리합니다.
+     * (수량 제한)쿠폰 지급요청 메시지를 처리합니다.
      *
      * @param records 쿠폰(제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
@@ -54,50 +50,38 @@ public class CouponConsumer {
     public void giveRequestLimitListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
             // TODO 제한 쿠폰이므로 issuedCoupon 이 empty 여도 발행 확인을 하지 않도록 만들어보기
-            couponConsumerService.responseCouponGiveRequestMessage(message);
+            couponConsumerService.consumeCouponGiveRequestMessage(message);
         }
     }
 
     /**
-     * 쿠폰 지급 메시지 처리 성공 여부에 따라 발행된 쿠폰의 지급 상태를 미지급/지급완료 상태로 업데이트합니다.
-     * + 지급일시
+     * 쿠폰 지급 결과 메시지의 처리 성공 여부에 따라 발행쿠폰의 지급 상태와 지급 일시를 업데이트합니다.
      *
-     * @param records
+     * @param records 쿠폰 지급 결과 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_given", topics = "${coupon.topic.given}")
     public void givenListener(List<CouponCodesAndResultMessage> records) {
         for (CouponCodesAndResultMessage message : records) {
-            CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
-
-            if (message.isSuccess()) {
-                givenStateCode = CouponGivenStateCode.GIVEN;
-            }
-            commandIssuedCouponService.updateCouponGivenState(
-                    message.getCouponCodes(),
-                    givenStateCode
-            );
+            couponConsumerService.consumeCouponGivenMessage(message);
         }
     }
 
     /**
-     * 쿠폰 지급 취소 메시지 처리 메시지 내 쿠폰 코드에 해당하는 발행 쿠폰의 지급 상태를 미지급으로 업데이트합니다.
+     * 쿠폰 지급 취소 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 지급 상태(미지급)와 지급 일시를 업데이트합니다.
      *
-     * @param records
+     * @param records 쿠폰 지급 취소 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_give_request_cancel", topics = "${coupon.topic.give-request-cancel}")
     public void giveRequestCancelListener(List<CouponCodesMessage> records) {
         for (CouponCodesMessage message : records) {
-            commandIssuedCouponService.updateCouponGivenState(
-                    message.getCouponCodes(),
-                    CouponGivenStateCode.NOT_GIVEN
-            );
+            couponConsumerService.consumeCouponGiveRequestCancelMessage(message);
         }
     }
 
     /**
-     * 쿠폰 사용 요청 메시지 처리 메시지 내 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 사용 대기 상태로 업데이트합니다.
+     * 쿠폰 사용 요청 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태를 사용 대기 상태로 업데이트합니다.
      *
-     * @param records
+     * @param records 쿠폰 사용 요청 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_use_request", topics = "${coupon.topic.use-request}")
     public void useRequestListener(List<CouponUseRequestMessage> records) {
@@ -108,37 +92,26 @@ public class CouponConsumer {
     }
 
     /**
-     * 쿠폰 사용 완료 메시지 처리 메시지 내 성공여부에따라 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 사용완료 상태로 업데이트합니다.
+     * 쿠폰 사용 메시지의 성공 여부에 따라 발행쿠폰의 사용 상태(사용완료/미사용)와 사용 일시를 업데이트합니다.
      *
-     * @param records
+     * @param records 쿠폰 사용 결과 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_used", topics = "${coupon.topic.used}")
     public void usedListener(List<CouponCodesAndResultMessage> records) {
         for (CouponCodesAndResultMessage message : records) {
-            CouponUsageStateCode usageStateCode = CouponUsageStateCode.NOT_USED;
-
-            if (message.isSuccess()) {
-                usageStateCode = CouponUsageStateCode.USED;
-            }
-            commandIssuedCouponService.updateCouponUsageState(
-                    message.getCouponCodes(),
-                    usageStateCode
-            );
+            couponConsumerService.consumeCouponUsedMessage(message);
         }
     }
 
     /**
-     * 쿠폰 사용 취소 메시지 처리 메시지 내 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 미사용 상태로 업데이트합니다.
+     * 쿠폰 사용 취소 메시지의 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태(미사용)와 사용 일시를 업데이트합니다.
      *
-     * @param records
+     * @param records 쿠폰 사용 취소 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_use_request_cancel", topics = "${coupon.topic.use-request-cancel}")
     public void useRequestCancelListener(List<CouponCodesMessage> records) {
         for (CouponCodesMessage message : records) {
-            commandIssuedCouponService.updateCouponUsageState(
-                    message.getCouponCodes(),
-                    CouponUsageStateCode.NOT_USED
-            );
+            couponConsumerService.consumeCouponUseRequestCancelMessage(message);
         }
     }
 

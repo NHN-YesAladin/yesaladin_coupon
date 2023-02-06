@@ -68,7 +68,7 @@ class CouponConsumerTest {
                 .await(10, TimeUnit.SECONDS);    // latch 가 0이 되면 true
         assertThat(isConsumed).isTrue();
         Mockito.verify(couponConsumerService, Mockito.times(1))
-                .responseCouponGiveRequestMessage((CouponGiveRequestMessage) argumentCaptor.capture());
+                .consumeCouponGiveRequestMessage((CouponGiveRequestMessage) argumentCaptor.capture());
         CouponGiveRequestMessage arg = (CouponGiveRequestMessage) argumentCaptor.getValue();
         assertThat(arg.getRequestId()).isEqualTo(requestId);
         assertThat(arg.getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);

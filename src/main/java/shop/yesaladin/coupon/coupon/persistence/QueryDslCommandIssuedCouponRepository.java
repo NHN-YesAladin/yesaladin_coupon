@@ -1,6 +1,8 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +29,17 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
      * {@inheritDoc}
      */
     @Override
-    public long updateCouponGivenState(
+    public long updateCouponGivenStateAndDateTime(
             List<String> couponCodeList, CouponGivenStateCode givenStateCode
     ) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
 
-        long count = queryFactory.update(issuedCoupon)
-                .set(issuedCoupon.couponGivenStateCode, givenStateCode)
+        LocalDateTime givenDateTime =
+                givenStateCode.equals(CouponGivenStateCode.GIVEN) ? LocalDateTime.now() : null;
+
+        JPAUpdateClause updateClause = queryFactory.update(issuedCoupon);
+        long count = updateClause.set(issuedCoupon.couponGivenStateCode, givenStateCode)
+                .set(issuedCoupon.givenDatetime, givenDateTime)
                 .where(issuedCoupon.couponCode.in(couponCodeList))
                 .execute();
 
@@ -47,13 +53,17 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
      * {@inheritDoc}
      */
     @Override
-    public long updateCouponUsageState(
+    public long updateCouponUsageStateAndDateTime(
             List<String> couponCodeList, CouponUsageStateCode usageStateCode
     ) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
 
-        long count = queryFactory.update(issuedCoupon)
-                .set(issuedCoupon.couponUsageStateCode, usageStateCode)
+        LocalDateTime givenDateTime =
+                usageStateCode.equals(CouponUsageStateCode.USED) ? LocalDateTime.now() : null;
+
+        JPAUpdateClause updateClause = queryFactory.update(issuedCoupon);
+        long count = updateClause.set(issuedCoupon.couponUsageStateCode, usageStateCode)
+                .set(issuedCoupon.usedDatetime, givenDateTime)
                 .where(issuedCoupon.couponCode.in(couponCodeList))
                 .execute();
 

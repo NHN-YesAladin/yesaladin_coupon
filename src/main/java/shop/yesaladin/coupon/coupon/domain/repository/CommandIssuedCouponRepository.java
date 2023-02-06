@@ -19,7 +19,7 @@ public interface CommandIssuedCouponRepository {
      * @param givenStateCode 수정할 지급상태 코드
      * @return 수정된 발행쿠폰 수
      */
-    long updateCouponGivenState(List<String> couponCodeList, CouponGivenStateCode givenStateCode);
+    long updateCouponGivenStateAndDateTime(List<String> couponCodeList, CouponGivenStateCode givenStateCode);
 
     /**
      * 쿠폰코드로 조회한 발행쿠폰의 사용상태를 수정합니다.
@@ -28,5 +28,5 @@ public interface CommandIssuedCouponRepository {
      * @param usageStateCode 수정할 사용상태 코드
      * @return 수정된 발행쿠폰 수
      */
-    long updateCouponUsageState(List<String> couponCodeList, CouponUsageStateCode usageStateCode);
+    long updateCouponUsageStateAndDateTime(List<String> couponCodeList, CouponUsageStateCode usageStateCode);
 }

@@ -63,10 +63,10 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
      */
     @Override
     @Transactional
-    public long updateCouponGivenState(
+    public long updateCouponGivenStateAndDateTime(
             List<String> couponCodeList, CouponGivenStateCode givenStateCode
     ) {
-        return commandIssuedCouponRepository.updateCouponGivenState(couponCodeList, givenStateCode);
+        return commandIssuedCouponRepository.updateCouponGivenStateAndDateTime(couponCodeList, givenStateCode);
     }
 
     /**
@@ -74,10 +74,10 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
      */
     @Override
     @Transactional
-    public long updateCouponUsageState(
+    public long updateCouponUsageStateAndDateTime(
             List<String> couponCodeList, CouponUsageStateCode usageStateCode
     ) {
-        return commandIssuedCouponRepository.updateCouponUsageState(couponCodeList, usageStateCode);
+        return commandIssuedCouponRepository.updateCouponUsageStateAndDateTime(couponCodeList, usageStateCode);
     }
 
     private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {
