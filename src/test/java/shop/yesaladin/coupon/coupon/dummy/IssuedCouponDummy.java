@@ -22,4 +22,32 @@ public class IssuedCouponDummy {
                 .build();
     }
 
+    public static IssuedCoupon dummyGivenIssuedCoupon(String couponCode, CouponGroup couponGroup) {
+        return IssuedCoupon.builder()
+                .couponCode(couponCode)
+                .createdDatetime(LocalDateTime.now())
+                .expirationDate(
+                        LocalDate.of(2024, 12, 30))
+                .couponGroup(couponGroup)
+                .couponGivenStateCode(
+                        CouponGivenStateCode.GIVEN)
+                .givenDatetime(LocalDateTime.now().minusDays(1L))
+                .couponUsageStateCode(CouponUsageStateCode.NOT_USED)
+                .build();
+    }
+
+    public static IssuedCoupon dummyUsedIssuedCoupon(String couponCode, CouponGroup couponGroup) {
+        return IssuedCoupon.builder()
+                .couponCode(couponCode)
+                .createdDatetime(LocalDateTime.now())
+                .expirationDate(
+                        LocalDate.of(2024, 12, 30))
+                .couponGroup(couponGroup)
+                .couponGivenStateCode(
+                        CouponGivenStateCode.GIVEN)
+                .givenDatetime(LocalDateTime.now().minusDays(1L))
+                .usedDatetime(LocalDateTime.now().minusHours(5))
+                .couponUsageStateCode(CouponUsageStateCode.USED)
+                .build();
+    }
 }

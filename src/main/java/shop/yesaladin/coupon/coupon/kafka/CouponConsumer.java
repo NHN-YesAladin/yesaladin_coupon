@@ -49,7 +49,6 @@ public class CouponConsumer {
     @KafkaListener(id = "yesaladin_coupon_give_request_limit", topics = "${coupon.topic.give-request-limit}")
     public void giveRequestLimitListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
-            // TODO 제한 쿠폰이므로 issuedCoupon 이 empty 여도 발행 확인을 하지 않도록 만들어보기
             couponConsumerService.consumeCouponGiveRequestMessage(message);
         }
     }
@@ -79,16 +78,15 @@ public class CouponConsumer {
     }
 
     /**
-     * 쿠폰 사용 요청 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태를 사용 대기 상태로 업데이트합니다.
+     * 쿠폰 사용 요청 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 유효성 검사를 통해 사용 상태(사용 대기)를 업데이트합니다.
      *
      * @param records 쿠폰 사용 요청 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_use_request", topics = "${coupon.topic.use-request}")
     public void useRequestListener(List<CouponUseRequestMessage> records) {
-        // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태가 모두 미지급이고, 지급 상태가 모두 지급 완료 상태이고 메시지 발행 일시 기준 만료일이 지나지 않았으면
-        // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 사용 대기 상태로 변경합니다.
-        // 요청 메시지의 requestId 와 성공여부를 포함하는 응답 메시지를 보냅니다.
-        couponProducer.responseUseRequest(null);
+        for (CouponUseRequestMessage message : records) {
+            couponConsumerService.consumeCouponUseRequestMessage(message);
+        }
     }
 
     /**
