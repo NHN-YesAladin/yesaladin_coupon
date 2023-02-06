@@ -65,9 +65,9 @@ public class QueryCouponController {
      */
     @GetMapping(params = {"couponCodes"})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseDto<List<MemberCouponSummaryDto>> getMemberCouponList(@Valid @ModelAttribute MemberCouponSummaryRequestDto memberCouponRequestDto) {
+    public ResponseDto<List<MemberCouponSummaryDto>> getMemberCouponSummaryList(@Valid @ModelAttribute MemberCouponSummaryRequestDto memberCouponRequestDto) {
         List<MemberCouponSummaryDto> memberCouponList = queryCouponService.getMemberCouponList(
-                memberCouponRequestDto.getCouponCodeList());
+                memberCouponRequestDto.getCouponCodes());
 
         return ResponseDto.<List<MemberCouponSummaryDto>>builder()
                 .success(true)
