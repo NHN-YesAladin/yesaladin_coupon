@@ -2,7 +2,6 @@ package shop.yesaladin.coupon.coupon.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -43,7 +42,6 @@ class CouponCouponConsumerServiceImplTest {
         couponProducer = Mockito.mock(CouponProducer.class);
         queryIssuedCouponService = Mockito.mock(QueryIssuedCouponServiceImpl.class);
         service = new CouponConsumerServiceImpl(
-                kafkaTopicConfig,
                 couponProducer,
                 queryIssuedCouponService
         );
@@ -75,7 +73,7 @@ class CouponCouponConsumerServiceImplTest {
         service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).send(eq(topic), argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1)).responseGiveRequest(argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons().get(0).getCouponCodes()).isEqualTo(
@@ -101,7 +99,7 @@ class CouponCouponConsumerServiceImplTest {
         service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).send(eq(topic), argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1)).responseGiveRequest(argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons()).isNull();
