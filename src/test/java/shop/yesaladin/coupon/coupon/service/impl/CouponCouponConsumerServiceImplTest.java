@@ -73,7 +73,7 @@ class CouponCouponConsumerServiceImplTest {
         service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).responseGiveRequest(argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons().get(0).getCouponCodes()).isEqualTo(
@@ -99,7 +99,7 @@ class CouponCouponConsumerServiceImplTest {
         service.responseCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).responseGiveRequest(argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons()).isNull();

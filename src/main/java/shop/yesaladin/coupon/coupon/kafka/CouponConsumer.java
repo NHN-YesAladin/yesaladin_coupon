@@ -15,6 +15,12 @@ import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 
+/**
+ * Shop 서버에서 들어오는 쿠폰 관련 메시지를 처리하는 consumer 입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Component
 public class CouponConsumer {
@@ -34,7 +40,7 @@ public class CouponConsumer {
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
             couponConsumerService.responseCouponGiveRequestMessage(message);
-            countDownLatch.countDown();
+            countDownLatch.countDown(); // for test
         }
         resetCountDownLatch();
     }

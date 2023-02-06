@@ -7,6 +7,12 @@ import lombok.Getter;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 
+/**
+ * 회원 쿠폰 목록에 필요한 쿠폰 요약 정보를 담은 dto 입니다.
+ *
+ * @author 김홍대
+ * @since 1.0
+ */
 @Getter
 @Builder
 @AllArgsConstructor

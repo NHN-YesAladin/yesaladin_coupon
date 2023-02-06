@@ -25,12 +25,18 @@ public class QueryCouponServiceImpl implements QueryCouponService {
     private final QueryTriggerRepository queryTriggerRepository;
     private final QueryIssuedCouponRepository queryIssuedCouponRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<CouponSummaryDto> getTriggeredCouponList(Pageable pageable) {
         return queryTriggerRepository.findAll(pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public List<MemberCouponSummaryDto> getMemberCouponList(List<String> couponCodeList) {

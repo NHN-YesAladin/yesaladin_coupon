@@ -10,6 +10,12 @@ import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QIssuedCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandIssuedCouponRepository;
 
+/**
+ * QueryDsl 을 사용하여 발행쿠폰 관련 정보를 생성/수정/삭제 위한 Repository 구현체입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Repository
 public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCouponRepository {
@@ -17,6 +23,9 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long updateCouponGivenState(
             List<String> couponCodeList, CouponGivenStateCode givenStateCode
@@ -34,6 +43,9 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
         return count;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long updateCouponUsageState(
             List<String> couponCodeList, CouponUsageStateCode usageStateCode

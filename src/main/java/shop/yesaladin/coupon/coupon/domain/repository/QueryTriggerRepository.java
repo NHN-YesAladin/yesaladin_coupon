@@ -11,7 +11,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 /**
  * 트리거를 조회하기 위한 Repository 인터페이스입니다.
  *
- * @author 서민지
+ * @author 서민지, 김홍대
  * @since 1.0
  */
 public interface QueryTriggerRepository {
@@ -36,5 +36,11 @@ public interface QueryTriggerRepository {
             long couponId
     );
 
+    /**
+     * 트리거 타입 코드로 트리거를 조회합니다.
+     *
+     * @param triggerTypeCode 조회할 트리거 타입 코드
+     * @return 조회된 트리거 리스트
+     */
     List<Trigger> findTriggerByTriggerTypeCode(TriggerTypeCode triggerTypeCode);
 }

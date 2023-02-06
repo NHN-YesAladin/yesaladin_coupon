@@ -12,7 +12,7 @@ import shop.yesaladin.coupon.coupon.domain.model.querydsl.QTrigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
 
 /**
- * QueryDsl을 사용하여 쿠폰 관련 정보를 가져오기 위한 Repository 인터페이스입니다.
+ * QueryDsl 을 사용하여 쿠폰 관련 정보를 가져오기 위한 Repository 구현체입니다.
  *
  * @author 김홍대
  * @since 1.0
@@ -23,6 +23,9 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<Coupon> findCouponById(long couponId) {
         QCoupon coupon = QCoupon.coupon;
@@ -32,6 +35,9 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
                 .fetchFirst());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode) {
         QTrigger trigger = QTrigger.trigger;
@@ -40,14 +46,5 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
                 .from(trigger)
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
                 .fetch();
-    }
-
-    @Override
-    public boolean isUnlimitedCoupon(long couponId) {
-        QCoupon coupon = QCoupon.coupon;
-        return queryFactory.select(coupon.isUnlimited)
-                .from(coupon)
-                .where(coupon.id.eq(couponId))
-                .fetchFirst();
     }
 }

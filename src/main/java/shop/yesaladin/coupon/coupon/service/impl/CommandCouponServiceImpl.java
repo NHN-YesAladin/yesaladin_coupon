@@ -51,6 +51,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
@@ -62,6 +65,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
@@ -79,6 +85,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {

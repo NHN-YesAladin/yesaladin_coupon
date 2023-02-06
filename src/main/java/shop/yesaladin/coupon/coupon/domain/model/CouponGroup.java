@@ -22,6 +22,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.TriggerTypeCodeCodeConverter;
 
+/**
+ * 쿠폰 그룹 엔터티입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

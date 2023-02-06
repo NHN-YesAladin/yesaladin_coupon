@@ -9,7 +9,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 /**
  * 쿠폰 발행과 관련된 CUD 작업을 하는 서비스 인터페이스입니다.
  *
- * @author 김홍대
+ * @author 김홍대, 서민지
  * @since 1.0
  */
 public interface CommandIssuedCouponService {
@@ -22,8 +22,21 @@ public interface CommandIssuedCouponService {
      */
     List<CouponIssueResponseDto> issueCoupon(CouponIssueRequestDto requestDto);
 
-    // TODO javadoc
+    /**
+     * 쿠폰코드로 조회한 발행쿠폰의 지급상태를 수정합니다.
+     *
+     * @param couponCodeList 수정할 발행쿠폰의 쿠폰코드 리스트
+     * @param givenStateCode 수정할 지급상태 코드
+     * @return 수정된 발행쿠폰 수
+     */
     long updateCouponGivenState(List<String> couponCodeList, CouponGivenStateCode givenStateCode);
 
+    /**
+     * 쿠폰코드로 조회한 발행쿠폰의 사용상태를 수정합니다.
+     *
+     * @param couponCodeList 수정할 발행쿠폰의 쿠폰코드 리스트
+     * @param usageStateCode 수정할 사용상태 코드
+     * @return 수정된 발행쿠폰 수
+     */
     long updateCouponUsageState(List<String> couponCodeList, CouponUsageStateCode usageStateCode);
 }

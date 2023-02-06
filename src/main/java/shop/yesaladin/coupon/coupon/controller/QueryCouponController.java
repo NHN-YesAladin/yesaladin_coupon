@@ -57,6 +57,12 @@ public class QueryCouponController {
                 .build();
     }
 
+    /**
+     * 쿠폰코드에 대한 쿠폰 정보를 조회합니다.
+     *
+     * @param memberCouponRequestDto 회원이 가진 쿠폰코드 리스트
+     * @return 회원이 가진 쿠폰에 대한 요약 정보
+     */
     @GetMapping(params = {"couponCodes"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<List<MemberCouponSummaryDto>> getMemberCouponList(@Valid @ModelAttribute MemberCouponSummaryRequestDto memberCouponRequestDto) {

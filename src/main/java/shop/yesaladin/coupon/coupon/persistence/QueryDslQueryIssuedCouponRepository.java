@@ -19,12 +19,21 @@ import shop.yesaladin.coupon.coupon.domain.model.querydsl.QRateCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryDto;
 
+/**
+ * QueryDsl 을 사용하여 발행쿠폰 관련 정보를 조회하기 위한 Repository 구현체입니다.
+ *
+ * @author 서민지, 김홍대
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Repository
 public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Optional<IssuedCoupon> findIssuedCouponByGroupCodeId(long groupCodeId) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
@@ -39,6 +48,9 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                 ).fetchFirst());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<MemberCouponSummaryDto> getMemberCouponSummary(List<String> couponCodeList) {
         QCoupon coupon = QCoupon.coupon;

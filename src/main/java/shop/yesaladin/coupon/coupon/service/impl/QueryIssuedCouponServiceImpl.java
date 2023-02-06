@@ -18,6 +18,12 @@ import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 
+/**
+ * 발행쿠폰 관련 조회 서비스의 구현체입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Service
 public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
@@ -26,6 +32,9 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
     private final QueryIssuedCouponRepository queryIssuedCouponRepository;
     private final CommandIssuedCouponService commandIssuedCouponService;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public List<CouponIssueResponseDto> getCouponIssueResponseDtoList(CouponIssueRequestDto issueRequestDto) {
