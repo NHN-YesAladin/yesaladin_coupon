@@ -2,6 +2,7 @@ package shop.yesaladin.coupon.coupon.persistence;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
         return Optional.ofNullable(queryFactory.selectFrom(issuedCoupon).where(
                 issuedCoupon.couponGroup.id.eq(groupCodeId),
                 issuedCoupon.couponGivenStateCode.eq(CouponGivenStateCode.NOT_GIVEN),
-                issuedCoupon.expirationDateTime.after(LocalDateTime.now())
+                issuedCoupon.expirationDate.after(LocalDate.now())
         ).fetchFirst());
     }
 
@@ -64,7 +65,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                         rateCoupon.discountRate.nullif(amountCoupon.discountAmount)
                                 .nullif(pointCoupon.chargePointAmount),
                         coupon.couponTypeCode,
-                        issuedCoupon.expirationDateTime,
+                        issuedCoupon.expirationDate,
                         issuedCoupon.usedDatetime.isNotNull(),
                         couponBound.categoryId.stringValue().nullif(couponBound.isbn).nullif(""),
                         couponBound.couponBoundCode
@@ -98,7 +99,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
         return queryFactory.selectFrom(issuedCoupon).where(
                 issuedCoupon.couponGivenStateCode.ne(CouponGivenStateCode.GIVEN),
                 issuedCoupon.couponUsageStateCode.ne(CouponUsageStateCode.NOT_USED),
-                issuedCoupon.expirationDateTime.before(requestDateTime)
+                issuedCoupon.expirationDate.before(requestDateTime.toLocalDate())
         ).fetch();
     }
 }

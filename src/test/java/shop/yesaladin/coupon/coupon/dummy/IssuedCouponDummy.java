@@ -13,8 +13,8 @@ public class IssuedCouponDummy {
         return IssuedCoupon.builder()
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
-                .expirationDateTime(
-                        LocalDate.of(2024, 12, 30).atStartOfDay())
+                .expirationDate(
+                        LocalDate.of(2024, 12, 30))
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.NOT_GIVEN)
@@ -26,8 +26,8 @@ public class IssuedCouponDummy {
         return IssuedCoupon.builder()
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
-                .expirationDateTime(
-                        LocalDate.of(2024, 12, 30).atStartOfDay())
+                .expirationDate(
+                        LocalDate.of(2024, 12, 30))
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.GIVEN)
@@ -40,8 +40,8 @@ public class IssuedCouponDummy {
         return IssuedCoupon.builder()
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
-                .expirationDateTime(
-                        LocalDate.of(2024, 12, 30).atStartOfDay())
+                .expirationDate(
+                        LocalDate.of(2024, 12, 30))
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.GIVEN)
