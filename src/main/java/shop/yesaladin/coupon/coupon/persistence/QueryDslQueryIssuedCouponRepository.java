@@ -62,12 +62,12 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                         MemberCouponSummaryDto.class,
                         coupon.name,
                         issuedCoupon.couponCode,
-                        rateCoupon.discountRate.nullif(amountCoupon.discountAmount)
-                                .nullif(pointCoupon.chargePointAmount),
+                        rateCoupon.discountRate.coalesce(amountCoupon.discountAmount)
+                                .coalesce(pointCoupon.chargePointAmount),
                         coupon.couponTypeCode,
                         issuedCoupon.expirationDate,
                         issuedCoupon.usedDatetime.isNotNull(),
-                        couponBound.categoryId.stringValue().nullif(couponBound.isbn).nullif(""),
+                        couponBound.categoryId.stringValue().coalesce(couponBound.isbn).coalesce(""),
                         couponBound.couponBoundCode
                 ))
                 .from(coupon)
