@@ -183,10 +183,11 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     private CouponIssueResponseDto createResponse(
             List<IssuedCouponInsertDto> issuanceDataList, String couponGroupCode
     ) {
+        LocalDate expirationDate = issuanceDataList.get(0).getExpirationDate();
         List<String> createdCouponCodes = issuanceDataList.stream()
                 .map(IssuedCouponInsertDto::getCouponTypeCode)
                 .collect(Collectors.toList());
-        return new CouponIssueResponseDto(createdCouponCodes, couponGroupCode);
+        return new CouponIssueResponseDto(createdCouponCodes, couponGroupCode, expirationDate);
     }
 
     private boolean isAutoIssuanceCoupon(CouponGroup couponGroup) {

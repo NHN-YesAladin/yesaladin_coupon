@@ -13,6 +13,7 @@ import static shop.yesaladin.coupon.docs.ApiDocumentUtils.getDocumentRequest;
 import static shop.yesaladin.coupon.docs.ApiDocumentUtils.getDocumentResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,7 @@ class CommandIssuedCouponControllerTest {
         requestBody.put("quantity", 10);
         requestBody.put("triggerTypeCode", TriggerTypeCode.SIGN_UP);
 
-        List<String> response = List.of(
-                "10bb3a03-7b72-4684-b794-db699f606312",
+        List<String> response = List.of("10bb3a03-7b72-4684-b794-db699f606312",
                 "043d82da-200b-4063-a23e-dfa638f93a6e",
                 "15545474-8d0a-4589-a278-b11a09f9c4ce",
                 "7e94f084-2497-4be2-a896-b1c81f6a439b",
@@ -64,7 +64,10 @@ class CommandIssuedCouponControllerTest {
                 "fd2f0f65-2fdc-4ea4-8ea4-ef4d20a1418d"
         );
         Mockito.when(service.issueCoupon(Mockito.any()))
-                .thenReturn(List.of(new CouponIssueResponseDto(response, "fd2f0f65-2fdc-4ea4-8ea4-ef4d20a14182")));
+                .thenReturn(List.of(new CouponIssueResponseDto(response,
+                        "fd2f0f65-2fdc-4ea4-8ea4-ef4d20a14182",
+                        LocalDate.of(2024, 1, 2)
+                )));
 
         // when
         ResultActions actual = mockMvc.perform(post("/v1/issuances").contentType(MediaType.APPLICATION_JSON)
@@ -76,12 +79,10 @@ class CommandIssuedCouponControllerTest {
                 .andExpect(jsonPath("$.data.[0].createdCouponCodes").isArray());
 
         // docs
-        actual.andDo(document(
-                "issue-coupon-success",
+        actual.andDo(document("issue-coupon-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
-                requestFields(
-                        fieldWithPath("couponId").type(JsonFieldType.NUMBER)
+                requestFields(fieldWithPath("couponId").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("발행할 쿠폰 ID"),
                         fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)
@@ -91,12 +92,14 @@ class CommandIssuedCouponControllerTest {
                                 .description("발행할 쿠폰 수")
                                 .optional()
                 ),
-                responseFields(
-                        beneathPath("data").withSubsectionId("data"),
+                responseFields(beneathPath("data").withSubsectionId("data"),
                         fieldWithPath("createdCouponCodes").type(JsonFieldType.ARRAY)
                                 .description("발행된 쿠폰의 코드"),
                         fieldWithPath("couponGroupCode").type(JsonFieldType.STRING)
-                                .description("발행된 쿠폰의 그룹 코드")
+                                .description("발행된 쿠폰의 그룹 코드"),
+                        fieldWithPath("expirationDate").type(JsonFieldType.STRING)
+                                .description("발행된 쿠폰의 만료일")
+                                .optional()
                 )
         ));
     }
@@ -117,12 +120,10 @@ class CommandIssuedCouponControllerTest {
                 .andExpect(jsonPath("$.errorMessageList").isArray());
 
         // docs
-        actual.andDo(document(
-                "issue-coupon-fail-cause-by-quantity-validation-fail",
+        actual.andDo(document("issue-coupon-fail-cause-by-quantity-validation-fail",
                 getDocumentRequest(),
                 getDocumentResponse(),
-                requestFields(
-                        fieldWithPath("couponId").type(JsonFieldType.NUMBER)
+                requestFields(fieldWithPath("couponId").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("발행할 쿠폰 ID"),
                         fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)
@@ -154,12 +155,10 @@ class CommandIssuedCouponControllerTest {
                 .andExpect(jsonPath("$.errorMessageList").isArray());
 
         // docs
-        actual.andDo(document(
-                "issue-coupon-fail-cause-by-quantity-validation-fail",
+        actual.andDo(document("issue-coupon-fail-cause-by-quantity-validation-fail",
                 getDocumentRequest(),
                 getDocumentResponse(),
-                requestFields(
-                        fieldWithPath("couponId").type(JsonFieldType.NUMBER)
+                requestFields(fieldWithPath("couponId").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("발행할 쿠폰 ID"),
                         fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)
@@ -191,12 +190,10 @@ class CommandIssuedCouponControllerTest {
                 .andExpect(jsonPath("$.errorMessageList").isArray());
 
         // docs
-        actual.andDo(document(
-                "issue-coupon-fail-cause-by-quantity-validation-fail",
+        actual.andDo(document("issue-coupon-fail-cause-by-quantity-validation-fail",
                 getDocumentRequest(),
                 getDocumentResponse(),
-                requestFields(
-                        fieldWithPath("couponId").type(JsonFieldType.NUMBER)
+                requestFields(fieldWithPath("couponId").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("발행할 쿠폰 ID"),
                         fieldWithPath("triggerTypeCode").type(JsonFieldType.STRING)

@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.dto;
 
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,11 +20,13 @@ public class CouponIssueResponseDto {
 
     private final List<String> createdCouponCodes;
     private final String couponGroupCode;
+    private final LocalDate expirationDate;
 
     public static CouponGiveDto toCouponGiveDto(CouponIssueResponseDto responseDto) {
         return CouponGiveDto.builder()
                 .couponCodes(responseDto.getCreatedCouponCodes())
                 .couponGroupCode(responseDto.getCouponGroupCode())
+                .expirationDate(responseDto.getExpirationDate())
                 .build();
     }
 }

@@ -16,5 +16,5 @@ import lombok.Getter;
 public class MemberCouponSummaryRequestDto {
 
     @NotEmpty
-    List<String> couponCodeList;
+    List<String> couponCodes;
 }

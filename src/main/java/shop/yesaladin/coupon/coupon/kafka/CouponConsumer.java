@@ -22,13 +22,12 @@ import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 @Component
 public class CouponConsumer {
 
-    private final CouponProducer couponProducer;
     private final CouponConsumerService couponConsumerService;
     @Getter
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     /**
-     * (무제한)쿠폰 지급요청 메시지를 처리합니다.
+     * [지급 요청] (무제한)쿠폰 지급요청 메시지를 처리합니다.
      *
      * @param records 쿠폰(무제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
@@ -42,20 +41,19 @@ public class CouponConsumer {
     }
 
     /**
-     * (수량 제한)쿠폰 지급요청 메시지를 처리합니다.
+     * [지급 요청] (수량 제한)쿠폰 지급요청 메시지를 처리합니다.
      *
      * @param records 쿠폰(제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_give_request_limit", topics = "${coupon.topic.give-request-limit}")
     public void giveRequestLimitListener(List<CouponGiveRequestMessage> records) {
         for (CouponGiveRequestMessage message : records) {
-            // TODO 제한 쿠폰이므로 issuedCoupon 이 empty 여도 발행 확인을 하지 않도록 만들어보기
             couponConsumerService.consumeCouponGiveRequestMessage(message);
         }
     }
 
     /**
-     * 쿠폰 지급 결과 메시지의 처리 성공 여부에 따라 발행쿠폰의 지급 상태와 지급 일시를 업데이트합니다.
+     * [사용 결과] 쿠폰 지급 결과 메시지의 처리 성공 여부에 따라 발행쿠폰의 지급 상태와 지급 일시를 업데이트합니다.
      *
      * @param records 쿠폰 지급 결과 토픽으로부터 읽어온 메시지 리스트
      */
@@ -67,7 +65,7 @@ public class CouponConsumer {
     }
 
     /**
-     * 쿠폰 지급 취소 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 지급 상태(미지급)와 지급 일시를 업데이트합니다.
+     * [지급 취소] 쿠폰 지급 취소 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 지급 상태(미지급)와 지급 일시를 업데이트합니다.
      *
      * @param records 쿠폰 지급 취소 토픽으로부터 읽어온 메시지 리스트
      */
@@ -79,20 +77,19 @@ public class CouponConsumer {
     }
 
     /**
-     * 쿠폰 사용 요청 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태를 사용 대기 상태로 업데이트합니다.
+     * [사용 요청] 쿠폰 사용 요청 메시지 내 쿠폰 코드에 해당하는 발행쿠폰의 유효성 검사를 통해 사용 상태(사용 대기)를 업데이트합니다.
      *
      * @param records 쿠폰 사용 요청 토픽으로부터 읽어온 메시지 리스트
      */
     @KafkaListener(id = "yesaladin_coupon_use_request", topics = "${coupon.topic.use-request}")
     public void useRequestListener(List<CouponUseRequestMessage> records) {
-        // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태가 모두 미지급이고, 지급 상태가 모두 지급 완료 상태이고 메시지 발행 일시 기준 만료일이 지나지 않았으면
-        // 쿠폰 코드에 해당하는 발행 쿠폰의 사용 상태를 사용 대기 상태로 변경합니다.
-        // 요청 메시지의 requestId 와 성공여부를 포함하는 응답 메시지를 보냅니다.
-        couponProducer.responseUseRequest(null);
+        for (CouponUseRequestMessage message : records) {
+            couponConsumerService.consumeCouponUseRequestMessage(message);
+        }
     }
 
     /**
-     * 쿠폰 사용 메시지의 성공 여부에 따라 발행쿠폰의 사용 상태(사용완료/미사용)와 사용 일시를 업데이트합니다.
+     * [사용 결과] 쿠폰 사용 메시지의 성공 여부에 따라 발행쿠폰의 사용 상태(사용완료/미사용)와 사용 일시를 업데이트합니다.
      *
      * @param records 쿠폰 사용 결과 토픽으로부터 읽어온 메시지 리스트
      */
@@ -104,7 +101,7 @@ public class CouponConsumer {
     }
 
     /**
-     * 쿠폰 사용 취소 메시지의 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태(미사용)와 사용 일시를 업데이트합니다.
+     * [사용 취소] 쿠폰 사용 취소 메시지의 쿠폰 코드에 해당하는 발행쿠폰의 사용 상태(미사용)와 사용 일시를 업데이트합니다.
      *
      * @param records 쿠폰 사용 취소 토픽으로부터 읽어온 메시지 리스트
      */

@@ -33,13 +33,15 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
             List<String> couponCodeList, CouponGivenStateCode givenStateCode
     ) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
-
-        LocalDateTime givenDateTime =
-                givenStateCode.equals(CouponGivenStateCode.GIVEN) ? LocalDateTime.now() : null;
-
         JPAUpdateClause updateClause = queryFactory.update(issuedCoupon);
+
+        if (givenStateCode.equals(CouponGivenStateCode.GIVEN)) {
+            updateClause.set(issuedCoupon.givenDatetime, LocalDateTime.now());
+        } else if (givenStateCode.equals(CouponGivenStateCode.NOT_GIVEN)) {
+            updateClause.set(issuedCoupon.givenDatetime, (LocalDateTime) null);
+        }
+
         long count = updateClause.set(issuedCoupon.couponGivenStateCode, givenStateCode)
-                .set(issuedCoupon.givenDatetime, givenDateTime)
                 .where(issuedCoupon.couponCode.in(couponCodeList))
                 .execute();
 
@@ -57,13 +59,15 @@ public class QueryDslCommandIssuedCouponRepository implements CommandIssuedCoupo
             List<String> couponCodeList, CouponUsageStateCode usageStateCode
     ) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
-
-        LocalDateTime givenDateTime =
-                usageStateCode.equals(CouponUsageStateCode.USED) ? LocalDateTime.now() : null;
-
         JPAUpdateClause updateClause = queryFactory.update(issuedCoupon);
+
+        if (usageStateCode.equals(CouponUsageStateCode.USED)) {
+            updateClause.set(issuedCoupon.usedDatetime, LocalDateTime.now());
+        } else if (usageStateCode.equals(CouponUsageStateCode.NOT_USED)) {
+            updateClause.set(issuedCoupon.usedDatetime, (LocalDateTime) null);
+        }
+
         long count = updateClause.set(issuedCoupon.couponUsageStateCode, usageStateCode)
-                .set(issuedCoupon.usedDatetime, givenDateTime)
                 .where(issuedCoupon.couponCode.in(couponCodeList))
                 .execute();
 

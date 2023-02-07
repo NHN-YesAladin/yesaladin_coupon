@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.domain.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
@@ -28,4 +29,13 @@ public interface QueryIssuedCouponRepository {
      * @return 회원이 가진 쿠폰의 요약 정보 리스트
      */
     List<MemberCouponSummaryDto> getMemberCouponSummary(List<String> couponCodeList);
+
+    /**
+     * 쿠폰코드로 조회한 발행쿠폰 중 사용이 불가능한 쿠폰을 조회합니다.
+     *
+     * @param couponCodeList 조회할 쿠폰코드 리스트
+     * @param requestDateTime 조회한 시간
+     * @return 사용이 불가능한 발행쿠폰 리스트
+     */
+    List<IssuedCoupon> checkUnavailableIssuedCoupon(List<String> couponCodeList, LocalDateTime requestDateTime);
 }
