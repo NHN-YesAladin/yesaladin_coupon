@@ -97,9 +97,9 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
 
         return queryFactory.selectFrom(issuedCoupon).where(
-                issuedCoupon.couponGivenStateCode.ne(CouponGivenStateCode.GIVEN),
-                issuedCoupon.couponUsageStateCode.ne(CouponUsageStateCode.NOT_USED),
-                issuedCoupon.expirationDate.before(requestDateTime.toLocalDate())
+                issuedCoupon.couponGivenStateCode.ne(CouponGivenStateCode.GIVEN).or(
+                        issuedCoupon.couponUsageStateCode.ne(CouponUsageStateCode.NOT_USED)).or(
+                        issuedCoupon.expirationDate.before(requestDateTime.toLocalDate()))
         ).fetch();
     }
 }
