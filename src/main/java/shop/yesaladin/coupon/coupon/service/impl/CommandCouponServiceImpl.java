@@ -123,7 +123,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
         if (!notToBeIssued(triggerTypeCode)) {
             issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                    couponRequestDto.getCouponTypeCode().toString(),
+                    couponRequestDto.getTriggerTypeCode().toString(),
                     coupon.getId(),
                     couponRequestDto.getQuantity()
             ));
