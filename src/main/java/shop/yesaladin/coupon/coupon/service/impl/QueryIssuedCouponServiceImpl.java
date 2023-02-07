@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,6 +63,15 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
         return List.of(CouponIssueResponseDto.builder()
                 .createdCouponCodes(List.of(issuedCoupon.getCouponCode()))
                 .couponGroupCode(couponGroup.getGroupCode()).build());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<IssuedCoupon> checkUnavailableIssuedCoupon(List<String> couponCodeList, LocalDateTime requestDateTime) {
+        return queryIssuedCouponRepository.checkUnavailableIssuedCoupon(couponCodeList, requestDateTime);
     }
 
     // 트리거 타입과 쿠폰 아이디로 쿠폰그룹을 조회합니다.

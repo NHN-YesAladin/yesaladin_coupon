@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
+import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
 import shop.yesaladin.coupon.coupon.kafka.CouponProducer;
@@ -20,6 +21,7 @@ import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 import shop.yesaladin.coupon.message.CouponUseRequestMessage;
+import shop.yesaladin.coupon.message.CouponUseRequestResponseMessage;
 
 /**
  * 쿠폰 관련 요청 메시지를 처리하기 위한 CouponConsumerService 의 구현체입니다.
@@ -114,8 +116,32 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
      */
     @Override
     public void consumeCouponUseRequestMessage(CouponUseRequestMessage message) {
-        // 발행쿠폰의 상태 : 지금상태(지급완료) 사용상태(미사용) 만료일(before from now)
-        // 모든 발행쿠폰이 위 상태를 만족하면 발행쿠폰의 사용상태(사용대기)를 업데이트하고 success with requestId 응답
+        List<IssuedCoupon> unusableCouponList = queryIssuedCouponService.checkUnavailableIssuedCoupon(
+                message.getCouponCodes(),
+                message.getRequestDateTime()
+        );
+
+        CouponUseRequestResponseMessage responseMessage;
+        if (unusableCouponList.isEmpty()) {
+            commandIssuedCouponService.updateCouponUsageStateAndDateTime(
+                    message.getCouponCodes(),
+                    CouponUsageStateCode.PENDING_USE
+            );
+            responseMessage = CouponUseRequestResponseMessage.builder()
+                    .requestId(message.getRequestId())
+                    .success(true)
+                    .build();
+        } else {
+            responseMessage = CouponUseRequestResponseMessage.builder()
+                    .requestId(message.getRequestId())
+                    .success(false)
+                    .errorMessage(
+                            "Unavailable publishing coupon exists: " + unusableCouponList.stream()
+                                    .map(IssuedCoupon::getCouponCode)
+                                    .collect(Collectors.joining(", ")))
+                    .build();
+        }
+        couponProducer.responseUseRequest(responseMessage);
     }
 
     /**

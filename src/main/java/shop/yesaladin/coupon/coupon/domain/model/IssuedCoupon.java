@@ -1,6 +1,5 @@
 package shop.yesaladin.coupon.coupon.domain.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -45,7 +44,7 @@ public class IssuedCoupon {
     private LocalDateTime createdDatetime;
 
     @Column(nullable = false)
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDateTime;
 
     @Column
     private LocalDateTime givenDatetime;

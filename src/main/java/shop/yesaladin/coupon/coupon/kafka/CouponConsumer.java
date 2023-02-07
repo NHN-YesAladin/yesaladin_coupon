@@ -22,7 +22,6 @@ import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 @Component
 public class CouponConsumer {
 
-    private final CouponProducer couponProducer;
     private final CouponConsumerService couponConsumerService;
     @Getter
     private CountDownLatch countDownLatch = new CountDownLatch(1);

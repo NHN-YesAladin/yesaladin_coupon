@@ -22,8 +22,8 @@ public interface CouponConsumerService {
     void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message);
 
     /**
-     * Shop 서버에서 발행한 쿠폰 지급 결과 메시지를 처리합니다. 지급 성공시 발행쿠폰의 지급 상태(지급완료)와 지급 일시를 업데이트합니다. 지급 실패시 지급 상태를 "미지급"
-     * 상태로 업데이트합니다.
+     * Shop 서버에서 발행한 쿠폰 지급 결과 메시지를 처리합니다. 지급 성공시 발행쿠폰의 지급 상태(지급완료)와 지급 일시를 업데이트합니다. 지급 실패시 지급 상태를
+     * "미지급" 상태로 업데이트합니다.
      *
      * @param message 쿠폰 지급 결과 메시지
      */
@@ -37,14 +37,16 @@ public interface CouponConsumerService {
     void consumeCouponGiveRequestCancelMessage(CouponCodesMessage message);
 
     /**
+     * Shop 서버세서 발행한 쿠폰 사용 요청 메시지 처리 후 응답메시지를 발행합니다. 발행쿠폰이 사용 가능한지 검사 후 사용 상태를 "사용 대기" 상태로 업데이트합니다.
+     * 사용 불가능한 발행쿠폰이 존재하는 경우 쿠폰코드와 함께 실패 응답 메시지를 발행합니다.
      *
-     * @param message
+     * @param message 쿠폰 사용 요청 메시지
      */
     void consumeCouponUseRequestMessage(CouponUseRequestMessage message);
 
     /**
-     * Shop 서버에서 발행한 쿠폰 사용 결과 메시지를 처리합니다. 사용 성공시 발행쿠폰의 사용 상태(사용완료)와 사용 일시를 업데이트합니다. 사용 실패시 사용 상태를 "미사용"
-     * 상태로 업데이트합니다.
+     * Shop 서버에서 발행한 쿠폰 사용 결과 메시지를 처리합니다. 사용 성공시 발행쿠폰의 사용 상태(사용완료)와 사용 일시를 업데이트합니다. 사용 실패시 사용 상태를
+     * "미사용" 상태로 업데이트합니다.
      *
      * @param message 쿠폰 사용 결과 메시지
      */

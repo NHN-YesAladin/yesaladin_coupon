@@ -2,12 +2,13 @@ package shop.yesaladin.coupon.coupon.persistence;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QAmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QCoupon;
@@ -37,15 +38,11 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
     @Override
     public Optional<IssuedCoupon> findIssuedCouponByGroupCodeId(long groupCodeId) {
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
-        return Optional.ofNullable(queryFactory.selectFrom(
-                        issuedCoupon)
-                .where(
-                        issuedCoupon.couponGroup.id.eq(groupCodeId),
-                        issuedCoupon.couponGivenStateCode.eq(
-                                CouponGivenStateCode.NOT_GIVEN),
-                        issuedCoupon.expirationDate.after(
-                                LocalDate.now())
-                ).fetchFirst());
+        return Optional.ofNullable(queryFactory.selectFrom(issuedCoupon).where(
+                issuedCoupon.couponGroup.id.eq(groupCodeId),
+                issuedCoupon.couponGivenStateCode.eq(CouponGivenStateCode.NOT_GIVEN),
+                issuedCoupon.expirationDateTime.after(LocalDateTime.now())
+        ).fetchFirst());
     }
 
     /**
@@ -64,11 +61,10 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                         MemberCouponSummaryDto.class,
                         coupon.name,
                         issuedCoupon.couponCode,
-                        rateCoupon.discountRate
-                                .nullif(amountCoupon.discountAmount)
+                        rateCoupon.discountRate.nullif(amountCoupon.discountAmount)
                                 .nullif(pointCoupon.chargePointAmount),
                         coupon.couponTypeCode,
-                        issuedCoupon.expirationDate,
+                        issuedCoupon.expirationDateTime,
                         issuedCoupon.usedDatetime.isNotNull(),
                         couponBound.categoryId.stringValue().nullif(couponBound.isbn).nullif(""),
                         couponBound.couponBoundCode
@@ -88,5 +84,21 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                 .on(amountCoupon.eq(coupon))
                 .where(issuedCoupon.couponCode.in(couponCodeList))
                 .fetch();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<IssuedCoupon> checkUnavailableIssuedCoupon(
+            List<String> couponCodeList, LocalDateTime requestDateTime
+    ) {
+        QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
+
+        return queryFactory.selectFrom(issuedCoupon).where(
+                issuedCoupon.couponGivenStateCode.ne(CouponGivenStateCode.GIVEN),
+                issuedCoupon.couponUsageStateCode.ne(CouponUsageStateCode.NOT_USED),
+                issuedCoupon.expirationDateTime.before(requestDateTime)
+        ).fetch();
     }
 }

@@ -114,7 +114,7 @@ class QueryIssuedCouponServiceImplTest {
                 .couponCode(issuedCouponCode)
                 .createdDatetime(
                         LocalDateTime.now())
-                .expirationDate(LocalDate.of(2023, 9, 10))
+                .expirationDateTime(LocalDate.of(2023, 9, 10).atStartOfDay())
                 .couponGroup(couponGroupOptional.get())
                 .couponGivenStateCode(CouponGivenStateCode.NOT_GIVEN)
                 .couponUsageStateCode(CouponUsageStateCode.NOT_USED)
@@ -160,7 +160,7 @@ class QueryIssuedCouponServiceImplTest {
                 .couponCode(issuedCouponCode)
                 .createdDatetime(
                         LocalDateTime.now())
-                .expirationDate(LocalDate.of(2023, 9, 10))
+                .expirationDateTime(LocalDate.of(2023, 9, 10).atStartOfDay())
                 .couponGroup(couponGroupOptional.get())
                 .couponGivenStateCode(CouponGivenStateCode.NOT_GIVEN)
                 .couponUsageStateCode(CouponUsageStateCode.NOT_USED)
