@@ -41,7 +41,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
         List<CouponIssueResponseDto> responseDtoList;
         try {
