@@ -29,7 +29,7 @@ import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 /**
- * CouponIssuanceCommandService 인터페이스의 구현체입니다.
+ * CommandIssuedCouponService 인터페이스의 구현체입니다.
  *
  * @author 김홍대, 서민지
  * @since 1.0
