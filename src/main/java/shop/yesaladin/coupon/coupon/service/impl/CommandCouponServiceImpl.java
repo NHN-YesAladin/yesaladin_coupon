@@ -1,18 +1,23 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
-import static shop.yesaladin.coupon.trigger.TriggerTypeCode.BIRTHDAY;
-import static shop.yesaladin.coupon.trigger.TriggerTypeCode.SIGN_UP;
 
+import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
+import static shop.yesaladin.coupon.code.TriggerTypeCode.COUPON_OF_THE_MONTH;
+import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import shop.yesaladin.coupon.code.CouponBoundCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
-import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
@@ -26,9 +31,8 @@ import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
@@ -36,6 +40,7 @@ import shop.yesaladin.coupon.trigger.TriggerTypeCode;
  * @author 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommandCouponServiceImpl implements CommandCouponService {
@@ -44,10 +49,13 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
     private final CommandCouponGroupRepository couponGroupRepository;
-    private final CommandIssueCouponService issueCouponService;
+    private final CommandIssuedCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
@@ -59,6 +67,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
@@ -76,6 +87,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
@@ -105,19 +119,27 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
 
+        log.info("=== [{}] Coupon has been created.===", triggerTypeCode);
+
         createTrigger(triggerTypeCode, coupon);
         createCouponGroup(triggerTypeCode, coupon);
 
-        // 생일 쿠폰, 회원가입 쿠폰의 경우 쿠폰 요청에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
-        if (BIRTHDAY.equals(triggerTypeCode) || SIGN_UP.equals(triggerTypeCode)) {
-            return coupon;
-        }
+        // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
+        if (!notToBeIssued(triggerTypeCode)) {
+            CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
+                    couponRequestDto.getTriggerTypeCode().toString(),
+                    coupon.getId(),
+                    couponRequestDto.getQuantity()
+            );
+            issueCouponService.issueCoupon(requestDto);
 
-        issueCouponService.issueCoupon(new CouponIssueRequestDto(
-                null,
-                coupon.getId(),
-                couponRequestDto.getQuantity()
-        ));
+            log.info(
+                    "=== [{}] {} coupons with #{} has been issued.===",
+                    requestDto.getTriggerTypeCode(),
+                    requestDto.getCouponId(),
+                    requestDto.getQuantity()
+            );
+        }
 
         return coupon;
     }
@@ -149,5 +171,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 .coupon(coupon)
                 .groupCode(UUID.randomUUID().toString())
                 .build());
+    }
+
+    private boolean notToBeIssued(TriggerTypeCode triggerTypeCode) {
+        return List.of(BIRTHDAY, SIGN_UP, COUPON_OF_THE_MONTH).contains(triggerTypeCode);
     }
 }

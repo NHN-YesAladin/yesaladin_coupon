@@ -9,11 +9,11 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
+import shop.yesaladin.coupon.code.CouponBoundCode;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponBoundCode;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 정액할인 쿠폰 생성 요청 시 사용하는 Dto 입니다.
@@ -78,6 +78,7 @@ public class AmountCouponRequestDto extends CouponRequestDto {
                 .expirationDate(this.getExpirationDate())
                 .createdDatetime(null)
                 .couponTypeCode(this.getCouponTypeCode())
+                .discountAmount(this.discountAmount)
                 .minOrderAmount(this.minOrderAmount)
                 .canBeOverlapped(this.canBeOverlapped)
                 .build();

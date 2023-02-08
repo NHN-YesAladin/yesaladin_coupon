@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,23 +12,26 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.domain.repository.QueryIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 class QueryCouponServiceImplTest {
 
     private QueryTriggerRepository queryTriggerRepository;
     private QueryCouponServiceImpl queryCouponService;
+    private QueryIssuedCouponRepository queryIssuedCouponRepository;
 
     @BeforeEach
     void setUp() {
         queryTriggerRepository = Mockito.mock(QueryTriggerRepository.class);
-        queryCouponService = new QueryCouponServiceImpl(queryTriggerRepository);
+        queryIssuedCouponRepository = Mockito.mock(QueryIssuedCouponRepository.class);
+        queryCouponService = new QueryCouponServiceImpl(queryTriggerRepository, queryIssuedCouponRepository);
     }
 
     @Test
@@ -54,10 +56,20 @@ class QueryCouponServiceImplTest {
                 .coupon(coupon)
                 .build();
 
-        List<Trigger> triggerList = new ArrayList<>();
-        triggerList.add(trigger);
-        PageImpl<Trigger> triggers = new PageImpl<>(triggerList);
-        Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(triggers);
+        CouponSummaryDto couponSummaryDto = CouponSummaryDto.builder()
+                .id(couponId)
+                .name(name)
+                .triggerTypeCode(trigger.getTriggerTypeCode())
+                .couponTypeCode(coupon.getCouponTypeCode())
+                .isUnlimited(false)
+                .chargePointAmount(1000)
+                .build();
+
+        List<CouponSummaryDto> couponSummaryDtos = new ArrayList<>();
+        couponSummaryDtos.add(couponSummaryDto);
+        PageImpl<CouponSummaryDto> couponSummaryDtoPage = new PageImpl<>(couponSummaryDtos);
+        Mockito.when(queryTriggerRepository.findAll(Mockito.any())).thenReturn(couponSummaryDtoPage);
+
 
         // when
         Page<CouponSummaryDto> result = queryCouponService.getTriggeredCouponList(
@@ -70,4 +82,3 @@ class QueryCouponServiceImplTest {
     }
 
 }
-

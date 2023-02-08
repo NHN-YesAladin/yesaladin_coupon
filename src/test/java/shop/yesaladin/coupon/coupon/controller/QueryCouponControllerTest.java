@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,12 +32,13 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import shop.yesaladin.coupon.code.CouponBoundCode;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
+import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryDto;
 import shop.yesaladin.coupon.coupon.service.inter.QueryCouponService;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
-
 
 @WebMvcTest(QueryCouponController.class)
 @AutoConfigureRestDocs
@@ -136,6 +139,9 @@ class QueryCouponControllerTest {
                         fieldWithPath("data.dataList.[].couponTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰 타입"),
+                        fieldWithPath("data.dataList.[].isUnlimited").type(JsonFieldType.BOOLEAN)
+                                .optional()
+                                .description("조회된 쿠폰의 무제한 여부"),
                         fieldWithPath("data.dataList.[].duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰의 유효기간"),
@@ -163,6 +169,75 @@ class QueryCouponControllerTest {
                         fieldWithPath("data.dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
                                 .description("조회된 쿠폰의 무제한 여부")
+                )
+        ));
+    }
+
+    @Test
+    @DisplayName("쿠폰코드 리스트로 회원쿠폰요약정보 조회 성공")
+    void getMemberCouponSummaryListTest() throws Exception {
+        // given
+        List<MemberCouponSummaryDto> memberCouponSummaryDtoList = new ArrayList<>();
+        List<String> couponCodeList = new ArrayList<>();
+
+        for (int i = 0; i < 10; i++) {
+            String couponCode = UUID.randomUUID().toString();
+            couponCodeList.add(couponCode);
+            MemberCouponSummaryDto dto = MemberCouponSummaryDto.builder()
+                    .name("test" + i)
+                    .couponCode(couponCode)
+                    .amount(i)
+                    .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                    .expireDate(LocalDate.of(2023, 12, 20))
+                    .isUsed(false)
+                    .couponBound("categoryId#" + i)
+                    .couponBoundCode(
+                            CouponBoundCode.CATEGORY).build();
+            memberCouponSummaryDtoList.add(dto);
+        }
+
+        // when
+        Mockito.when(queryCouponService.getMemberCouponList(Mockito.anyList()))
+                .thenReturn(memberCouponSummaryDtoList);
+        ResultActions resultActions = mockMvc.perform(get("/v1/coupons").queryParam(
+                "couponCodes",
+                String.join(",", couponCodeList)
+        )).andDo(print());
+
+        System.out.println(String.join(",", couponCodeList));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data.[0].couponCode").value(couponCodeList.get(0)));
+
+        // docs
+        resultActions.andDo(document(
+                "get-member-coupon-summary-list-success",
+                getDocumentRequest(),
+                getDocumentResponse(),
+                requestParameters(
+                        parameterWithName("couponCodes").description("조회할 쿠폰 코드 리스트")
+                ),
+                responseFields(
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("name").type(JsonFieldType.STRING)
+                                .description("쿠폰 이름"),
+                        fieldWithPath("couponCode").type(JsonFieldType.STRING)
+                                .description("쿠폰 코드"),
+                        fieldWithPath("amount").type(JsonFieldType.NUMBER)
+                                .description("쿠폰의 금액(할인금액/할인율/포인트충전액)"),
+                        fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
+                                .description("쿠폰의 타입(정액할인/정율할인/포인트충전)"),
+                        fieldWithPath("expireDate").type(JsonFieldType.STRING)
+                                .description("만료일"),
+                        fieldWithPath("isUsed").type(JsonFieldType.BOOLEAN)
+                                .description("사용 여부"),
+                        fieldWithPath("couponBound").type(JsonFieldType.STRING)
+                                .description("쿠폰 할인 적용 범위(ISBN/CategoryId)"),
+                        fieldWithPath("couponBoundCode").type(JsonFieldType.STRING)
+                                .description("쿠폰 할인 적용 범위 코드(ALL/CATEGORY/PRODUCT)")
                 )
         ));
     }

@@ -54,8 +54,8 @@ public class IssuedCoupon {
     private LocalDateTime usedDatetime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_id", nullable = false)
-    private Coupon coupon;
+    @JoinColumn(name = "coupon_group_id", nullable = false)
+    private CouponGroup couponGroup;
 
     @Column(name = "coupon_given_state_code_id")
     @Convert(converter = CouponGivenStateCodeConverter.class)

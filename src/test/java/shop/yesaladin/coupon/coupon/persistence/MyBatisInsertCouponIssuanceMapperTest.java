@@ -11,14 +11,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 
 @Transactional
 @SpringBootTest
+@ActiveProfiles("test")
 class MyBatisInsertCouponIssuanceMapperTest {
 
     @Autowired
@@ -26,6 +30,7 @@ class MyBatisInsertCouponIssuanceMapperTest {
     @Autowired
     private MyBatisInsertIssuedCouponMapper mapper;
     private Coupon coupon;
+    private CouponGroup couponGroup;
 
     @BeforeEach
     void setUp() {
@@ -37,8 +42,13 @@ class MyBatisInsertCouponIssuanceMapperTest {
                 .duration(3)
                 .couponTypeCode(CouponTypeCode.FIXED_PRICE)
                 .build();
-
+        couponGroup = CouponGroup.builder()
+                .groupCode("aaaa")
+                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .coupon(coupon)
+                .build();
         em.persist(coupon);
+        em.persist(couponGroup);
     }
 
     @Test
@@ -48,7 +58,7 @@ class MyBatisInsertCouponIssuanceMapperTest {
         List<IssuedCouponInsertDto> insertList = new ArrayList<>();
         for (int i = 0; i < 500; i++) {
             IssuedCouponInsertDto issuedCouponInsertDto = new IssuedCouponInsertDto(
-                    coupon.getId(),
+                    couponGroup.getId(),
                     UUID.randomUUID().toString().substring(0, 20),
                     LocalDate.now().plusDays(coupon.getDuration())
             );

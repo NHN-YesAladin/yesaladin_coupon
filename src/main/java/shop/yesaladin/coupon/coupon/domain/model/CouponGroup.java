@@ -19,9 +19,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.converter.TriggerTypeCodeCodeConverter;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
+/**
+ * 쿠폰 그룹 엔터티입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
