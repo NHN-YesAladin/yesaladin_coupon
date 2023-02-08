@@ -61,14 +61,16 @@ class CouponConsumerTest {
                 .build();
 
         // when
-        kafkaTemplate.send(kafkaTopicProperties.getGiveRequest(), message);
+        String topic = kafkaTopicProperties.getGiveRequest();
+        kafkaTemplate.send(topic, message);
 
         // then
+        assertThat(topic).isEqualTo("test_yesaladin_coupon_give_request");
         boolean isConsumed = couponConsumer.getCountDownLatch()
                 .await(10, TimeUnit.SECONDS);    // latch 가 0이 되면 true
-        assertThat(isConsumed).isTrue();
         Mockito.verify(couponConsumerService, Mockito.times(1))
                 .consumeCouponGiveRequestMessage((CouponGiveRequestMessage) argumentCaptor.capture());
+        assertThat(isConsumed).isTrue();
         CouponGiveRequestMessage arg = (CouponGiveRequestMessage) argumentCaptor.getValue();
         assertThat(arg.getRequestId()).isEqualTo(requestId);
         assertThat(arg.getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);

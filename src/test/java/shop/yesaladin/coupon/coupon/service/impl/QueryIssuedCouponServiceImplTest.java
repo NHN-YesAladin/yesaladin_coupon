@@ -43,7 +43,6 @@ class QueryIssuedCouponServiceImplTest {
     private CouponIssueRequestDto couponIssueRequestDto;
     private List<String> createdCouponCodeList;
     private String couponGroupCode;
-    private ArgumentCaptor<Object> argumentCaptor;
 
     @BeforeEach
     void setUp() {
@@ -63,7 +62,7 @@ class QueryIssuedCouponServiceImplTest {
 
         createdCouponCodeList = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
         couponGroupCode = UUID.randomUUID().toString();
-        argumentCaptor = ArgumentCaptor.forClass(Object.class);
+        ArgumentCaptor<Object> argumentCaptor = ArgumentCaptor.forClass(Object.class);
     }
 
     @Test
