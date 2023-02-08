@@ -24,7 +24,6 @@ import shop.yesaladin.coupon.coupon.dto.CouponGroupAndLimitDto;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class QueryDslQueryCouponGroupRepositoryTest {
 
     @Autowired

@@ -16,7 +16,6 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class QueryDslQueryCouponRepositoryTest {
 
     @Autowired
