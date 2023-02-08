@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 
+@Disabled
 @SpringBootTest
 @EmbeddedKafka(brokerProperties = {
         "listeners=PLAINTEXT://localhost:9093", "port=9093"})

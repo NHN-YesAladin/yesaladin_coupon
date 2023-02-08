@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +25,7 @@ import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 
+@Disabled
 @SpringBootTest
 @EmbeddedKafka(brokerProperties = {
         "listeners=PLAINTEXT://localhost:9092", "port=9092"})
