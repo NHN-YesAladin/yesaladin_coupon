@@ -33,7 +33,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰(무제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_give_request", topics = "${coupon.topic.give-request}")
+    @KafkaListener(id = "${coupon.consumer-group.give-request}", topics = "${coupon.topic.give-request}")
     public void giveRequestListener(List<CouponGiveRequestMessage> records) {
         log.info("=== [giveRequestListener] {} records consumed. ===", records.size());
         for (CouponGiveRequestMessage message : records) {
@@ -48,7 +48,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰(제한) 지급요청 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_give_request_limit", topics = "${coupon.topic.give-request-limit}")
+    @KafkaListener(id = "${coupon.consumer-group.give-request-limit}", topics = "${coupon.topic.give-request-limit}")
     public void giveRequestLimitListener(List<CouponGiveRequestMessage> records) {
         log.info("=== [giveRequestLimitListener] {} records consumed. ===", records.size());
         for (CouponGiveRequestMessage message : records) {
@@ -61,7 +61,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰 지급 결과 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_given", topics = "${coupon.topic.given}")
+    @KafkaListener(id = "${coupon.consumer-group.given}", topics = "${coupon.topic.given}")
     public void givenListener(List<CouponCodesAndResultMessage> records) {
         log.info("=== [givenListener] {} records consumed. ===", records.size());
         for (CouponCodesAndResultMessage message : records) {
@@ -74,7 +74,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰 지급 취소 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_give_request_cancel", topics = "${coupon.topic.give-request-cancel}")
+    @KafkaListener(id = "${coupon.consumer-group.give-request-cancel}", topics = "${coupon.topic.give-request-cancel}")
     public void giveRequestCancelListener(List<CouponCodesMessage> records) {
         log.info("=== [giveRequestCancelListener] {} records consumed. ===", records.size());
         for (CouponCodesMessage message : records) {
@@ -87,7 +87,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰 사용 요청 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_use_request", topics = "${coupon.topic.use-request}")
+    @KafkaListener(id = "${coupon.consumer-group.use-request}", topics = "${coupon.topic.use-request}")
     public void useRequestListener(List<CouponUseRequestMessage> records) {
         log.info("=== [useRequestListener] {} records consumed. ===", records.size());
         for (CouponUseRequestMessage message : records) {
@@ -100,7 +100,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰 사용 결과 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_used", topics = "${coupon.topic.used}")
+    @KafkaListener(id = "${coupon.consumer-group.used}", topics = "${coupon.topic.used}")
     public void usedListener(List<CouponCodesAndResultMessage> records) {
         log.info("=== [usedListener] {} records consumed. ===", records.size());
         for (CouponCodesAndResultMessage message : records) {
@@ -113,7 +113,7 @@ public class CouponConsumer {
      *
      * @param records 쿠폰 사용 취소 토픽으로부터 읽어온 메시지 리스트
      */
-    @KafkaListener(id = "yesaladin_coupon_use_request_cancel", topics = "${coupon.topic.use-request-cancel}")
+    @KafkaListener(id = "${coupon.consumer-group.use-request-cancel}", topics = "${coupon.topic.use-request-cancel}")
     public void useRequestCancelListener(List<CouponCodesMessage> records) {
         log.info("=== [useRequestCancelListener] {} records consumed. ===", records.size());
         for (CouponCodesMessage message : records) {
