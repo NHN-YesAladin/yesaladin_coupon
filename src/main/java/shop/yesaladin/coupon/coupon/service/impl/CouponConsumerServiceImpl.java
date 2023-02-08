@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.common.code.ErrorCode;
+import shop.yesaladin.common.exception.ClientException;
+import shop.yesaladin.common.exception.ServerException;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.IssuedCoupon;
@@ -29,6 +33,7 @@ import shop.yesaladin.coupon.message.CouponUseRequestResponseMessage;
  * @author 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CouponConsumerServiceImpl implements CouponConsumerService {
@@ -41,18 +46,31 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
         List<CouponIssueResponseDto> responseDtoList;
         try {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
                     CouponIssueRequestDto.fromCouponGiveRequestMessage(message));
-        } catch (Exception e) {
+        } catch (ClientException e) {
+            log.error("", e);
             // 쿠폰 발행 실패 응답
             CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
                     .requestId(message.getRequestId())
                     .success(false)
                     .errorMessage(e.getMessage())
+                    .build();
+            couponProducer.responseGiveRequest(giveRequestResponseMessage);
+            return;
+        } catch (Exception e) {
+            log.error("", e);
+            CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
+                    .requestId(message.getRequestId())
+                    .success(false)
+                    .errorMessage(String.valueOf(new ServerException(
+                            ErrorCode.BAD_REQUEST,
+                            "Exception occurred at consume coupon give request message."
+                    )))
                     .build();
             couponProducer.responseGiveRequest(giveRequestResponseMessage);
             return;

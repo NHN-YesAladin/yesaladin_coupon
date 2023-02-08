@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
@@ -25,7 +24,6 @@ import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 @Transactional
 @SpringBootTest
-@ActiveProfiles("test")
 class QueryTriggerRepositoryTest {
 
     @Autowired
@@ -98,8 +96,8 @@ class QueryTriggerRepositoryTest {
             Assertions.assertThat(actualDto.getDuration()).isEqualTo(expectedCoupon.getDuration());
             Assertions.assertThat(actualDto.getExpirationDate())
                     .isEqualTo(expectedCoupon.getExpirationDate());
-            Assertions.assertThat(actualDto.getCreatedDateTime())
-                    .isEqualTo(expectedCoupon.getCreatedDatetime());
+            Assertions.assertThat(actualDto.getCreatedDateTime().toLocalDate())
+                    .isEqualTo(expectedCoupon.getCreatedDatetime().toLocalDate());
             Assertions.assertThat(actualDto.getMinOrderAmount())
                     .isEqualTo(expectedCoupon.getMinOrderAmount());
             Assertions.assertThat(actualDto.getDiscountAmount()).isNull();

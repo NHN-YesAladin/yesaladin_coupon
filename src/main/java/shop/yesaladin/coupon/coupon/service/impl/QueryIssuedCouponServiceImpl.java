@@ -37,7 +37,7 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<CouponIssueResponseDto> getCouponIssueResponseDtoList(CouponIssueRequestDto issueRequestDto) {
         TriggerTypeCode triggerTypeCode = TriggerTypeCode.valueOf(issueRequestDto.getTriggerTypeCode());
 

@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.code.CouponBoundCode;
@@ -39,6 +40,7 @@ import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
  * @author 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommandCouponServiceImpl implements CommandCouponService {
@@ -117,16 +119,26 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
 
+        log.info("=== [{}] Coupon has been created.===", triggerTypeCode);
+
         createTrigger(triggerTypeCode, coupon);
         createCouponGroup(triggerTypeCode, coupon);
 
         // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
         if (!notToBeIssued(triggerTypeCode)) {
-            issueCouponService.issueCoupon(new CouponIssueRequestDto(
+            CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
                     couponRequestDto.getTriggerTypeCode().toString(),
                     coupon.getId(),
                     couponRequestDto.getQuantity()
-            ));
+            );
+            issueCouponService.issueCoupon(requestDto);
+
+            log.info(
+                    "=== [{}] {} coupons with #{} has been issued.===",
+                    requestDto.getTriggerTypeCode(),
+                    requestDto.getCouponId(),
+                    requestDto.getQuantity()
+            );
         }
 
         return coupon;

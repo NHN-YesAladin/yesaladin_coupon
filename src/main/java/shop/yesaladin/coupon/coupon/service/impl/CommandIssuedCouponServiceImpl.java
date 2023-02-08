@@ -15,7 +15,6 @@ import shop.yesaladin.common.code.ErrorCode;
 import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.IssuanceConfiguration;
-import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGivenStateCode;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
 import shop.yesaladin.coupon.coupon.domain.model.CouponUsageStateCode;
@@ -30,7 +29,7 @@ import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 /**
- * CouponIssuanceCommandService 인터페이스의 구현체입니다.
+ * CommandIssuedCouponService 인터페이스의 구현체입니다.
  *
  * @author 김홍대, 서민지
  * @since 1.0
@@ -66,7 +65,9 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     public long updateCouponGivenStateAndDateTime(
             List<String> couponCodeList, CouponGivenStateCode givenStateCode
     ) {
-        return commandIssuedCouponRepository.updateCouponGivenStateAndDateTime(couponCodeList, givenStateCode);
+        return commandIssuedCouponRepository.updateCouponGivenStateAndDateTime(couponCodeList,
+                givenStateCode
+        );
     }
 
     /**
@@ -77,7 +78,9 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     public long updateCouponUsageStateAndDateTime(
             List<String> couponCodeList, CouponUsageStateCode usageStateCode
     ) {
-        return commandIssuedCouponRepository.updateCouponUsageStateAndDateTime(couponCodeList, usageStateCode);
+        return commandIssuedCouponRepository.updateCouponUsageStateAndDateTime(couponCodeList,
+                usageStateCode
+        );
     }
 
     private List<CouponIssueResponseDto> issueCouponByTriggerCodeAndCouponId(CouponIssueRequestDto requestDto) {
@@ -109,9 +112,7 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     private List<IssuedCouponInsertDto> createIssuanceDataList(
             CouponGroup couponGroup, Integer requestedQuantity
     ) {
-        int issueQuantity = getCouponQuantityWillBeIssued(couponGroup.getCoupon(),
-                requestedQuantity
-        );
+        int issueQuantity = getCouponQuantityWillBeIssued(couponGroup, requestedQuantity);
 
         List<IssuedCouponInsertDto> issuanceDataList = new ArrayList<>();
         for (int count = 0; count < issueQuantity; count++) {
@@ -158,8 +159,8 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
                 .collect(Collectors.toList());
     }
 
-    private int getCouponQuantityWillBeIssued(Coupon coupon, Integer requestedQuantity) {
-        if (coupon.isUnlimited()) {
+    private int getCouponQuantityWillBeIssued(CouponGroup couponGroup, Integer requestedQuantity) {
+        if (couponGroup.getCoupon().isUnlimited() && !isAutoIssuanceCoupon(couponGroup)) {
             return issuanceConfig.getUnlimitedCouponIssueSize();
         }
         return requestedQuantity;

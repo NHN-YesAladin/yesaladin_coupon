@@ -106,7 +106,7 @@ class CommandIssuedCouponServiceImplTest {
     void unlimitedCouponIssuanceSuccess() {
         // given
         CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                TriggerTypeCode.SIGN_UP.name(),
+                TriggerTypeCode.MEMBER_GRADE_GOLD.name(),
                 1L,
                 null
         );
@@ -114,8 +114,7 @@ class CommandIssuedCouponServiceImplTest {
                 .id(1L)
                 .name("테스트용 쿠폰")
                 .isUnlimited(true)
-                .duration(10)
-                .expirationDate(null)
+                .expirationDate(LocalDate.of(2024, 2, 2))
                 .createdDatetime(LocalDateTime.of(2023, 2, 2, 0, 0))
                 .couponTypeCode(CouponTypeCode.FIXED_RATE)
                 .minOrderAmount(1000)
@@ -125,12 +124,12 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
-                .triggerTypeCode(TriggerTypeCode.SIGN_UP)
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD)
                 .groupCode("test-group")
                 .build();
 
         Mockito.when(queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(
-                TriggerTypeCode.SIGN_UP,
+                TriggerTypeCode.MEMBER_GRADE_GOLD,
                 1L
         )).thenReturn(Optional.of(couponGroup));
         Mockito.when(issuanceConfig.getUnlimitedCouponIssueSize()).thenReturn(100);
@@ -140,7 +139,7 @@ class CommandIssuedCouponServiceImplTest {
 
         // then
         Mockito.verify(queryCouponGroupRepository, Mockito.times(1))
-                .findCouponGroupByTriggerTypeAndCouponId(TriggerTypeCode.SIGN_UP, 1L);
+                .findCouponGroupByTriggerTypeAndCouponId(TriggerTypeCode.MEMBER_GRADE_GOLD, 1L);
         Mockito.verify(insertRepository, Mockito.times(1))
                 .insertIssuedCoupon(Mockito.argThat(arg -> arg.size() == 100));
         Assertions.assertThat(actual).hasSize(1);
