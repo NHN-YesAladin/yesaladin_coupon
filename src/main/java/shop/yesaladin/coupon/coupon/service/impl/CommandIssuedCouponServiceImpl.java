@@ -116,8 +116,7 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
 
         List<IssuedCouponInsertDto> issuanceDataList = new ArrayList<>();
         for (int count = 0; count < issueQuantity; count++) {
-            IssuedCouponInsertDto insertDto = new IssuedCouponInsertDto(couponGroup.getCoupon()
-                    .getId(),
+            IssuedCouponInsertDto insertDto = new IssuedCouponInsertDto(couponGroup.getId(),
                     UUID.randomUUID().toString(),
                     calculateExpirationDate(couponGroup)
             );
