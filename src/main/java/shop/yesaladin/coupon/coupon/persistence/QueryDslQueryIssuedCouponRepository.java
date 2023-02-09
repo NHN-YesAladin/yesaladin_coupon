@@ -75,7 +75,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                 .on(couponGroup.coupon.eq(coupon))
                 .innerJoin(issuedCoupon)
                 .on(issuedCoupon.couponGroup.eq(couponGroup))
-                .innerJoin(couponBound)
+                .leftJoin(couponBound)
                 .on(couponBound.coupon.eq(coupon))
                 .leftJoin(rateCoupon)
                 .on(rateCoupon.eq(coupon))

@@ -51,6 +51,7 @@ public class KafkaConsumerConfiguration {
     public Map<String, Object> consumerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, false);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(
@@ -58,7 +59,7 @@ public class KafkaConsumerConfiguration {
                 List.of(CooperativeStickyAssignor.class)
         );
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "shop.yesaladin.*");
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, HashMap.class);
         return props;
     }
