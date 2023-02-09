@@ -1,14 +1,14 @@
 package shop.yesaladin.coupon.coupon.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
@@ -30,10 +30,12 @@ public class RateCouponRequestDto extends CouponRequestDto {
             @NotBlank(message = "coupon name must be at least 2 characters long") @Length(max = 50, message = "coupon name cannot be more than 50 characters") String name,
             Boolean isUnlimited,
             @PositiveOrZero(message = "invalid coupon quantity") Integer quantity,
+            @Range(min = 1, max = 31) Integer couponOpenDate,
+            LocalTime couponOpenTime,
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
-            @DateTimeFormat(iso = ISO.DATE) LocalDate expirationDate,
+            LocalDate expirationDate,
             CouponTypeCode couponTypeCode,
             int minOrderAmount,
             int maxDiscountAmount,
@@ -48,6 +50,8 @@ public class RateCouponRequestDto extends CouponRequestDto {
                 name,
                 isUnlimited,
                 quantity,
+                couponOpenDate,
+                couponOpenTime,
                 imageFile,
                 imageFileUri,
                 duration,
