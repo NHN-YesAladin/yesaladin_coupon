@@ -53,7 +53,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
                     CouponIssueRequestDto.fromCouponGiveRequestMessage(message));
         } catch (ClientException e) {
-            log.error("", e);
+            log.error("=== [COUPON] ===", e);
             // 쿠폰 발행 실패 응답
             CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
                     .requestId(message.getRequestId())
@@ -63,7 +63,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
             couponProducer.responseGiveRequest(giveRequestResponseMessage);
             return;
         } catch (Exception e) {
-            log.error("", e);
+            log.error("=== [COUPON] ===", e);
             CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
                     .requestId(message.getRequestId())
                     .success(false)
@@ -80,6 +80,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
         List<CouponGiveDto> coupons = responseDtoList.stream()
                 .map(CouponIssueResponseDto::toCouponGiveDto)
                 .collect(Collectors.toList());
+        log.info("=== [COUPON] first coupon code to give member {}", coupons.get(0).getCouponCodes().get(0));
 
         // 지급할 발행쿠폰의 지급상태코드를 '지급 대기'로 업데이트
         List<String> couponCodesToGive = new ArrayList<>();

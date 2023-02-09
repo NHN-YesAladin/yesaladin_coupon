@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.common.code.ErrorCode;
@@ -25,6 +26,7 @@ import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
  * @author 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
@@ -56,13 +58,13 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
 
         IssuedCoupon issuedCoupon = issuedCouponOptional.orElseThrow(() -> new ClientException(
                 // FIXME VALID_ISSUED_COUPON_NOT_FOUND 에러코드로 수정
-                ErrorCode.COUPON_NOT_FOUND,
-                ErrorCode.COUPON_NOT_FOUND.getDisplayName()
-        ));
+                ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
 
         return List.of(CouponIssueResponseDto.builder()
                 .createdCouponCodes(List.of(issuedCoupon.getCouponCode()))
-                .couponGroupCode(couponGroup.getGroupCode()).build());
+                .couponGroupCode(couponGroup.getGroupCode())
+                .expirationDate(issuedCoupon.getExpirationDate())
+                .build());
     }
 
     /**
@@ -70,8 +72,13 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<IssuedCoupon> checkUnavailableIssuedCoupon(List<String> couponCodeList, LocalDateTime requestDateTime) {
-        return queryIssuedCouponRepository.checkUnavailableIssuedCoupon(couponCodeList, requestDateTime);
+    public List<IssuedCoupon> checkUnavailableIssuedCoupon(
+            List<String> couponCodeList, LocalDateTime requestDateTime
+    ) {
+        return queryIssuedCouponRepository.checkUnavailableIssuedCoupon(
+                couponCodeList,
+                requestDateTime
+        );
     }
 
     // 트리거 타입과 쿠폰 아이디로 쿠폰그룹을 조회합니다.
@@ -90,13 +97,15 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
 
         return couponGroupOptional.orElseThrow(() -> new ClientException(
                 // FIXME COUPON_GROUP_NOT_FOUND 에러코드로 수정
-                ErrorCode.COUPON_NOT_FOUND,
-                ErrorCode.COUPON_NOT_FOUND.getDisplayName()
-        ));
+                ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
     }
 
     private Optional<IssuedCoupon> getIssuedCouponByGroupCodeId(CouponGroup couponGroup) {
-        return queryIssuedCouponRepository.findIssuedCouponByGroupCodeId(
-                couponGroup.getId());
+        log.info(
+                "=== [COUPON] get issued coupon by groupCode ({}, id: {}). ===",
+                couponGroup.getGroupCode(),
+                couponGroup.getId()
+        );
+        return queryIssuedCouponRepository.findIssuedCouponByGroupCodeId(couponGroup.getId());
     }
 }

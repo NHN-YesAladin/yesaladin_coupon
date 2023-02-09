@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.persistence.converter;
 
 import java.util.Arrays;
+import java.util.Objects;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import shop.yesaladin.coupon.code.CouponBoundCode;
@@ -22,6 +23,9 @@ public class CouponBoundCodeConverter implements AttributeConverter<CouponBoundC
      */
     @Override
     public Integer convertToDatabaseColumn(CouponBoundCode couponBoundCode) {
+        if (Objects.isNull(couponBoundCode)) {
+            return null;
+        }
         return couponBoundCode.getCode();
     }
 
@@ -33,6 +37,9 @@ public class CouponBoundCodeConverter implements AttributeConverter<CouponBoundC
      */
     @Override
     public CouponBoundCode convertToEntityAttribute(Integer integer) {
+        if (Objects.isNull(integer)) {
+            return null;
+        }
         return Arrays.stream(CouponBoundCode.values())
                 .filter(code -> integer.equals(code.getCode()))
                 .findFirst()
