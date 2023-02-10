@@ -79,6 +79,7 @@ class CommandIssuedCouponServiceImplTest {
                 .canBeOverlapped(true)
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
+                .id(1L)
                 .coupon(coupon)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
@@ -124,6 +125,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD)
                 .groupCode("test-group")
                 .build();
@@ -174,6 +176,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
                 .build();
@@ -227,6 +230,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
                 .build();
@@ -282,6 +286,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.SIGN_UP)
                 .groupCode("test-group")
                 .build();
@@ -328,6 +333,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_GOLD)
                 .groupCode("test-group")
                 .build();
@@ -383,6 +389,7 @@ class CommandIssuedCouponServiceImplTest {
                 .build();
         CouponGroup couponGroup = CouponGroup.builder()
                 .coupon(coupon)
+                .id(1L)
                 .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_BRONZE)
                 .groupCode("test-group")
                 .build();

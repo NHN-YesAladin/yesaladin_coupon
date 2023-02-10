@@ -1,9 +1,12 @@
 package shop.yesaladin.coupon.coupon.service.impl;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,15 +20,18 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponGroupRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponOfTheMonthPolicyRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
+import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 
 class CommandCouponServiceImplTest {
 
+    private CommandCouponOfTheMonthPolicyRepository couponOfTheMonthPolicyRepository;
     private CommandCouponRepository couponRepository;
     private CommandCouponBoundRepository couponBoundRepository;
     private CommandTriggerRepository triggerRepository;
@@ -38,6 +44,7 @@ class CommandCouponServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        couponOfTheMonthPolicyRepository = Mockito.mock(CommandCouponOfTheMonthPolicyRepository.class);
         couponRepository = Mockito.mock(CommandCouponRepository.class);
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
@@ -46,6 +53,7 @@ class CommandCouponServiceImplTest {
         objectStorageService = Mockito.mock(ObjectStorageService.class);
 
         couponService = new CommandCouponServiceImpl(
+                couponOfTheMonthPolicyRepository,
                 couponRepository,
                 couponBoundRepository,
                 triggerRepository,
@@ -78,6 +86,8 @@ class CommandCouponServiceImplTest {
                 null,
                 null,
                 null,
+                null,
+                null,
                 10,
                 null,
                 CouponTypeCode.FIXED_RATE,
@@ -105,5 +115,46 @@ class CommandCouponServiceImplTest {
         // 생일쿠폰이므로 생성시 쿠폰 발행이 동작하지 않음
         verify(issueCouponService, times(0)).issueCoupon(any());
         verify(couponBoundRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("이달의 쿠폰 생성시 이달의 쿠폰 정책과 함께 생성된다.")
+    void createCouponOfTheMonthTest() {
+        // given
+        RateCoupon coupon = (RateCoupon) CouponDummy.dummyRateCoupon();
+        RateCouponRequestDto requestDto = new RateCouponRequestDto(
+                TriggerTypeCode.COUPON_OF_THE_MONTH,
+                coupon.getName(),
+                coupon.isUnlimited(),
+                100,
+                1,
+                LocalTime.of(0, 0),
+                null,
+                null,
+                null,
+                LocalDate.of(2023, 2, 10),
+                coupon.getCouponTypeCode(),
+                coupon.getMinOrderAmount(),
+                coupon.getMaxDiscountAmount(),
+                coupon.getDiscountRate(),
+                coupon.isCanBeOverlapped(),
+                CouponBoundCode.ALL,
+                null,
+                null
+        );
+        Mockito.when(couponRepository.save(any())).thenReturn(coupon);
+        // when
+        CouponResponseDto actual = couponService.createRateCoupon(requestDto);
+
+        // then
+        verify(couponRepository).save(any());
+        verify(triggerRepository).save(any());
+        verify(couponGroupRepository).save(any());
+        verify(couponBoundRepository).save(any());
+        verify(couponOfTheMonthPolicyRepository).save(argThat(arg -> arg.getOpenDate() == 1
+                && arg.getOpenTime().equals(LocalTime.of(0, 0))));
+
+        Assertions.assertThat(actual.getName()).isEqualTo(coupon.getName());
+        Assertions.assertThat(actual.getCouponTypeCode()).isEqualTo(CouponTypeCode.FIXED_RATE);
     }
 }
