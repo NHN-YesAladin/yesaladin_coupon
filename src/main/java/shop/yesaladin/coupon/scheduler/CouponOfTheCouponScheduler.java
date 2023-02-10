@@ -1,14 +1,21 @@
 package shop.yesaladin.coupon.scheduler;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
+import shop.yesaladin.coupon.coupon.domain.model.CouponOfTheMonthPolicy;
+import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CouponOfTheMonthService;
 
 /**
- * 생일 쿠폰 지급 Job 의 스케줄러 입니다.
+ * 이달의 쿠폰 오픈 시간 1시간 전에 지정된 쿠폰을 발행하는 스케줄러입니다.
  *
  * @author 서민지
  * @since 1.0
@@ -16,40 +23,55 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class BirthdayCouponScheduler {
+public class CouponOfTheCouponScheduler {
 
-    private String issueTime = "0 0 13 1 * *";
+    private final CommandIssuedCouponService commandIssuedCouponService;
+    private final CouponOfTheMonthService couponOfTheMonthService;
+    private ThreadPoolTaskScheduler scheduler;
+    private String issueCron = "0 0 13 1 * *";
 
-    public void changeIssueTime(int openDate, int openHour, int openMin) {
-        StringBuilder builder = new StringBuilder("0 ");
-        builder.append(openMin)
-                .append(" ")
-                .append(openHour)
-                .append(" ")
-                .append(openDate)
-                .append(" * *");
-        this.issueTime = builder.toString();
+    private Runnable getRunnable() {
+        return () -> {
+            CouponOfTheMonthPolicy latestPolicy = couponOfTheMonthService.getLatestPolicy();
+            log.info(
+                    "==== {} will be issued with {} counts. ====",
+                    latestPolicy.getCoupon().getName(),
+                    latestPolicy.getQuantity()
+            );
+
+            commandIssuedCouponService.issueCoupon(CouponIssueRequestDto.builder()
+                    .couponId(latestPolicy.getCoupon().getId())
+                    .triggerTypeCode(TriggerTypeCode.COUPON_OF_THE_MONTH.toString())
+                    .quantity(latestPolicy.getQuantity())
+                    .build());
+        };
     }
 
-    /**
-     * 매월 01시에 laterDays 파라미터를 갖는 giveBirthdayCouponJob 을 실행합니다.
-     */
-    @Scheduled(cron = ONE_AM_EVERY_DAY, zone = "Asia/Seoul")
-    public void scheduleGiveBirthdayCoupon() {
-        log.info("=== giveBirthdayCoupon schedule started at {} ===", LocalDateTime.now());
+    public void changeIssueTime(int openDate, int openHour, int openMin) {
+        this.issueCron = "0 " + openMin + " " + openHour + " " + openDate + " * *";
+    }
 
-        JobParameters jobParameters = new JobParametersBuilder()
-                .addString("laterDays", String.valueOf(LATER_DAYS))
-                .addDate("currentDate", new Date())
-                .toJobParameters();
+    public void startScheduler() {
+        this.scheduler = new ThreadPoolTaskScheduler();
+        scheduler.initialize();
+        scheduler.schedule(getRunnable(), getTrigger());
+    }
 
-        try {
-            jobLauncher.run(giveBirthdayCouponJob, jobParameters);
-        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException |
-                 JobParametersInvalidException | JobRestartException e) {
-            log.error(e.getMessage());
-        }
+    public void stopScheduler() {
+        scheduler.shutdown();
+    }
 
-        log.info("=== giveBirthdayCoupon schedule ended at {} ===", LocalDateTime.now());
+    private Trigger getTrigger() {
+        return new CronTrigger(this.issueCron);
+    }
+
+    @PostConstruct
+    public void init() {
+        startScheduler();
+    }
+
+    @PreDestroy
+    public void destroy() {
+        stopScheduler();
     }
 }

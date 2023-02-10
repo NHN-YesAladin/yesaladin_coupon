@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,8 @@ class JpaCommandCouponOfTheMonthPolicyRepositoryTest {
                 .coupon(coupon)
                 .openDate(1)
                 .openTime(LocalTime.of(0, 0))
+                .createdDateTime(LocalDateTime.now())
+                .quantity(1)
                 .build();
         // when
         CouponOfTheMonthPolicy actual = repository.save(policy);
