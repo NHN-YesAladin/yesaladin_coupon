@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
@@ -31,11 +33,11 @@ public class PointCouponRequestDto extends CouponRequestDto {
             Boolean isUnlimited,
             @PositiveOrZero(message = "invalid coupon quantity") Integer quantity,
             @Range(min = 1, max = 31) Integer couponOpenDate,
-            LocalTime couponOpenTime,
+            @DateTimeFormat(pattern = "HH:mm") LocalTime couponOpenTime,
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
-            LocalDate expirationDate,
+            @DateTimeFormat(iso = ISO.DATE) LocalDate expirationDate,
             CouponTypeCode couponTypeCode,
             int chargePointAmount
     ) {

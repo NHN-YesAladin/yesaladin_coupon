@@ -40,6 +40,7 @@ public abstract class CouponRequestDto {
     @Range(min = 1, max = 31)
     private Integer couponOpenDate;
 
+    @DateTimeFormat(pattern = "hh:mm")
     private LocalTime couponOpenTime;
 
     private MultipartFile imageFile;
