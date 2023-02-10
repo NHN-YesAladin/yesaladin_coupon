@@ -10,6 +10,9 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponOfTheMonthPolic
 
 /**
  * 이달의 쿠폰 정책을 조회하는 Repository 의 구현 클래스입니다.
+ *
+ * @author 서민지
+ * @since 1.0
  */
 @RequiredArgsConstructor
 @Repository

@@ -55,6 +55,5 @@ class QueryDslQueryCouponOfTheMonthRepositoryTest {
 
         // then
         Assertions.assertThat(result.get().getOpenDate()).isEqualTo(2);
-        System.out.println(result.get().getCoupon().getName());
     }
 }

@@ -5,7 +5,6 @@ import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.COUPON_OF_THE_MONTH;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
@@ -176,7 +175,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 .openTime(dto.getCouponOpenTime())
                 .openDate(dto.getCouponOpenDate())
                 .quantity(dto.getQuantity())
-                .createdDateTime(LocalDateTime.now())
+                .createdDateTime(null)
                 .build();
 
         couponOfTheMonthPolicyRepository.save(policy);

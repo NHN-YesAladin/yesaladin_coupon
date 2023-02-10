@@ -26,8 +26,6 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
  */
 @ToString
 @Getter
-@Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public abstract class CouponRequestDto {
 

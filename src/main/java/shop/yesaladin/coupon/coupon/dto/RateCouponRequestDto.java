@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -27,8 +26,6 @@ import shop.yesaladin.coupon.coupon.domain.model.RateCoupon;
  * @since 1.0
  */
 @Getter
-@Setter
-@NoArgsConstructor
 public class RateCouponRequestDto extends CouponRequestDto {
 
     public RateCouponRequestDto(
