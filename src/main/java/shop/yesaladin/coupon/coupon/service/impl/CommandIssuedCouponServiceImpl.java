@@ -3,6 +3,7 @@ package shop.yesaladin.coupon.coupon.service.impl;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -110,12 +111,13 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
         }
 
         return couponGroupList.stream().map(couponGroup -> {
-            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(couponGroup,
+            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
+                    couponGroup,
                     requestDto.getQuantity()
             );
             issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
             return List.of(createResponse(issuanceDataList, couponGroup.getGroupCode()));
-        }).findAny().orElseThrow(IllegalStateException::new);
+        }).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     private List<IssuedCouponInsertDto> createIssuanceDataList(
