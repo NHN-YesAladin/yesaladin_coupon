@@ -2,8 +2,8 @@ package shop.yesaladin.coupon.coupon.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 쿠폰 관련 데이터를 조회하기 위한 Repository 인터페이스입니다.

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.yesaladin.common.dto.ResponseDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 
 /**
  * 쿠폰 발급 관련 Command 요청을 처리하는 Controller 클래스입니다.
@@ -25,7 +25,7 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandIssueCouponService;
 @RequestMapping("/v1/issuances")
 public class CommandIssuedCouponController {
 
-    private final CommandIssueCouponService issuanceCommandService;
+    private final CommandIssuedCouponService issuanceCommandService;
 
     /**
      * 쿠폰을 발행합니다.

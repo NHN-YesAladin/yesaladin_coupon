@@ -1,15 +1,20 @@
 package shop.yesaladin.coupon.coupon.controller;
 
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shop.yesaladin.common.dto.ResponseDto;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
+import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryDto;
+import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryRequestDto;
 import shop.yesaladin.coupon.coupon.dto.PaginatedResponseDto;
 import shop.yesaladin.coupon.coupon.service.inter.QueryCouponService;
 
@@ -36,8 +41,7 @@ public class QueryCouponController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<PaginatedResponseDto<CouponSummaryDto>> getCouponList(Pageable pageable) {
 
-        Page<CouponSummaryDto> couponList = queryCouponService.getTriggeredCouponList(
-                pageable);
+        Page<CouponSummaryDto> couponList = queryCouponService.getTriggeredCouponList(pageable);
 
         PaginatedResponseDto<CouponSummaryDto> data = PaginatedResponseDto.<CouponSummaryDto>builder()
                 .currentPage(couponList.getNumber())
@@ -50,6 +54,25 @@ public class QueryCouponController {
                 .success(true)
                 .status(HttpStatus.OK)
                 .data(data)
+                .build();
+    }
+
+    /**
+     * 회원이 가진 쿠폰코드에 대한 쿠폰 정보를 조회합니다.
+     *
+     * @param memberCouponRequestDto 회원이 가진 쿠폰코드 리스트
+     * @return 회원이 가진 쿠폰에 대한 요약 정보
+     */
+    @GetMapping(params = {"couponCodes"})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseDto<List<MemberCouponSummaryDto>> getMemberCouponSummaryList(@Valid @ModelAttribute MemberCouponSummaryRequestDto memberCouponRequestDto) {
+        List<MemberCouponSummaryDto> memberCouponList = queryCouponService.getMemberCouponList(
+                memberCouponRequestDto.getCouponCodes());
+
+        return ResponseDto.<List<MemberCouponSummaryDto>>builder()
+                .success(true)
+                .status(HttpStatus.OK)
+                .data(memberCouponList)
                 .build();
     }
 }

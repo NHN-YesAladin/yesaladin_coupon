@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class IssuedCouponInsertDto {
 
-    private final long couponId;
+    private final long couponGroupId;
     private final String couponTypeCode;
     private final LocalDate expirationDate;
 }

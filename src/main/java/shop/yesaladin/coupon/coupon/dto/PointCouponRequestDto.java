@@ -1,19 +1,21 @@
 package shop.yesaladin.coupon.coupon.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.web.multipart.MultipartFile;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 /**
  * 포인트 쿠폰 생성 요청 시 사용하는 Dto 입니다.
@@ -30,6 +32,8 @@ public class PointCouponRequestDto extends CouponRequestDto {
             @NotBlank(message = "coupon name must be at least 2 characters long") @Length(max = 50, message = "coupon name cannot be more than 50 characters") String name,
             Boolean isUnlimited,
             @PositiveOrZero(message = "invalid coupon quantity") Integer quantity,
+            @Range(min = 1, max = 31) Integer couponOpenDate,
+            @DateTimeFormat(pattern = "HH:mm") LocalTime couponOpenTime,
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,
@@ -42,6 +46,8 @@ public class PointCouponRequestDto extends CouponRequestDto {
                 name,
                 isUnlimited,
                 quantity,
+                couponOpenDate,
+                couponOpenTime,
                 imageFile,
                 imageFileUri,
                 duration,

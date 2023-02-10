@@ -1,18 +1,20 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import shop.yesaladin.coupon.code.CouponTypeCode;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
-import shop.yesaladin.coupon.coupon.domain.model.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
-import shop.yesaladin.coupon.trigger.TriggerTypeCode;
 
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 class JpaTriggerRepositoryTest {
 
     @Autowired
