@@ -39,8 +39,7 @@ public class CommandCouponController {
     @PostMapping(params = {"point"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDto<CouponResponseDto> createPointCoupon(@Valid @ModelAttribute PointCouponRequestDto couponRequestDto) {
-        CouponResponseDto data = commandCouponService.createPointCoupon(
-                couponRequestDto);
+        CouponResponseDto data = commandCouponService.createPointCoupon(couponRequestDto);
 
         return ResponseDto.<CouponResponseDto>builder()
                 .success(true)
@@ -58,8 +57,7 @@ public class CommandCouponController {
     @PostMapping(params = {"amount"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDto<CouponResponseDto> createAmountCoupon(@Valid @ModelAttribute AmountCouponRequestDto couponRequestDto) {
-        CouponResponseDto data = commandCouponService.createAmountCoupon(
-                couponRequestDto);
+        CouponResponseDto data = commandCouponService.createAmountCoupon(couponRequestDto);
 
         return ResponseDto.<CouponResponseDto>builder()
                 .success(true)
