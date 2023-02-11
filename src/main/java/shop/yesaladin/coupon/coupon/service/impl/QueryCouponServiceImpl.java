@@ -50,6 +50,7 @@ public class QueryCouponServiceImpl implements QueryCouponService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public Page<CouponSummaryDto> getCouponListByTriggerTypeCode(
             TriggerTypeCode triggerTypeCode,
             Pageable pageable
