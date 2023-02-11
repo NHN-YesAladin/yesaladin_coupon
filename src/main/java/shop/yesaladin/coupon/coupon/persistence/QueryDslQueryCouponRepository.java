@@ -1,9 +1,13 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
@@ -39,12 +43,22 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode) {
+    public Page<Coupon> findCouponByTriggerCode(
+            TriggerTypeCode triggerTypeCode,
+            Pageable pageable
+    ) {
         QTrigger trigger = QTrigger.trigger;
 
-        return queryFactory.select(trigger.coupon)
+        List<Coupon> couponList = queryFactory.select(trigger.coupon)
                 .from(trigger)
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
                 .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory.select(trigger.count())
+                .from(trigger);
+
+        return PageableExecutionUtils.getPage(couponList, pageable, countQuery::fetchFirst);
     }
 }

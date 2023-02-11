@@ -1,7 +1,8 @@
 package shop.yesaladin.coupon.coupon.domain.repository;
 
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 
@@ -23,10 +24,11 @@ public interface QueryCouponRepository {
     Optional<Coupon> findCouponById(long couponId);
 
     /**
-     * 트리거 코드로 쿠폰 정보를 가져오는 메서드입니다.
+     * 트리거 코드로 쿠폰 정보를 페이지네이션하여 가져옵니다.
      *
      * @param triggerTypeCode 정보를 가져올 트리거 코드
+     * @param pageable        페이지네이션을 위한 pageable 객체
      * @return 해당 트리거를 가진 모든 쿠폰 리스트
      */
-    List<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode);
+    Page<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode, Pageable pageable);
 }
