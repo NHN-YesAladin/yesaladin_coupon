@@ -27,7 +27,7 @@ public class CouponOfTheMonthServiceImpl implements CouponOfTheMonthService {
     @Override
     @Transactional(readOnly = true)
     public CouponOfTheMonthPolicy getLatestPolicy() {
-        return queryCouponOfTheMonthPolicyRepository.findFirstByOrderByIdDesc().orElseThrow(
+        return queryCouponOfTheMonthPolicyRepository.findLatestCouponOfTheMonthPolicy().orElseThrow(
                 () -> new ClientException(ErrorCode.NOT_FOUND, "이달의 쿠폰 정책이 존재하지 않습니다.")
         );
     }

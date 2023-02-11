@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import shop.yesaladin.common.code.ErrorCode;
-import shop.yesaladin.common.exception.ServerException;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.StorageConfiguration;
@@ -225,7 +223,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            throw new ServerException(ErrorCode.BAD_REQUEST, "Fail to update issue scheduler of coupon");
+            // TODO exception 정의하기
+            throw new RuntimeException(e);
         }
         couponOfTheCouponScheduler.changeIssueTime(
                 openDate,

@@ -16,7 +16,7 @@ import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponOfTheMonthPolic
  */
 @RequiredArgsConstructor
 @Repository
-public class QueryDslQueryCouponOfTheMonthRepository implements
+public class QueryDslQueryCouponOfTheMonthPolicyRepository implements
         QueryCouponOfTheMonthPolicyRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -25,7 +25,7 @@ public class QueryDslQueryCouponOfTheMonthRepository implements
      * {@inheritDoc}
      */
     @Override
-    public Optional<CouponOfTheMonthPolicy> findFirstByOrderByIdDesc() {
+    public Optional<CouponOfTheMonthPolicy> findLatestCouponOfTheMonthPolicy() {
         QCouponOfTheMonthPolicy policy = QCouponOfTheMonthPolicy.couponOfTheMonthPolicy;
 
         return Optional.ofNullable(queryFactory.selectFrom(policy)

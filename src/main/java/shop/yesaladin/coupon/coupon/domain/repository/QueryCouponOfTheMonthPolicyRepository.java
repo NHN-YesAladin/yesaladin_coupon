@@ -16,5 +16,5 @@ public interface QueryCouponOfTheMonthPolicyRepository {
      *
      * @return 가장 최근에 등록된 이달의 쿠폰 정책
      */
-    Optional<CouponOfTheMonthPolicy> findFirstByOrderByIdDesc();
+    Optional<CouponOfTheMonthPolicy> findLatestCouponOfTheMonthPolicy();
 }
