@@ -17,6 +17,7 @@ import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.PointCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
+import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 @Transactional
 @SpringBootTest
@@ -73,13 +74,19 @@ class QueryDslQueryCouponRepositoryTest {
     @DisplayName("트리거 코드로 쿠폰 조회에 성공한다.")
     void findCouponByTriggerTypeCodeTest() {
         // when
-        Page<Coupon> actual = repository.findCouponByTriggerCode(
+        Page<CouponSummaryDto> actual = repository.findCouponByTriggerCode(
                 TriggerTypeCode.SIGN_UP,
                 PageRequest.of(0, 10)
         );
 
         // then
         Assertions.assertThat(actual).hasSize(1);
-        Assertions.assertThat(actual.getContent()).contains(triggeredCoupon);
+        CouponSummaryDto actualCouponSummaryDto = actual.getContent().get(0);
+        Assertions.assertThat(actualCouponSummaryDto.getName())
+                .isEqualTo(triggeredCoupon.getName());
+        Assertions.assertThat(actualCouponSummaryDto.getCouponTypeCode()).isEqualTo(CouponTypeCode.POINT);
+        Assertions.assertThat(actualCouponSummaryDto.getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);
+        Assertions.assertThat(actualCouponSummaryDto.getId()).isEqualTo(triggeredCoupon.getId());
+
     }
 }

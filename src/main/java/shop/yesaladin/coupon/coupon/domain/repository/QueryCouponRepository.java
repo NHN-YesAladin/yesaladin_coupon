@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
+import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 /**
  * 쿠폰 관련 데이터를 조회하기 위한 Repository 인터페이스입니다.
@@ -30,5 +31,5 @@ public interface QueryCouponRepository {
      * @param pageable        페이지네이션을 위한 pageable 객체
      * @return 해당 트리거를 가진 모든 쿠폰 리스트
      */
-    Page<Coupon> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode, Pageable pageable);
+    Page<CouponSummaryDto> findCouponByTriggerCode(TriggerTypeCode triggerTypeCode, Pageable pageable);
 }

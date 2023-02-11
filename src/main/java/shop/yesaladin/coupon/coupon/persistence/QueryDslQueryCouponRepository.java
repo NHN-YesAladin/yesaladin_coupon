@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QCoupon;
 import shop.yesaladin.coupon.coupon.domain.model.querydsl.QTrigger;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
+import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 /**
  * QueryDsl 을 사용하여 쿠폰 관련 정보를 가져오기 위한 Repository 구현체입니다.
@@ -43,9 +45,8 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
      * {@inheritDoc}
      */
     @Override
-    public Page<Coupon> findCouponByTriggerCode(
-            TriggerTypeCode triggerTypeCode,
-            Pageable pageable
+    public Page<CouponSummaryDto> findCouponByTriggerCode(
+            TriggerTypeCode triggerTypeCode, Pageable pageable
     ) {
         QTrigger trigger = QTrigger.trigger;
 
@@ -56,9 +57,16 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
                 .offset(pageable.getOffset())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory.select(trigger.count())
-                .from(trigger);
+        JPAQuery<Long> countQuery = queryFactory.select(trigger.count()).from(trigger);
 
-        return PageableExecutionUtils.getPage(couponList, pageable, countQuery::fetchFirst);
+        List<CouponSummaryDto> couponSummaryDtoList = couponList.stream()
+                .map(coupon -> new CouponSummaryDto().toDto(triggerTypeCode, coupon))
+                .collect(Collectors.toList());
+
+        return PageableExecutionUtils.getPage(
+                couponSummaryDtoList,
+                pageable,
+                countQuery::fetchFirst
+        );
     }
 }
