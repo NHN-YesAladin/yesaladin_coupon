@@ -5,13 +5,16 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import shop.yesaladin.common.dto.ResponseDto;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryDto;
 import shop.yesaladin.coupon.coupon.dto.MemberCouponSummaryRequestDto;
@@ -73,6 +76,37 @@ public class QueryCouponController {
                 .success(true)
                 .status(HttpStatus.OK)
                 .data(memberCouponList)
+                .build();
+    }
+
+    /**
+     * 트리거 타입 코드로 쿠폰 정보를 조회합니다.
+     *
+     * @param triggerType 조회할 트리거 타입 코드
+     * @param pageable        페이지네이션 정보가 담긴 pageable 객체
+     * @return 조회된 쿠폰 정보
+     */
+    @GetMapping(params = "triggerType")
+    public ResponseDto<PaginatedResponseDto<CouponSummaryDto>> getCouponListByTriggerTypeCode(
+            @RequestParam TriggerTypeCode triggerType,
+            @PageableDefault(size = 6) Pageable pageable
+    ) {
+        Page<CouponSummaryDto> couponList = queryCouponService.getCouponListByTriggerTypeCode(
+                triggerType,
+                pageable
+        );
+
+        PaginatedResponseDto<CouponSummaryDto> paginatedCouponList = PaginatedResponseDto.<CouponSummaryDto>builder()
+                .currentPage(pageable.getPageNumber())
+                .totalPage(couponList.getTotalPages())
+                .totalDataCount(couponList.getTotalElements())
+                .dataList(couponList.getContent())
+                .build();
+
+        return ResponseDto.<PaginatedResponseDto<CouponSummaryDto>>builder()
+                .success(true)
+                .status(HttpStatus.OK)
+                .data(paginatedCouponList)
                 .build();
     }
 }
