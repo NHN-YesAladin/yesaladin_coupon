@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
@@ -15,6 +16,7 @@ import shop.yesaladin.coupon.coupon.dummy.CouponBoundDummy;
 import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 
 @SpringBootTest
+@ActiveProfiles("local-test")
 @Transactional
 class QueryDslQueryCouponBoundRepositoryTest {
 

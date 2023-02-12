@@ -14,12 +14,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 
 @Disabled
 @SpringBootTest
+@ActiveProfiles("local-test")
 @EmbeddedKafka(brokerProperties = {
         "listeners=PLAINTEXT://localhost:9093", "port=9093"})
 class CouponProducerTest {

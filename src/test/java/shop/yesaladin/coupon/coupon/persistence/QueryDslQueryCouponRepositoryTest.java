@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
@@ -21,6 +22,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 
 @Transactional
 @SpringBootTest
+@ActiveProfiles("local-test")
 class QueryDslQueryCouponRepositoryTest {
 
     @Autowired
@@ -57,7 +59,7 @@ class QueryDslQueryCouponRepositoryTest {
                 .coupon(triggeredCoupon)
                 .build();
         em.persist(trigger);
-        
+
     }
 
     @Test
@@ -84,8 +86,10 @@ class QueryDslQueryCouponRepositoryTest {
         CouponSummaryDto actualCouponSummaryDto = actual.getContent().get(0);
         Assertions.assertThat(actualCouponSummaryDto.getName())
                 .isEqualTo(triggeredCoupon.getName());
-        Assertions.assertThat(actualCouponSummaryDto.getCouponTypeCode()).isEqualTo(CouponTypeCode.POINT);
-        Assertions.assertThat(actualCouponSummaryDto.getTriggerTypeCode()).isEqualTo(TriggerTypeCode.SIGN_UP);
+        Assertions.assertThat(actualCouponSummaryDto.getCouponTypeCode())
+                .isEqualTo(CouponTypeCode.POINT);
+        Assertions.assertThat(actualCouponSummaryDto.getTriggerTypeCode())
+                .isEqualTo(TriggerTypeCode.SIGN_UP);
         Assertions.assertThat(actualCouponSummaryDto.getId()).isEqualTo(triggeredCoupon.getId());
 
     }
