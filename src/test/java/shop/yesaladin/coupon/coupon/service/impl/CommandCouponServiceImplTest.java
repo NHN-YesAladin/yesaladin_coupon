@@ -28,6 +28,7 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
+import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 
 class CommandCouponServiceImplTest {
 
@@ -40,6 +41,7 @@ class CommandCouponServiceImplTest {
     private CommandCouponServiceImpl couponService;
     private ObjectStorageService objectStorageService;
     private StorageConfiguration storageConfiguration;
+    private CouponOfTheCouponScheduler couponOfTheCouponScheduler;
     private Coupon coupon;
 
     @BeforeEach
@@ -51,6 +53,7 @@ class CommandCouponServiceImplTest {
         couponGroupRepository = Mockito.mock(CommandCouponGroupRepository.class);
         issueCouponService = Mockito.mock(CommandIssuedCouponService.class);
         objectStorageService = Mockito.mock(ObjectStorageService.class);
+        couponOfTheCouponScheduler = Mockito.mock(CouponOfTheCouponScheduler.class);
 
         couponService = new CommandCouponServiceImpl(
                 couponOfTheMonthPolicyRepository,
@@ -60,7 +63,8 @@ class CommandCouponServiceImplTest {
                 couponGroupRepository,
                 issueCouponService,
                 objectStorageService,
-                storageConfiguration
+                storageConfiguration,
+                couponOfTheCouponScheduler
         );
     }
 

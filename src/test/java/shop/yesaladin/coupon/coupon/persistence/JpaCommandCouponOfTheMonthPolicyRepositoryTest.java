@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.persistence;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponOfTheMonthPolicy;
 import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 
 @DataJpaTest
+@ActiveProfiles("local-test")
 class JpaCommandCouponOfTheMonthPolicyRepositoryTest {
 
     @Autowired
@@ -35,6 +38,8 @@ class JpaCommandCouponOfTheMonthPolicyRepositoryTest {
                 .coupon(coupon)
                 .openDate(1)
                 .openTime(LocalTime.of(0, 0))
+                .createdDateTime(LocalDateTime.now())
+                .quantity(1)
                 .build();
         // when
         CouponOfTheMonthPolicy actual = repository.save(policy);

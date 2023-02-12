@@ -87,7 +87,8 @@ class CommandCouponControllerTest {
                         fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
                                 .optional()
                                 .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("생성된 쿠폰의 이름"),
+                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                                .description("생성된 쿠폰의 이름"),
                         fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )
@@ -153,7 +154,8 @@ class CommandCouponControllerTest {
                         fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
                                 .optional()
                                 .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("생성된 쿠폰의 이름"),
+                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                                .description("생성된 쿠폰의 이름"),
                         fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )
@@ -224,7 +226,8 @@ class CommandCouponControllerTest {
                         fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
                                 .optional()
                                 .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING).description("생성된 쿠폰의 이름"),
+                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                                .description("생성된 쿠폰의 이름"),
                         fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )

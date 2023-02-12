@@ -22,6 +22,7 @@ import shop.yesaladin.coupon.coupon.dto.IssuedCouponInsertDto;
 
 @Transactional
 @SpringBootTest
+@ActiveProfiles("local-test")
 class MyBatisInsertCouponIssuanceMapperTest {
 
     @Autowired

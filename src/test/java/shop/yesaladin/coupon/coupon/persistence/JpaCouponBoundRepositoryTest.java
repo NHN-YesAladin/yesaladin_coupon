@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
@@ -15,6 +16,7 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 
 @DataJpaTest
+@ActiveProfiles("local-test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class JpaCouponBoundRepositoryTest {
 
@@ -33,6 +35,7 @@ class JpaCouponBoundRepositoryTest {
                 .discountAmount(1000)
                 .build();
     }
+
     @Test
     void save() {
         // given

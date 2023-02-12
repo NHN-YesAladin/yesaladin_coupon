@@ -5,6 +5,7 @@ import static shop.yesaladin.coupon.code.TriggerTypeCode.BIRTHDAY;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.COUPON_OF_THE_MONTH;
 import static shop.yesaladin.coupon.code.TriggerTypeCode.SIGN_UP;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -35,6 +36,7 @@ import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
+import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 
 /**
  * CommandCouponService 인터페이스의 구현체 입니다.
@@ -55,6 +57,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandIssuedCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
+    private final CouponOfTheCouponScheduler couponOfTheCouponScheduler;
 
     /**
      * {@inheritDoc}
@@ -140,7 +143,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             issueCouponService.issueCoupon(requestDto);
 
             log.info(
-                    "=== [{}] {} coupons with #{} has been issued.===",
+                    "=== [{}] {} coupons with #{} has been issued. ===",
                     requestDto.getTriggerTypeCode(),
                     requestDto.getCouponId(),
                     requestDto.getQuantity()
@@ -150,9 +153,12 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         return coupon;
     }
 
-    private void checkIsCouponOfTheMonth(CouponRequestDto amountCouponRequestDto, Coupon coupon) {
-        if (isCouponOfTheMonth(amountCouponRequestDto)) {
-            createCouponOfTheMonthPolicy(amountCouponRequestDto, coupon);
+    private void checkIsCouponOfTheMonth(CouponRequestDto couponRequestDto, Coupon coupon) {
+        if (isCouponOfTheMonth(couponRequestDto)) {
+            createCouponOfTheMonthPolicy(couponRequestDto, coupon);
+            updateCouponOfTheMonthScheduler(couponRequestDto.getCouponOpenDate(),
+                    couponRequestDto.getCouponOpenTime()
+            );
         }
     }
 
@@ -161,10 +167,13 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private void createCouponOfTheMonthPolicy(CouponRequestDto dto, Coupon coupon) {
+        log.info("==== [COUPON] coupon create request dto {} ====", dto);
         CouponOfTheMonthPolicy policy = CouponOfTheMonthPolicy.builder()
                 .coupon(coupon)
                 .openTime(dto.getCouponOpenTime())
                 .openDate(dto.getCouponOpenDate())
+                .quantity(dto.getQuantity())
+                .createdDateTime(null)
                 .build();
 
         couponOfTheMonthPolicyRepository.save(policy);
@@ -201,5 +210,28 @@ public class CommandCouponServiceImpl implements CommandCouponService {
 
     private boolean notToBeIssued(TriggerTypeCode triggerTypeCode) {
         return List.of(BIRTHDAY, SIGN_UP, COUPON_OF_THE_MONTH).contains(triggerTypeCode);
+    }
+
+    /**
+     * 이달의 쿠폰을 생성하였을 시 '이달의 쿠폰 자동 발행 스케줄러'를 업데이트합니다. 등록된 이달의 쿠폰은 오픈 시간 1시간 전에 발행이 시작됩니다.
+     *
+     * @param openDate 등록된 쿠폰의 오픈일
+     * @param openTime 등록된 쿠폰의 오픈 시간
+     */
+    private void updateCouponOfTheMonthScheduler(int openDate, LocalTime openTime) {
+        couponOfTheCouponScheduler.stopScheduler();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            // TODO exception 정의하기
+            throw new RuntimeException(e);
+        }
+        couponOfTheCouponScheduler.changeIssueTime(
+                openDate,
+                openTime.getHour() - 1,
+                openTime.getMinute()
+        );
+        couponOfTheCouponScheduler.startScheduler();
+        log.info("==== [COUPON SCHEDULER] scheduler is updated. {} {} ====", openDate, openTime);
     }
 }
