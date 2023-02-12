@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponOfTheMonthPolicy;
@@ -17,6 +18,7 @@ import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 
 @Transactional
 @SpringBootTest
+@ActiveProfiles("local-test")
 class QueryDslQueryCouponOfTheMonthPolicyRepositoryTest {
 
     @Autowired

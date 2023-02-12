@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponOfTheMonthPolicy;
 import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 
 @DataJpaTest
+@ActiveProfiles("local-test")
 class JpaCommandCouponOfTheMonthPolicyRepositoryTest {
 
     @Autowired
