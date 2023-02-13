@@ -3,6 +3,7 @@ package shop.yesaladin.coupon.coupon.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponGroupRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponGroupAndLimitDto;
@@ -15,6 +16,7 @@ public class QueryCouponGroupServiceImpl implements QueryCouponGroupService {
     private final QueryCouponGroupRepository queryCouponGroupRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<CouponGroupAndLimitDto> getCouponGroupAndLimit(
             TriggerTypeCode triggerTypeCode,
             Long couponId

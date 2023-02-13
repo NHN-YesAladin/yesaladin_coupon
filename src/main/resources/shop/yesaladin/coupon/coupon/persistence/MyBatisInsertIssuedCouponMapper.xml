@@ -8,7 +8,7 @@
         coupon_given_state_code_id, coupon_usage_state_code_id,
         expiration_date) VALUES
         <foreach collection="insertDataList" item="data" separator=",">
-            (#{data.couponGroupId}, #{data.couponTypeCode}, NOW(), 1, 1, #{data.expirationDate})
+            (#{data.couponGroupId}, #{data.couponCode}, NOW(), 1, 1, #{data.expirationDate})
         </foreach>
     </insert>
 </mapper>

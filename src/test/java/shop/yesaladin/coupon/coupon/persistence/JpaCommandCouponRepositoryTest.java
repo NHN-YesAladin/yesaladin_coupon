@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.config.JpaAuditingConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.AmountCoupon;
@@ -16,6 +17,7 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 
 @Import(JpaAuditingConfiguration.class)
 @DataJpaTest
+@ActiveProfiles("local-test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class JpaCommandCouponRepositoryTest {
 

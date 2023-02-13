@@ -20,6 +20,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.ActiveProfiles;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
@@ -27,6 +28,7 @@ import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 
 @Disabled
 @SpringBootTest
+@ActiveProfiles("local-test")
 @EmbeddedKafka(brokerProperties = {
         "listeners=PLAINTEXT://localhost:9092", "port=9092"})
 class CouponConsumerTest {

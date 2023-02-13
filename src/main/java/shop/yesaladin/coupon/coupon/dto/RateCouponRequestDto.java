@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,7 +34,7 @@ public class RateCouponRequestDto extends CouponRequestDto {
             Boolean isUnlimited,
             @PositiveOrZero(message = "invalid coupon quantity") Integer quantity,
             @Range(min = 1, max = 31) Integer couponOpenDate,
-            @DateTimeFormat(pattern = "HH:mm") LocalTime couponOpenTime,
+            @DateTimeFormat(pattern = "kk:mm") LocalTime couponOpenTime,
             MultipartFile imageFile,
             String imageFileUri,
             @PositiveOrZero(message = "invalid duration of use") Integer duration,

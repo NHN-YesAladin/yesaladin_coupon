@@ -72,12 +72,14 @@ class CouponCouponConsumerServiceImplTest {
                 .build();
 
         // when
-        when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenReturn(List.of(couponIssueResponseDto));
+        when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenReturn(List.of(
+                couponIssueResponseDto));
         when(kafkaTopicProperties.getGiveRequestResponse()).thenReturn(topic);
         service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1))
+                .responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons().get(0).getCouponCodes()).isEqualTo(
@@ -103,7 +105,8 @@ class CouponCouponConsumerServiceImplTest {
         service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1)).responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
+        Mockito.verify(couponProducer, times(1))
+                .responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons()).isNull();

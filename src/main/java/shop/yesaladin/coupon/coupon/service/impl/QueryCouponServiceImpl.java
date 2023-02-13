@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.code.TriggerTypeCode;
+import shop.yesaladin.coupon.coupon.domain.repository.QueryCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryIssuedCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.QueryTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
@@ -24,6 +26,7 @@ public class QueryCouponServiceImpl implements QueryCouponService {
 
     private final QueryTriggerRepository queryTriggerRepository;
     private final QueryIssuedCouponRepository queryIssuedCouponRepository;
+    private final QueryCouponRepository queryCouponRepository;
 
     /**
      * {@inheritDoc}
@@ -41,5 +44,17 @@ public class QueryCouponServiceImpl implements QueryCouponService {
     @Transactional(readOnly = true)
     public List<MemberCouponSummaryDto> getMemberCouponList(List<String> couponCodeList) {
         return queryIssuedCouponRepository.getMemberCouponSummary(couponCodeList);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<CouponSummaryDto> getCouponListByTriggerTypeCode(
+            TriggerTypeCode triggerTypeCode,
+            Pageable pageable
+    ) {
+        return queryCouponRepository.findCouponByTriggerCode(triggerTypeCode, pageable);
     }
 }

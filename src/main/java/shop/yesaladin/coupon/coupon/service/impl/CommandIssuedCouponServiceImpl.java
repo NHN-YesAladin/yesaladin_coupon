@@ -3,12 +3,14 @@ package shop.yesaladin.coupon.coupon.service.impl;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.common.code.ErrorCode;
@@ -34,6 +36,7 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
  * @author 김홍대, 서민지
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponService {
@@ -100,13 +103,21 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     private List<CouponIssueResponseDto> issueCouponByTriggerTypeCode(CouponIssueRequestDto requestDto) {
         List<CouponGroup> couponGroupList = getCouponGroupByRequestDto(requestDto);
 
+        for (int i = 0; i < couponGroupList.size(); i++) {
+            log.info(
+                    "==== [COUPON] 쿠폰 발행시 trigger type {}, coupon id {} 로 찾은 쿠폰 그룹 코드 : {} ====",
+                    couponGroupList.get(i).getGroupCode()
+            );
+        }
+
         return couponGroupList.stream().map(couponGroup -> {
-            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(couponGroup,
+            List<IssuedCouponInsertDto> issuanceDataList = createIssuanceDataList(
+                    couponGroup,
                     requestDto.getQuantity()
             );
             issuanceInsertRepository.insertIssuedCoupon(issuanceDataList);
             return List.of(createResponse(issuanceDataList, couponGroup.getGroupCode()));
-        }).findAny().orElseThrow(IllegalStateException::new);
+        }).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
     private List<IssuedCouponInsertDto> createIssuanceDataList(
@@ -185,7 +196,7 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
     ) {
         LocalDate expirationDate = issuanceDataList.get(0).getExpirationDate();
         List<String> createdCouponCodes = issuanceDataList.stream()
-                .map(IssuedCouponInsertDto::getCouponTypeCode)
+                .map(IssuedCouponInsertDto::getCouponCode)
                 .collect(Collectors.toList());
         return new CouponIssueResponseDto(createdCouponCodes, couponGroupCode, expirationDate);
     }

@@ -6,7 +6,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +24,7 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
  * @author 서민지
  * @since 1.0
  */
+@ToString
 @Getter
 @AllArgsConstructor
 public abstract class CouponRequestDto {
@@ -40,7 +43,7 @@ public abstract class CouponRequestDto {
     @Range(min = 1, max = 31)
     private Integer couponOpenDate;
 
-    @DateTimeFormat(pattern = "hh:mm")
+    @DateTimeFormat(pattern = "kk:mm")
     private LocalTime couponOpenTime;
 
     private MultipartFile imageFile;
