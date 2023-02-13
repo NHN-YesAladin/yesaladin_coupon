@@ -68,9 +68,9 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setHashValueSerializer(springDefaultRedisSerializer());
 
         return redisTemplate;
     }
@@ -86,6 +86,4 @@ public class RedisConfig {
     public RedisSerializer<Object> springDefaultRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
-
-
 }
