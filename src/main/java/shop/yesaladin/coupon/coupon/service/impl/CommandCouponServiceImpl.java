@@ -173,12 +173,21 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                     couponRequestDto.getCouponOpenDate(),
                     couponRequestDto.getCouponOpenTime()
             );
-
-            LocalDate localDate = LocalDate.now().withDayOfMonth(couponRequestDto.getCouponOpenDate());
-            LocalDateTime openDateTime = LocalDateTime.of(localDate, couponRequestDto.getCouponOpenTime());
-            redisTemplate.opsForValue().set(MONTHLY_COUPON_ID_KEY, coupon.getId().toString());
-            redisTemplate.opsForValue().set(MONTHLY_COUPON_OPEN_DATE_TIME_KEY, openDateTime.toString());
+            storeMonthlyCouponEventInfo(couponRequestDto, coupon);
         }
+    }
+
+    /**
+     * redis 에 신규로 등록된 이달의 쿠폰 이벤트 정보(쿠폰 아이디, 오픈 시간)를 저장합니다.
+     *
+     * @param couponRequestDto 이달의 쿠폰 생성 정보를 담은 dto
+     * @param coupon           생성된 이달의 쿠폰
+     */
+    private void storeMonthlyCouponEventInfo(CouponRequestDto couponRequestDto, Coupon coupon) {
+        LocalDate localDate = LocalDate.now().withDayOfMonth(couponRequestDto.getCouponOpenDate());
+        LocalDateTime openDateTime = LocalDateTime.of(localDate, couponRequestDto.getCouponOpenTime());
+        redisTemplate.opsForValue().set(MONTHLY_COUPON_ID_KEY, coupon.getId().toString());
+        redisTemplate.opsForValue().set(MONTHLY_COUPON_OPEN_DATE_TIME_KEY, openDateTime.toString());
     }
 
     private boolean isCouponOfTheMonth(CouponRequestDto dto) {
