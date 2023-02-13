@@ -158,7 +158,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private void checkIsCouponOfTheMonth(CouponRequestDto couponRequestDto, Coupon coupon) {
         if (isCouponOfTheMonth(couponRequestDto)) {
             createCouponOfTheMonthPolicy(couponRequestDto, coupon);
-            updateCouponOfTheMonthScheduler(couponRequestDto.getCouponOpenDate(),
+            updateCouponOfTheMonthScheduler(
+                    couponRequestDto.getCouponOpenDate(),
                     couponRequestDto.getCouponOpenTime()
             );
             redisTemplate.opsForValue().set("monthlyCouponId", coupon.getId().toString());
