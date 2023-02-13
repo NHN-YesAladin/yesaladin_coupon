@@ -12,6 +12,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.yesaladin.coupon.code.CouponBoundCode;
@@ -58,6 +59,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
     private final CouponOfTheCouponScheduler couponOfTheCouponScheduler;
+    private final RedisTemplate<String, String> redisTemplate;
 
     /**
      * {@inheritDoc}
@@ -159,6 +161,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
             updateCouponOfTheMonthScheduler(couponRequestDto.getCouponOpenDate(),
                     couponRequestDto.getCouponOpenTime()
             );
+            redisTemplate.opsForValue().set("monthlyCouponId", coupon.getId().toString());
         }
     }
 
