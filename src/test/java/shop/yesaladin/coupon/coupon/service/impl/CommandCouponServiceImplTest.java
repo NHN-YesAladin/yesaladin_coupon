@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
@@ -30,6 +32,7 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 
+@SuppressWarnings("unchecked")
 class CommandCouponServiceImplTest {
 
     private CommandCouponOfTheMonthPolicyRepository couponOfTheMonthPolicyRepository;
@@ -42,6 +45,7 @@ class CommandCouponServiceImplTest {
     private ObjectStorageService objectStorageService;
     private StorageConfiguration storageConfiguration;
     private CouponOfTheCouponScheduler couponOfTheCouponScheduler;
+    private RedisTemplate<String, String> redisTemplate;
     private Coupon coupon;
 
     @BeforeEach
@@ -54,6 +58,8 @@ class CommandCouponServiceImplTest {
         issueCouponService = Mockito.mock(CommandIssuedCouponService.class);
         objectStorageService = Mockito.mock(ObjectStorageService.class);
         couponOfTheCouponScheduler = Mockito.mock(CouponOfTheCouponScheduler.class);
+        redisTemplate = Mockito.mock(RedisTemplate.class);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(Mockito.mock(ValueOperations.class));
 
         couponService = new CommandCouponServiceImpl(
                 couponOfTheMonthPolicyRepository,
@@ -64,7 +70,8 @@ class CommandCouponServiceImplTest {
                 issueCouponService,
                 objectStorageService,
                 storageConfiguration,
-                couponOfTheCouponScheduler
+                couponOfTheCouponScheduler,
+                redisTemplate
         );
     }
 
@@ -125,7 +132,7 @@ class CommandCouponServiceImplTest {
     @DisplayName("이달의 쿠폰 생성시 이달의 쿠폰 정책과 함께 생성된다.")
     void createCouponOfTheMonthTest() {
         // given
-        RateCoupon coupon = (RateCoupon) CouponDummy.dummyRateCoupon();
+        RateCoupon coupon = (RateCoupon) CouponDummy.dummyRateCouponWithId(1L);
         RateCouponRequestDto requestDto = new RateCouponRequestDto(
                 TriggerTypeCode.COUPON_OF_THE_MONTH,
                 coupon.getName(),
