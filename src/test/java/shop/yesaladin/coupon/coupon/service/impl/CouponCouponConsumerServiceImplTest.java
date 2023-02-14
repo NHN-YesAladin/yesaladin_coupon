@@ -100,7 +100,7 @@ class CouponCouponConsumerServiceImplTest {
 
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenThrow(new ClientException(
-                ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
+                ErrorCode.ISSUED_COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
         when(kafkaTopicProperties.getGiveRequestResponse()).thenReturn(topic);
         service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 

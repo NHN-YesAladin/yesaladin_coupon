@@ -142,7 +142,7 @@ public class CommandIssuedCouponServiceImpl implements CommandIssuedCouponServic
 
         return queryCouponGroupRepository.findCouponGroupByTriggerTypeAndCouponId(triggerTypeCode,
                 couponId
-        ).orElseThrow(() -> new ClientException(ErrorCode.NOT_FOUND,
+        ).orElseThrow(() -> new ClientException(ErrorCode.COUPON_GROUP_NOT_FOUND,
                 "Coupon group not exists. Trigger type : " + triggerTypeCode + " Coupon : "
                         + couponId
         ));
