@@ -44,7 +44,7 @@ public class QueryCouponBoundServiceImpl implements QueryCouponBoundService {
     private CouponBound tryGetCouponBoundByCouponId(long couponId) {
         return queryCouponBoundRepository.findCouponBoundByCouponId(couponId)
                 .orElseThrow(() -> new ClientException(
-                        ErrorCode.NOT_FOUND,
+                        ErrorCode.COUPON_BOUND_NOT_FOUND,
                         "Coupon bound data not exist. Coupon id : " + couponId
                 ));
     }
