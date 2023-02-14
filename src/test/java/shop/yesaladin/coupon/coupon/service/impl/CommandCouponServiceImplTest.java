@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import shop.yesaladin.coupon.code.CouponBoundCode;
@@ -46,6 +47,7 @@ class CommandCouponServiceImplTest {
     private StorageConfiguration storageConfiguration;
     private CouponOfTheCouponScheduler couponOfTheCouponScheduler;
     private RedisTemplate<String, String> redisTemplate;
+    private HashOperations hashOperations;
     private Coupon coupon;
 
     @BeforeEach
@@ -59,6 +61,7 @@ class CommandCouponServiceImplTest {
         objectStorageService = Mockito.mock(ObjectStorageService.class);
         couponOfTheCouponScheduler = Mockito.mock(CouponOfTheCouponScheduler.class);
         redisTemplate = Mockito.mock(RedisTemplate.class);
+        hashOperations = Mockito.mock(HashOperations.class);
         Mockito.when(redisTemplate.opsForValue()).thenReturn(Mockito.mock(ValueOperations.class));
 
         couponService = new CommandCouponServiceImpl(
@@ -154,6 +157,9 @@ class CommandCouponServiceImplTest {
                 null
         );
         Mockito.when(couponRepository.save(any())).thenReturn(coupon);
+        Mockito.when(redisTemplate.opsForHash()).thenReturn(hashOperations);
+        Mockito.doNothing().when(hashOperations).put(any(), any(), any());
+
         // when
         CouponResponseDto actual = couponService.createRateCoupon(requestDto);
 

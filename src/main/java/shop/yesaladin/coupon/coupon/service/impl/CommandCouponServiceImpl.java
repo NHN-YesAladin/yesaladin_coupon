@@ -52,8 +52,9 @@ import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 @Service
 public class CommandCouponServiceImpl implements CommandCouponService {
 
-    private static final String MONTHLY_COUPON_OPEN_DATE_TIME_KEY = "monthlyCouponOpenDateTime";
+    private static final String MONTHLY_POLICY_KEY = "monthlyCouponPolicy";
     private static final String MONTHLY_COUPON_ID_KEY = "monthlyCouponId";
+    private static final String MONTHLY_COUPON_OPEN_DATE_TIME_KEY = "monthlyCouponOpenDateTime";
 
     private final CommandCouponOfTheMonthPolicyRepository couponOfTheMonthPolicyRepository;
     private final CommandCouponRepository couponRepository;
@@ -143,7 +144,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
         if (!notToBeIssued(triggerTypeCode)) {
             CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                    couponRequestDto.getTriggerTypeCode().toString(),
+                    couponRequestDto.getTriggerTypeCode()
+                            .toString(),
                     coupon.getId(),
                     couponRequestDto.getQuantity()
             );
@@ -178,16 +180,25 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     /**
-     * redis 에 신규로 등록된 이달의 쿠폰 이벤트 정보(쿠폰 아이디, 오픈 시간)를 저장합니다.
+     * redis 에 신규로 등록된 이달의 쿠폰 이벤트 정보(쿠폰 아이디, 오픈 날짜 및 시간)를 저장합니다.
      *
      * @param couponRequestDto 이달의 쿠폰 생성 정보를 담은 dto
      * @param coupon           생성된 이달의 쿠폰
      */
     private void storeMonthlyCouponEventInfo(CouponRequestDto couponRequestDto, Coupon coupon) {
-        LocalDate localDate = LocalDate.now().withDayOfMonth(couponRequestDto.getCouponOpenDate());
-        LocalDateTime openDateTime = LocalDateTime.of(localDate, couponRequestDto.getCouponOpenTime());
-        redisTemplate.opsForValue().set(MONTHLY_COUPON_ID_KEY, coupon.getId().toString());
-        redisTemplate.opsForValue().set(MONTHLY_COUPON_OPEN_DATE_TIME_KEY, openDateTime.toString());
+        LocalDate openDate = LocalDate.now().withDayOfMonth(couponRequestDto.getCouponOpenDate());
+        LocalDateTime openDateTime = LocalDateTime.of(
+                openDate,
+                couponRequestDto.getCouponOpenTime()
+        );
+        redisTemplate.opsForHash()
+                .put(MONTHLY_POLICY_KEY, MONTHLY_COUPON_ID_KEY, coupon.getId().toString());
+        redisTemplate.opsForHash()
+                .put(
+                        MONTHLY_POLICY_KEY,
+                        MONTHLY_COUPON_OPEN_DATE_TIME_KEY,
+                        openDateTime.toString()
+                );
     }
 
     private boolean isCouponOfTheMonth(CouponRequestDto dto) {
