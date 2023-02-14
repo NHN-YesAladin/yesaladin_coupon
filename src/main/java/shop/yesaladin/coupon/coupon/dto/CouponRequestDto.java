@@ -6,7 +6,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
@@ -43,10 +42,11 @@ public abstract class CouponRequestDto {
     @Range(min = 1, max = 31)
     private Integer couponOpenDate;
 
-    @DateTimeFormat(pattern = "kk:mm")
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime couponOpenTime;
 
     private MultipartFile imageFile;
+
     @Setter
     private String imageFileUri;
 

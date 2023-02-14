@@ -54,6 +54,7 @@ public class CouponOfTheCouponScheduler {
     public void startScheduler() {
         this.scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
+        scheduler.setWaitForTasksToCompleteOnShutdown(false);
         scheduler.schedule(getRunnable(), getTrigger());
     }
 
