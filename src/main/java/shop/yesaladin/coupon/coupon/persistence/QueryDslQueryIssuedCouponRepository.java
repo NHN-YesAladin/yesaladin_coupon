@@ -66,7 +66,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
                         rateCoupon.discountRate.coalesce(amountCoupon.discountAmount)
                                 .coalesce(pointCoupon.chargePointAmount),
                         rateCoupon.minOrderAmount.coalesce(amountCoupon.minOrderAmount),
-                        rateCoupon.maxDiscountAmount,   //
+                        rateCoupon.maxDiscountAmount,
                         rateCoupon.canBeOverlapped.coalesce(amountCoupon.canBeOverlapped),
                         coupon.couponTypeCode,
                         issuedCoupon.expirationDate,

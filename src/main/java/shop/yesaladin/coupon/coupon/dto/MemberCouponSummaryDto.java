@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 
@@ -16,7 +15,6 @@ import shop.yesaladin.coupon.code.CouponTypeCode;
  */
 @Getter
 @Builder
-@ToString
 @AllArgsConstructor
 public class MemberCouponSummaryDto {
 

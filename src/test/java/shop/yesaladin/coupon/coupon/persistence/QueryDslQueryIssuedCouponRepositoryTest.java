@@ -59,7 +59,6 @@ class QueryDslQueryIssuedCouponRepositoryTest {
         Assertions.assertThat(memberCouponSummary).hasSize(2);
         Assertions.assertThat(memberCouponSummary.get(0).getCouponCode()).isEqualTo(couponCode);
         Assertions.assertThat(memberCouponSummary.get(1).getAmount()).isEqualTo(amount);
-        System.out.println("*****" + memberCouponSummary.get(0));
     }
 
     @Test
@@ -90,6 +89,5 @@ class QueryDslQueryIssuedCouponRepositoryTest {
         Assertions.assertThat(memberCouponSummary).hasSize(2);
         Assertions.assertThat(memberCouponSummary.get(0).getCouponCode()).isEqualTo(couponCode);
         Assertions.assertThat(memberCouponSummary.get(1).getAmount()).isEqualTo(amount);
-        System.out.println("*****" + memberCouponSummary.get(0));
     }
 }
