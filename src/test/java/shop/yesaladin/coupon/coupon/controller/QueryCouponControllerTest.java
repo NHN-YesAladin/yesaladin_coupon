@@ -189,10 +189,12 @@ class QueryCouponControllerTest {
                     .couponCode(couponCode)
                     .amount(i)
                     .couponTypeCode(CouponTypeCode.FIXED_RATE)
+                    .maxDiscountAmount(500)
                     .expireDate(LocalDate.of(2023, 12, 20))
                     .isUsed(false)
                     .couponBound("categoryId#" + i)
                     .couponBoundCode(CouponBoundCode.CATEGORY)
+                    .canBeOverlapped(false)
                     .build();
             memberCouponSummaryDtoList.add(dto);
         }
@@ -225,6 +227,15 @@ class QueryCouponControllerTest {
                         fieldWithPath("couponCode").type(JsonFieldType.STRING).description("쿠폰 코드"),
                         fieldWithPath("amount").type(JsonFieldType.NUMBER)
                                 .description("쿠폰의 금액(할인금액/할인율/포인트충전액)"),
+                        fieldWithPath("minOrderAmount").type(JsonFieldType.NUMBER)
+                                .optional()
+                                .description("할인 쿠폰인 경우 최소 주문 금액"),
+                        fieldWithPath("maxDiscountAmount").type(JsonFieldType.NUMBER)
+                                .optional()
+                                .description("정율 할인 쿠폰인 경우 최대 할인 금액"),
+                        fieldWithPath("canBeOverlapped").type(JsonFieldType.BOOLEAN)
+                                .optional()
+                                .description("할인 쿠폰인 경우 중복 할인 가능 여부"),
                         fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
                                 .description("쿠폰의 타입(정액할인/정율할인/포인트충전)"),
                         fieldWithPath("expireDate").type(JsonFieldType.STRING).description("만료일"),

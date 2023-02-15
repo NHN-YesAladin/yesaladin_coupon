@@ -1,6 +1,7 @@
 package shop.yesaladin.coupon.coupon.controller;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -78,18 +79,10 @@ class CommandCouponControllerTest {
                         parameterWithName("chargePointAmount").description("포인트 쿠폰의 충전 포인트 금액")
                 ),
                 responseFields(
-                        fieldWithPath("success").type(JsonFieldType.BOOLEAN)
-                                .description("응답 성공 여부"),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                .description("응답 status code"),
-                        fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                .description("응답 본문 데이터"),
-                        fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
-                                .optional()
-                                .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 이름"),
-                        fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )
         ));
@@ -145,18 +138,10 @@ class CommandCouponControllerTest {
                                 .description("쿠폰이 적용될 수 있는 카테고리 Id")
                 ),
                 responseFields(
-                        fieldWithPath("success").type(JsonFieldType.BOOLEAN)
-                                .description("응답 성공 여부"),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                .description("응답 status code"),
-                        fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                .description("응답 본문 데이터"),
-                        fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
-                                .optional()
-                                .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 이름"),
-                        fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )
         ));
@@ -217,18 +202,10 @@ class CommandCouponControllerTest {
                                 .description("쿠폰이 적용될 수 있는 카테고리 Id")
                 ),
                 responseFields(
-                        fieldWithPath("success").type(JsonFieldType.BOOLEAN)
-                                .description("응답 성공 여부"),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                .description("응답 status code"),
-                        fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                .description("응답 본문 데이터"),
-                        fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
-                                .optional()
-                                .description("에러 메시지 내용"),
-                        fieldWithPath("data.name").type(JsonFieldType.STRING)
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("name").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 이름"),
-                        fieldWithPath("data.couponTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
                                 .description("생성된 쿠폰의 종류")
                 )
         ));

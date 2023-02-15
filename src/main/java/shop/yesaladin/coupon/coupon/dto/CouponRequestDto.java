@@ -7,7 +7,6 @@ import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,7 +22,6 @@ import shop.yesaladin.coupon.coupon.domain.model.Coupon;
  * @author 서민지
  * @since 1.0
  */
-@ToString
 @Getter
 @AllArgsConstructor
 public abstract class CouponRequestDto {
