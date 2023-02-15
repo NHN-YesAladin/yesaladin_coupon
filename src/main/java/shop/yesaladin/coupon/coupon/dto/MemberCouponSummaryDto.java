@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import shop.yesaladin.coupon.code.CouponBoundCode;
 import shop.yesaladin.coupon.code.CouponTypeCode;
 
@@ -15,12 +16,16 @@ import shop.yesaladin.coupon.code.CouponTypeCode;
  */
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 public class MemberCouponSummaryDto {
 
     private String name;
     private String couponCode;
-    private int amount;
+    private int amount;     // 금액(포인트, 할인율, 할인금액)
+    private Integer minOrderAmount;
+    private Integer maxDiscountAmount;
+    private Boolean canBeOverlapped;
     private CouponTypeCode couponTypeCode;
     private LocalDate expireDate;
     private Boolean isUsed;
