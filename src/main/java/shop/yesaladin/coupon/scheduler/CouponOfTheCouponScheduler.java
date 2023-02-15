@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.scheduler;
 
+import java.time.LocalDateTime;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,14 @@ public class CouponOfTheCouponScheduler {
     }
 
     public void changeIssueTime(int openDate, int openHour, int openMin) {
-        this.issueCron = "0 " + openMin + " " + openHour + " " + openDate + " * *";
+        // 이달의 쿠폰 이벤트 오픈 5분 전 발행 예약
+        LocalDateTime issuedDateTime = LocalDateTime.now()
+                .withDayOfMonth(openDate)
+                .withHour(openHour)
+                .withMinute(openMin).minusMinutes(5);
+
+        this.issueCron = "0 " + issuedDateTime.getMinute() + " " + issuedDateTime.getHour() + " " + issuedDateTime.getDayOfMonth() + " * *";
+        log.info("==== [COUPON SCHEDULER] updated issue time: {} ====", issuedDateTime.toLocalTime());
     }
 
     public void startScheduler() {

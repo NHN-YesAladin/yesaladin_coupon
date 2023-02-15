@@ -261,7 +261,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         couponOfTheCouponScheduler.stopScheduler();
         couponOfTheCouponScheduler.changeIssueTime(
                 openDate,
-                openTime.getHour() - 1,
+                openTime.getHour(),
                 openTime.getMinute()
         );
         couponOfTheCouponScheduler.startScheduler();
