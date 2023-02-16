@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -7,7 +8,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,19 +87,22 @@ class QueryCouponControllerTest {
                 .thenReturn(couponSummaryDtoPage);
 
         // when
-        ResultActions actual = mockMvc.perform(get("/v1/coupons").queryParam("page", "0")
-                .queryParam("size", "5")).andDo(print());
+        ResultActions actual = mockMvc.perform(get("/v1/coupons")
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("page", "0")
+                .queryParam("size", "5"));
 
         // then
         actual.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.success", equalTo(true)))
                 .andExpect(jsonPath("$.data.currentPage").value(0))
                 .andExpect(jsonPath("$.data.totalDataCount").value(1))
                 .andExpect(jsonPath("$.data.dataList[0].name").value(name));
 
         // docs
         actual.andDo(document(
-                "get-triggered-coupons-success",
+                "get-paginated-triggered-coupon-summary-list-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(
@@ -111,63 +114,56 @@ class QueryCouponControllerTest {
                                 .attributes(defaultValue(10))
                 ),
                 responseFields(
-                        fieldWithPath("success").type(JsonFieldType.BOOLEAN)
-                                .description("응답 성공 여부"),
-                        fieldWithPath("status").type(JsonFieldType.NUMBER)
-                                .description("응답 status code"),
-                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 본문 데이터"),
-                        fieldWithPath("errorMessages").type(JsonFieldType.ARRAY)
-                                .optional()
-                                .description("에러 메시지 내용"),
-                        fieldWithPath("data.currentPage").type(JsonFieldType.NUMBER)
+                        beneathPath("data").withSubsectionId("data"),
+                        fieldWithPath("currentPage").type(JsonFieldType.NUMBER)
                                 .description("현재 페이지 번호"),
-                        fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER)
+                        fieldWithPath("totalPage").type(JsonFieldType.NUMBER)
                                 .description("총 페이지 수"),
-                        fieldWithPath("data.totalDataCount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("totalDataCount").type(JsonFieldType.NUMBER)
                                 .description("조회된 총 쿠폰 수"),
-                        fieldWithPath("data.dataList").type(JsonFieldType.ARRAY)
+                        fieldWithPath("dataList").type(JsonFieldType.ARRAY)
                                 .optional()
                                 .description("조회된 쿠폰 요약 정보"),
-                        fieldWithPath("data.dataList.[].id").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].id").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰 id"),
-                        fieldWithPath("data.dataList.[].name").type(JsonFieldType.STRING)
+                        fieldWithPath("dataList.[].name").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰 이름"),
-                        fieldWithPath("data.dataList.[].triggerTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("dataList.[].triggerTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 트리거 타입"),
-                        fieldWithPath("data.dataList.[].couponTypeCode").type(JsonFieldType.STRING)
+                        fieldWithPath("dataList.[].couponTypeCode").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰 타입"),
-                        fieldWithPath("data.dataList.[].isUnlimited").type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("dataList.[].isUnlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
                                 .description("조회된 쿠폰의 무제한 여부"),
-                        fieldWithPath("data.dataList.[].duration").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰의 유효기간"),
-                        fieldWithPath("data.dataList.[].expirationDate").type(JsonFieldType.STRING)
+                        fieldWithPath("dataList.[].expirationDate").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 만료일"),
-                        fieldWithPath("data.dataList.[].createdDateTime").type(JsonFieldType.STRING)
+                        fieldWithPath("dataList.[].createdDateTime").type(JsonFieldType.STRING)
                                 .optional()
                                 .description("조회된 쿠폰의 생성일자"),
-                        fieldWithPath("data.dataList.[].minOrderAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].minOrderAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 할인 쿠폰의 최소 주문금액"),
-                        fieldWithPath("data.dataList.[].discountAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].discountAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정액할인 쿠폰의 할인금액"),
-                        fieldWithPath("data.dataList.[].chargePointAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].chargePointAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 포인트 쿠폰의 충전 포인트 금액"),
-                        fieldWithPath("data.dataList.[].maxDiscountAmount").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].maxDiscountAmount").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정율할인 쿠폰의 최대 할인금액"),
-                        fieldWithPath("data.dataList.[].discountRate").type(JsonFieldType.NUMBER)
+                        fieldWithPath("dataList.[].discountRate").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 정율할인 쿠폰의 할인율"),
-                        fieldWithPath("data.dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
                                 .description("조회된 쿠폰의 무제한 여부")
                 )
@@ -175,13 +171,14 @@ class QueryCouponControllerTest {
     }
 
     @Test
-    @DisplayName("쿠폰코드 리스트로 회원쿠폰요약정보 조회 성공")
+    @DisplayName("쿠폰코드 리스트로 회원쿠폰 요약 정보 조회 성공")
     void getMemberCouponSummaryListTest() throws Exception {
         // given
+        int couponCodeSize = 10;
         List<MemberCouponSummaryDto> memberCouponSummaryDtoList = new ArrayList<>();
         List<String> couponCodeList = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < couponCodeSize; i++) {
             String couponCode = UUID.randomUUID().toString();
             couponCodeList.add(couponCode);
             MemberCouponSummaryDto dto = MemberCouponSummaryDto.builder()
@@ -199,15 +196,14 @@ class QueryCouponControllerTest {
             memberCouponSummaryDtoList.add(dto);
         }
 
-        // when
         Mockito.when(queryCouponService.getMemberCouponList(Mockito.anyList()))
                 .thenReturn(memberCouponSummaryDtoList);
+
+        // when
         ResultActions resultActions = mockMvc.perform(get("/v1/coupons").queryParam(
                 "couponCodes",
                 String.join(",", couponCodeList)
-        )).andDo(print());
-
-        System.out.println(String.join(",", couponCodeList));
+        ));
 
         // then
         resultActions.andExpect(status().isOk())
@@ -217,7 +213,7 @@ class QueryCouponControllerTest {
 
         // docs
         resultActions.andDo(document(
-                "get-member-coupon-summary-list-success",
+                "get-member-coupon-summary-list-by-coupon-code-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(parameterWithName("couponCodes").description("조회할 쿠폰 코드 리스트")),
@@ -371,6 +367,5 @@ class QueryCouponControllerTest {
                                 .description("조회된 쿠폰의 무제한 여부")
                 )
         ));
-
     }
 }
