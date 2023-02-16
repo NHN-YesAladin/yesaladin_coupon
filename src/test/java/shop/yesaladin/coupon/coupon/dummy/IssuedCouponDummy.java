@@ -14,7 +14,7 @@ public class IssuedCouponDummy {
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
                 .expirationDate(
-                        LocalDate.of(2024, 12, 30))
+                        LocalDate.now().plusYears(1))
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.NOT_GIVEN)
@@ -27,7 +27,25 @@ public class IssuedCouponDummy {
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
                 .expirationDate(
-                        LocalDate.of(2024, 12, 30))
+                        LocalDate.now().plusYears(1))
+                .couponGroup(couponGroup)
+                .couponGivenStateCode(
+                        CouponGivenStateCode.GIVEN)
+                .givenDatetime(LocalDateTime.now().minusDays(1L))
+                .couponUsageStateCode(CouponUsageStateCode.NOT_USED)
+                .build();
+    }
+
+    public static IssuedCoupon dummyGivenIssuedCouponWithExpirationDate(
+            String couponCode,
+            CouponGroup couponGroup,
+            LocalDate expirationDate
+    ) {
+        return IssuedCoupon.builder()
+                .couponCode(couponCode)
+                .createdDatetime(LocalDateTime.now())
+                .expirationDate(
+                        expirationDate)
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.GIVEN)
@@ -41,7 +59,7 @@ public class IssuedCouponDummy {
                 .couponCode(couponCode)
                 .createdDatetime(LocalDateTime.now())
                 .expirationDate(
-                        LocalDate.of(2024, 12, 30))
+                        LocalDate.now().plusYears(1))
                 .couponGroup(couponGroup)
                 .couponGivenStateCode(
                         CouponGivenStateCode.GIVEN)
