@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import shop.yesaladin.coupon.code.CouponTypeCode;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
@@ -31,13 +32,43 @@ class QueryDslQueryIssuedCouponRepositoryTest {
     private QueryDslQueryIssuedCouponRepository queryIssuedCouponRepository;
 
     @Test
-    @DisplayName("쿠폰코드 리스트로 MemberCouponSummaryDto 조회 성공")
+    @DisplayName("쿠폰코드 리스트로 정율할인 쿠폰 MemberCouponSummaryDto 조회 성공")
     void test() {
         Coupon coupon = CouponDummy.dummyRateCoupon();
         entityManager.persist(coupon);
         int amount = coupon.getAmount();
 
         CouponBound couponBound = CouponBoundDummy.dummyCouponBoundProduct(coupon);
+        entityManager.persist(couponBound);
+
+        CouponGroup couponGroup = CouponGroupDummy.dummyCouponGroup(coupon);
+        entityManager.persist(couponGroup);
+
+        String couponCode = UUID.randomUUID().toString();
+        IssuedCoupon issuedCoupon = IssuedCouponDummy.dummyIssuedCoupon(couponCode, couponGroup);
+        String couponCode2 = UUID.randomUUID().toString();
+        IssuedCoupon issuedCoupon2 = IssuedCouponDummy.dummyIssuedCoupon(couponCode2, couponGroup);
+        entityManager.persist(issuedCoupon);
+        entityManager.persist(issuedCoupon2);
+
+        List<MemberCouponSummaryDto> memberCouponSummary = queryIssuedCouponRepository.getMemberCouponSummary(
+                List.of(
+                        couponCode, couponCode2
+                ));
+
+        Assertions.assertThat(memberCouponSummary).hasSize(2);
+        Assertions.assertThat(memberCouponSummary.get(0).getCouponCode()).isEqualTo(couponCode);
+        Assertions.assertThat(memberCouponSummary.get(1).getAmount()).isEqualTo(amount);
+    }
+
+    @Test
+    @DisplayName("쿠폰코드 리스트로 정액할인 쿠폰 MemberCouponSummaryDto 조회 성공")
+    void test2() {
+        Coupon coupon = CouponDummy.dummyCouponWithCouponType(CouponTypeCode.FIXED_PRICE);
+        entityManager.persist(coupon);
+        int amount = coupon.getAmount();
+
+        CouponBound couponBound = CouponBoundDummy.dummyCouponBoundCategory(coupon);
         entityManager.persist(couponBound);
 
         CouponGroup couponGroup = CouponGroupDummy.dummyCouponGroup(coupon);

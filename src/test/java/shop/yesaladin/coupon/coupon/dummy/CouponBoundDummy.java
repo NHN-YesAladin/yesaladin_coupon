@@ -11,4 +11,9 @@ public class CouponBoundDummy {
                 .couponBoundCode(CouponBoundCode.PRODUCT).build();
     }
 
+    public static CouponBound dummyCouponBoundCategory(Coupon coupon) {
+        return CouponBound.builder().coupon(coupon).categoryId(900L)
+                .couponBoundCode(CouponBoundCode.CATEGORY).build();
+    }
+
 }

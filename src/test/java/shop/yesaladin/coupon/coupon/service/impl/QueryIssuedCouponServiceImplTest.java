@@ -210,6 +210,6 @@ class QueryIssuedCouponServiceImplTest {
                 ClientException.class,
                 () -> service.getCouponIssueResponseDtoList(couponIssueRequestDto2)
         );
-        assertThat(result.getErrorCode()).isEqualTo(ErrorCode.COUPON_NOT_FOUND);
+        assertThat(result.getErrorCode()).isEqualTo(ErrorCode.ISSUED_COUPON_NOT_FOUND);
     }
 }

@@ -57,8 +57,7 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
         }
 
         IssuedCoupon issuedCoupon = issuedCouponOptional.orElseThrow(() -> new ClientException(
-                // FIXME VALID_ISSUED_COUPON_NOT_FOUND 에러코드로 수정
-                ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
+                ErrorCode.ISSUED_COUPON_NOT_FOUND, "The coupon quantity prepared has been exhausted."));
 
         return List.of(CouponIssueResponseDto.builder()
                 .createdCouponCodes(List.of(issuedCoupon.getCouponCode()))
@@ -96,8 +95,10 @@ public class QueryIssuedCouponServiceImpl implements QueryIssuedCouponService {
         }
 
         return couponGroupOptional.orElseThrow(() -> new ClientException(
-                // FIXME COUPON_GROUP_NOT_FOUND 에러코드로 수정
-                ErrorCode.COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
+                ErrorCode.COUPON_GROUP_NOT_FOUND,
+                "Coupon group not found. couponId: " + couponId + ", triggerTypeCode: "
+                        + triggerTypeCode
+        ));
     }
 
     private Optional<IssuedCoupon> getIssuedCouponByGroupCodeId(CouponGroup couponGroup) {

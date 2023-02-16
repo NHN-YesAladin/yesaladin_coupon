@@ -58,12 +58,16 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
         QCouponGroup couponGroup = QCouponGroup.couponGroup;
         QIssuedCoupon issuedCoupon = QIssuedCoupon.issuedCoupon;
         QCouponBound couponBound = QCouponBound.couponBound;
+
         return queryFactory.select(Projections.constructor(
                         MemberCouponSummaryDto.class,
                         coupon.name,
                         issuedCoupon.couponCode,
                         rateCoupon.discountRate.coalesce(amountCoupon.discountAmount)
                                 .coalesce(pointCoupon.chargePointAmount),
+                        rateCoupon.minOrderAmount.coalesce(amountCoupon.minOrderAmount),
+                        rateCoupon.maxDiscountAmount,
+                        rateCoupon.canBeOverlapped.coalesce(amountCoupon.canBeOverlapped),
                         coupon.couponTypeCode,
                         issuedCoupon.expirationDate,
                         issuedCoupon.usedDatetime.isNotNull(),

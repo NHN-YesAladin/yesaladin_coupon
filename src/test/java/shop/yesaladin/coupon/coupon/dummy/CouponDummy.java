@@ -63,6 +63,8 @@ public class CouponDummy {
                         .isUnlimited(true)
                         .couponTypeCode(CouponTypeCode.FIXED_PRICE)
                         .minOrderAmount(10000)
+                        .discountAmount(500)
+                        .canBeOverlapped(true)
                         .build();
             }
             case POINT: {
