@@ -53,14 +53,13 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
                     CouponIssueRequestDto.fromCouponGiveRequestMessage(message));
 
-            for (int i = 0; i < responseDtoList.size(); i++) {
+            for (CouponIssueResponseDto responseDto : responseDtoList) {
                 log.info(
                         "==== [COUPON] coupon group code to give member by trigger type {} : {} ====",
                         message.getTriggerTypeCode(),
-                        responseDtoList.get(i).getCouponGroupCode()
+                        responseDto.getCouponGroupCode()
                 );
             }
-
         } catch (ClientException e) {
             log.error("=== [COUPON] ===", e);
             // 쿠폰 발행 실패 응답
@@ -85,7 +84,6 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
             return;
         }
 
-        assert responseDtoList != null;
         List<CouponGiveDto> coupons = responseDtoList.stream()
                 .map(CouponIssueResponseDto::toCouponGiveDto)
                 .collect(Collectors.toList());
