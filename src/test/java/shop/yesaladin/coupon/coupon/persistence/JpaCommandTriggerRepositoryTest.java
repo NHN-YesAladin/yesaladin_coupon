@@ -17,12 +17,12 @@ import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 @DataJpaTest
 @ActiveProfiles("local-test")
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-class JpaTriggerRepositoryTest {
+class JpaCommandTriggerRepositoryTest {
 
     @Autowired
     private JpaCommandCouponRepository commandCouponRepository;
     @Autowired
-    private JpaTriggerRepository triggerRepository;
+    private JpaCommandTriggerRepository triggerRepository;
     private Coupon coupon;
 
     @BeforeEach
