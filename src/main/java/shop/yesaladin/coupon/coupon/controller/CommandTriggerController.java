@@ -22,7 +22,7 @@ public class CommandTriggerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseDto<Void> stopIssueCoupon(@ModelAttribute CouponTriggerDto dto) {
         commandTriggerService.stopIssueCoupon(dto.getTriggerTypeCode(), dto.getCouponId());
- 삭제
+
         return ResponseDto.<Void>builder()
                 .success(true)
                 .data(null)
