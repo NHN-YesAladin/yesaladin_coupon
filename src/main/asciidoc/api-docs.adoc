@@ -1,82 +1,85 @@
 == Coupon
 
-=== 정액할인 쿠폰 생성
+=== 포인트 쿠폰 생성
 
 ==== curl
 
-include::{snippets}/create-amount-coupon-success/curl-request.adoc[]
+include::{snippets}/create-point-coupon-template-success/curl-request.adoc[]
 
 === request
 
-==== Body
+==== Parameters
 
-include::{snippets}/create-amount-coupon-success/request-fields.adoc[]
+include::{snippets}/create-point-coupon-template-success/request-parameters.adoc[]
 
 ===== Example
 
-include::{snippets}/create-amount-coupon-success/http-request.adoc[]
+include::{snippets}/create-point-coupon-template-success/http-request.adoc[]
 
 ==== response (Success)
 
 ===== Body
 
-include::{snippets}/create-amount-coupon-success/response-fields.adoc[]
+include::{snippets}/create-point-coupon-template-success/response-body.adoc[]
+include::{snippets}/create-point-coupon-template-success/response-fields-data.adoc[]
 
 ===== Example
 
-include::{snippets}/create-amount-coupon-success/http-response.adoc[]
+include::{snippets}/create-point-coupon-template-success/http-response.adoc[]
 
 === 정율할인 쿠폰 생성
 
 ==== curl
 
-include::{snippets}/create-rate-coupon-success/curl-request.adoc[]
+include::{snippets}/create-rate-coupon-template-success/curl-request.adoc[]
 
 === request
 
-==== Body
+==== Parameters
 
-include::{snippets}/create-rate-coupon-success/request-fields.adoc[]
+include::{snippets}/create-rate-coupon-template-success/request-parameters.adoc[]
 
 ===== Example
 
-include::{snippets}/create-rate-coupon-success/http-request.adoc[]
+include::{snippets}/create-rate-coupon-template-success/http-request.adoc[]
 
 ==== response (Success)
 
 ===== Body
 
-include::{snippets}/create-rate-coupon-success/response-fields.adoc[]
+include::{snippets}/create-rate-coupon-template-success/response-body.adoc[]
+include::{snippets}/create-rate-coupon-template-success/response-fields-data.adoc[]
 
 ===== Example
 
-include::{snippets}/create-rate-coupon-success/http-response.adoc[]
+include::{snippets}/create-rate-coupon-template-success/http-response.adoc[]
 
-=== 포인트 쿠폰 생성
+=== 정액할인 쿠폰 생성
 
 ==== curl
 
-include::{snippets}/create-point-coupon-success/curl-request.adoc[]
+include::{snippets}/create-amount-coupon-template-success/curl-request.adoc[]
 
 === request
 
-==== Body
+==== Parameters
 
-include::{snippets}/create-point-coupon-success/request-fields.adoc[]
+include::{snippets}/create-amount-coupon-template-success/request-parameters.adoc[]
 
 ===== Example
 
-include::{snippets}/create-point-coupon-success/http-request.adoc[]
+include::{snippets}/create-amount-coupon-template-success/http-request.adoc[]
 
 ==== response (Success)
 
 ===== Body
 
-include::{snippets}/create-point-coupon-success/response-fields.adoc[]
+include::{snippets}/create-amount-coupon-template-success/response-body.adoc[]
+include::{snippets}/create-amount-coupon-template-success/response-fields-data.adoc[]
 
 ===== Example
 
-include::{snippets}/create-point-coupon-success/http-response.adoc[]
+include::{snippets}/create-amount-coupon-template-success/http-response.adoc[]
 
 == Coupon Issuance
 
@@ -100,7 +103,8 @@ include::{snippets}/issue-coupon-success/http-request.adoc[]
 
 ===== Body
 
-include::{snippets}/issue-coupon-success/response-fields.adoc[]
+include::{snippets}/issue-coupon-success/response-body.adoc[]
+include::{snippets}/issue-coupon-success/response-fields-data.adoc[]
 
 ===== Example
 
