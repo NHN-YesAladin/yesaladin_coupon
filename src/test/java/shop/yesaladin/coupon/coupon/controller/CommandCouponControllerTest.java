@@ -1,5 +1,6 @@
 package shop.yesaladin.coupon.coupon.controller;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -8,6 +9,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shop.yesaladin.coupon.docs.ApiDocumentUtils.getDocumentRequest;
 import static shop.yesaladin.coupon.docs.ApiDocumentUtils.getDocumentResponse;
@@ -57,12 +59,15 @@ class CommandCouponControllerTest {
 
         // then
         actual.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.success", equalTo(true)))
+                .andExpect(jsonPath("$.data.name", equalTo(name)))
+                .andExpect(jsonPath("$.data.couponTypeCode", equalTo(CouponTypeCode.POINT.name())))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         Mockito.verify(service).createPointCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
-                "create-point-coupon-success",
+                "create-point-coupon-template-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(
@@ -110,12 +115,15 @@ class CommandCouponControllerTest {
 
         // then
         actual.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.success", equalTo(true)))
+                .andExpect(jsonPath("$.data.name", equalTo(name)))
+                .andExpect(jsonPath("$.data.couponTypeCode", equalTo(CouponTypeCode.FIXED_PRICE.name())))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         Mockito.verify(service).createAmountCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
-                "create-amount-coupon-success",
+                "create-amount-coupon-template-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(
@@ -172,12 +180,15 @@ class CommandCouponControllerTest {
 
         // then
         actual.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.success", equalTo(true)))
+                .andExpect(jsonPath("$.data.name", equalTo(name)))
+                .andExpect(jsonPath("$.data.couponTypeCode", equalTo(CouponTypeCode.FIXED_RATE.name())))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         Mockito.verify(service).createRateCoupon(Mockito.any());
 
         // docs
         actual.andDo(document(
-                "create-amount-coupon-success",
+                "create-rate-coupon-template-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(

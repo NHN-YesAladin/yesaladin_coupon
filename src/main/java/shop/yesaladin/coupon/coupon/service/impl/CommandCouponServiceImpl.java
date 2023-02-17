@@ -23,21 +23,21 @@ import shop.yesaladin.coupon.config.StorageConfiguration;
 import shop.yesaladin.coupon.coupon.domain.model.Coupon;
 import shop.yesaladin.coupon.coupon.domain.model.CouponBound;
 import shop.yesaladin.coupon.coupon.domain.model.CouponGroup;
-import shop.yesaladin.coupon.coupon.domain.model.CouponOfTheMonthPolicy;
 import shop.yesaladin.coupon.coupon.domain.model.Trigger;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponBoundRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponGroupRepository;
-import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponOfTheMonthPolicyRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandCouponRepository;
 import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.dto.AmountCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
+import shop.yesaladin.coupon.coupon.dto.MonthlyCouponPolicyDto;
 import shop.yesaladin.coupon.coupon.dto.PointCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.service.inter.CommandCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CouponOfTheMonthService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 
@@ -56,7 +56,6 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private static final String MONTHLY_COUPON_ID_KEY = "monthlyCouponId";
     private static final String MONTHLY_COUPON_OPEN_DATE_TIME_KEY = "monthlyCouponOpenDateTime";
 
-    private final CommandCouponOfTheMonthPolicyRepository couponOfTheMonthPolicyRepository;
     private final CommandCouponRepository couponRepository;
     private final CommandCouponBoundRepository couponBoundRepository;
     private final CommandTriggerRepository triggerRepository;
@@ -64,6 +63,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     private final CommandIssuedCouponService issueCouponService;
     private final ObjectStorageService objectStorageService;
     private final StorageConfiguration storageConfiguration;
+    private final CouponOfTheMonthService couponOfTheMonthService;
     private final CouponOfTheCouponScheduler couponOfTheCouponScheduler;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -74,9 +74,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createPointCoupon(PointCouponRequestDto pointCouponRequestDto) {
         if (hasImageFile(pointCouponRequestDto)) {
-            pointCouponRequestDto.setImageFileUri(upload(pointCouponRequestDto.getImageFile()));
+            pointCouponRequestDto.setImageFileUri(getImageUriByUpload(pointCouponRequestDto.getImageFile()));
         }
-        Coupon coupon = issueCouponAfterCreate(pointCouponRequestDto);
+        Coupon coupon = createAndIssue(pointCouponRequestDto);
         checkIsCouponOfTheMonth(pointCouponRequestDto, coupon);
 
         return new CouponResponseDto(coupon.getName(), coupon.getCouponTypeCode());
@@ -89,9 +89,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createAmountCoupon(AmountCouponRequestDto amountCouponRequestDto) {
         if (hasImageFile(amountCouponRequestDto)) {
-            amountCouponRequestDto.setImageFileUri(upload(amountCouponRequestDto.getImageFile()));
+            amountCouponRequestDto.setImageFileUri(getImageUriByUpload(amountCouponRequestDto.getImageFile()));
         }
-        Coupon coupon = issueCouponAfterCreate(amountCouponRequestDto);
+        Coupon coupon = createAndIssue(amountCouponRequestDto);
         checkIsCouponOfTheMonth(amountCouponRequestDto, coupon);
         createCouponBound(
                 amountCouponRequestDto.getIsbn(),
@@ -110,9 +110,9 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     @Transactional
     public CouponResponseDto createRateCoupon(RateCouponRequestDto rateCouponRequestDto) {
         if (hasImageFile(rateCouponRequestDto)) {
-            rateCouponRequestDto.setImageFileUri(upload(rateCouponRequestDto.getImageFile()));
+            rateCouponRequestDto.setImageFileUri(getImageUriByUpload(rateCouponRequestDto.getImageFile()));
         }
-        Coupon coupon = issueCouponAfterCreate(rateCouponRequestDto);
+        Coupon coupon = createAndIssue(rateCouponRequestDto);
         checkIsCouponOfTheMonth(rateCouponRequestDto, coupon);
         createCouponBound(
                 rateCouponRequestDto.getIsbn(),
@@ -125,14 +125,14 @@ public class CommandCouponServiceImpl implements CommandCouponService {
     }
 
     private boolean hasImageFile(CouponRequestDto couponRequestDto) {
-        return !Objects.isNull(couponRequestDto.getImageFile());
+        return Objects.nonNull(couponRequestDto.getImageFile());
     }
 
-    private String upload(MultipartFile file) {
+    private String getImageUriByUpload(MultipartFile file) {
         return objectStorageService.uploadObject(storageConfiguration.getContainerName(), file);
     }
 
-    private Coupon issueCouponAfterCreate(CouponRequestDto couponRequestDto) {
+    private Coupon createAndIssue(CouponRequestDto couponRequestDto) {
         Coupon coupon = couponRepository.save(couponRequestDto.toEntity());
         TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
 
@@ -141,12 +141,19 @@ public class CommandCouponServiceImpl implements CommandCouponService {
         createTrigger(triggerTypeCode, coupon);
         createCouponGroup(triggerTypeCode, coupon);
 
+        issueCoupon(couponRequestDto, coupon.getId());
+
+        return coupon;
+    }
+
+    private void issueCoupon(CouponRequestDto couponRequestDto, long couponId) {
+        TriggerTypeCode triggerTypeCode = couponRequestDto.getTriggerTypeCode();
+
         // 생일, 회원가입, 이달의쿠폰 타입인 경우 쿠폰 요청 및 특정 발행 시점에 맞춰 발행하기 때문에 생성시에는 발행하지 않음
-        if (!notToBeIssued(triggerTypeCode)) {
+        if (!notToBeAutoIssued(triggerTypeCode)) {
             CouponIssueRequestDto requestDto = new CouponIssueRequestDto(
-                    couponRequestDto.getTriggerTypeCode()
-                            .toString(),
-                    coupon.getId(),
+                    triggerTypeCode.toString(),
+                    couponId,
                     couponRequestDto.getQuantity()
             );
             issueCouponService.issueCoupon(requestDto);
@@ -158,24 +165,24 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                     requestDto.getQuantity()
             );
         }
-
-        return coupon;
     }
 
     /**
      * 이달의 쿠폰 생성시 이달의 쿠폰 정책을 생성하고 이벤트 오픈 1시간 전에 쿠폰 발행을 예약합니다.
      *
-     * @param couponRequestDto 이달의 쿠폰 생성 정보를 담은 dto
-     * @param coupon           생성된 이달의 쿠폰
+     * @param dto    이달의 쿠폰 생성 정보를 담은 dto
+     * @param coupon 생성된 이달의 쿠폰
      */
-    private void checkIsCouponOfTheMonth(CouponRequestDto couponRequestDto, Coupon coupon) {
-        if (isCouponOfTheMonth(couponRequestDto)) {
-            createCouponOfTheMonthPolicy(couponRequestDto, coupon);
-            updateCouponOfTheMonthScheduler(
-                    couponRequestDto.getCouponOpenDate(),
-                    couponRequestDto.getCouponOpenTime()
-            );
-            storeMonthlyCouponEventInfo(couponRequestDto, coupon);
+    private void checkIsCouponOfTheMonth(CouponRequestDto dto, Coupon coupon) {
+        if (isCouponOfTheMonth(dto.getTriggerTypeCode())) {
+            couponOfTheMonthService.createPolicy(new MonthlyCouponPolicyDto(
+                    coupon,
+                    dto.getCouponOpenTime(),
+                    dto.getCouponOpenDate(),
+                    dto.getQuantity()
+            ));
+            updateCouponOfTheMonthScheduler(dto.getCouponOpenDate(), dto.getCouponOpenTime());
+            storeMonthlyCouponEventInfo(dto, coupon);
         }
     }
 
@@ -201,21 +208,8 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 );
     }
 
-    private boolean isCouponOfTheMonth(CouponRequestDto dto) {
-        return dto.getTriggerTypeCode().equals(COUPON_OF_THE_MONTH);
-    }
-
-    private void createCouponOfTheMonthPolicy(CouponRequestDto dto, Coupon coupon) {
-        log.info("==== [COUPON] coupon create request dto {} ====", dto);
-        CouponOfTheMonthPolicy policy = CouponOfTheMonthPolicy.builder()
-                .coupon(coupon)
-                .openTime(dto.getCouponOpenTime())
-                .openDate(dto.getCouponOpenDate())
-                .quantity(dto.getQuantity())
-                .createdDateTime(null)
-                .build();
-
-        couponOfTheMonthPolicyRepository.save(policy);
+    private boolean isCouponOfTheMonth(TriggerTypeCode triggerTypeCode) {
+        return triggerTypeCode.equals(COUPON_OF_THE_MONTH);
     }
 
     private void createCouponBound(
@@ -247,7 +241,7 @@ public class CommandCouponServiceImpl implements CommandCouponService {
                 .build());
     }
 
-    private boolean notToBeIssued(TriggerTypeCode triggerTypeCode) {
+    private boolean notToBeAutoIssued(TriggerTypeCode triggerTypeCode) {
         return List.of(BIRTHDAY, SIGN_UP, COUPON_OF_THE_MONTH).contains(triggerTypeCode);
     }
 

@@ -16,4 +16,13 @@ public class CouponGroupDummy {
                 .createdDatetime(LocalDateTime.now())
                 .build();
     }
+
+    public static CouponGroup dummyCouponGroupWithGroupCode(Coupon coupon, String groupCode) {
+        return CouponGroup.builder()
+                .triggerTypeCode(TriggerTypeCode.MEMBER_GRADE_WHITE)
+                .coupon(coupon)
+                .groupCode(groupCode)
+                .createdDatetime(LocalDateTime.now())
+                .build();
+    }
 }

@@ -30,6 +30,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponResponseDto;
 import shop.yesaladin.coupon.coupon.dto.RateCouponRequestDto;
 import shop.yesaladin.coupon.coupon.dummy.CouponDummy;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
+import shop.yesaladin.coupon.coupon.service.inter.CouponOfTheMonthService;
 import shop.yesaladin.coupon.file.service.inter.ObjectStorageService;
 import shop.yesaladin.coupon.scheduler.CouponOfTheCouponScheduler;
 
@@ -45,6 +46,7 @@ class CommandCouponServiceImplTest {
     private CommandCouponServiceImpl couponService;
     private ObjectStorageService objectStorageService;
     private StorageConfiguration storageConfiguration;
+    private CouponOfTheMonthService couponOfTheMonthService;
     private CouponOfTheCouponScheduler couponOfTheCouponScheduler;
     private RedisTemplate<String, String> redisTemplate;
     private HashOperations hashOperations;
@@ -52,20 +54,19 @@ class CommandCouponServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        couponOfTheMonthPolicyRepository = Mockito.mock(CommandCouponOfTheMonthPolicyRepository.class);
         couponRepository = Mockito.mock(CommandCouponRepository.class);
         couponBoundRepository = Mockito.mock(CommandCouponBoundRepository.class);
         triggerRepository = Mockito.mock(CommandTriggerRepository.class);
         couponGroupRepository = Mockito.mock(CommandCouponGroupRepository.class);
         issueCouponService = Mockito.mock(CommandIssuedCouponService.class);
         objectStorageService = Mockito.mock(ObjectStorageService.class);
+        couponOfTheMonthService = Mockito.mock(CouponOfTheMonthService.class);
         couponOfTheCouponScheduler = Mockito.mock(CouponOfTheCouponScheduler.class);
         redisTemplate = Mockito.mock(RedisTemplate.class);
         hashOperations = Mockito.mock(HashOperations.class);
         Mockito.when(redisTemplate.opsForValue()).thenReturn(Mockito.mock(ValueOperations.class));
 
         couponService = new CommandCouponServiceImpl(
-                couponOfTheMonthPolicyRepository,
                 couponRepository,
                 couponBoundRepository,
                 triggerRepository,
@@ -73,6 +74,7 @@ class CommandCouponServiceImplTest {
                 issueCouponService,
                 objectStorageService,
                 storageConfiguration,
+                couponOfTheMonthService,
                 couponOfTheCouponScheduler,
                 redisTemplate
         );
@@ -80,7 +82,7 @@ class CommandCouponServiceImplTest {
 
     @Test
     @DisplayName("할인 쿠폰 생성 - 쿠폰, 트리거, 쿠폰 적용 범위 테이블이 등록 성공")
-    void createPointCoupon() {
+    void createPointCouponTest() {
         // given
         String couponName = "10% 할인 쿠폰";
         coupon = RateCoupon.builder()
@@ -168,7 +170,7 @@ class CommandCouponServiceImplTest {
         verify(triggerRepository).save(any());
         verify(couponGroupRepository).save(any());
         verify(couponBoundRepository).save(any());
-        verify(couponOfTheMonthPolicyRepository).save(argThat(arg -> arg.getOpenDate() == 1
+        verify(couponOfTheMonthService).createPolicy(argThat(arg -> arg.getOpenDate() == 1
                 && arg.getOpenTime().equals(LocalTime.of(0, 0))));
 
         Assertions.assertThat(actual.getName()).isEqualTo(coupon.getName());

@@ -34,7 +34,6 @@ class QueryDslCommandIssuedCouponRepositoryTest {
     private QueryDslCommandIssuedCouponRepository repository;
     private IssuedCoupon issuedCoupon;
     private CouponGroup couponGroup;
-    private Coupon coupon;
     private String couponCode;
     private List<String> couponCodeList;
 
@@ -42,7 +41,7 @@ class QueryDslCommandIssuedCouponRepositoryTest {
     void setUp() {
         couponCode = UUID.randomUUID().toString();
         couponCodeList = List.of(couponCode);
-        coupon = CouponDummy.dummyRateCoupon();
+        Coupon coupon = CouponDummy.dummyRateCoupon();
         couponGroup = CouponGroupDummy.dummyCouponGroup(coupon);
         issuedCoupon = IssuedCouponDummy.dummyIssuedCoupon(couponCode, couponGroup);
         em.persist(coupon);
