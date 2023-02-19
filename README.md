@@ -31,6 +31,10 @@ YesAladin Coupon은 (설명 추가헤주세요.) ... 시스템 입니다.
 
 // 이미지 추가할 것
 
+## Technical Issue
+
+### (있다면 작성해주시고 없으면 Technical Issue는 지우셔도 됩니다.)
+
 ## Tech Stack
 
 ### Languages
