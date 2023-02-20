@@ -25,7 +25,7 @@ public interface CommandTriggerRepository {
      * @param triggerTypeCode 삭제할 트리거의 트리거 타입 코드
      * @param couponId        삭제할 트리거의 쿠폰 아이디
      */
-    void deleteByTriggerTypeCodeAndCouponId(
+    void deleteByTriggerTypeCodeAndCoupon_Id(
             TriggerTypeCode triggerTypeCode,
             long couponId
     );

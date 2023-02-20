@@ -25,6 +25,6 @@ public class CommandTriggerServiceImpl implements CommandTriggerService {
     @Override
     @Transactional
     public void stopIssueCoupon(TriggerTypeCode triggerTypeCode, long couponId) {
-        commandTriggerRepository.deleteByTriggerTypeCodeAndCouponId(triggerTypeCode, couponId);
+        commandTriggerRepository.deleteByTriggerTypeCodeAndCoupon_Id(triggerTypeCode, couponId);
     }
 }
