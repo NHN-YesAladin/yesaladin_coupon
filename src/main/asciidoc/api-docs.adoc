@@ -120,6 +120,35 @@ include::{snippets}/issue-coupon-fail-cause-validation-fail/response-fields.adoc
 
 include::{snippets}/issue-coupon-fail-cause-validation-fail/http-response.adoc[]
 
+== Suspend Coupon Issuance
+
+=== 쿠폰 발행 중단
+
+==== curl
+
+include::{snippets}/stop-issue-coupon-success/curl-request.adoc[]
+
+==== request
+
+==== Parameters
+
+include::{snippets}/stop-issue-coupon-success/request-parameters.adoc[]
+
+===== Example
+
+include::{snippets}/stop-issue-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/stop-issue-coupon-success/response-body.adoc[]
+include::{snippets}/stop-issue-coupon-success/response-fields-data.adoc[]
+
+===== Example
+
+include::{snippets}/stop-issue-coupon-success/http-response.adoc[]
+
 == Coupon Query
 
 === 쿠폰 조회
