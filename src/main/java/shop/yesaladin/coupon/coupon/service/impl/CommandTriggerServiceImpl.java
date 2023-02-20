@@ -7,12 +7,21 @@ import shop.yesaladin.coupon.code.TriggerTypeCode;
 import shop.yesaladin.coupon.coupon.persistence.JpaCommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.service.inter.CommandTriggerService;
 
+/**
+ * CommandTriggerService 의 구현체 클래스입니다.
+ *
+ * @author 서민지
+ * @since 1.0
+ */
 @RequiredArgsConstructor
 @Service
 public class CommandTriggerServiceImpl implements CommandTriggerService {
 
     private final JpaCommandTriggerRepository commandTriggerRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void stopIssueCoupon(TriggerTypeCode triggerTypeCode, long couponId) {

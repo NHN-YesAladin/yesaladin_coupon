@@ -19,6 +19,12 @@ public interface CommandTriggerRepository {
      */
     Trigger save(Trigger trigger);
 
+    /**
+     * 트리거 타입 코드와 쿠폰 아이디에 해당하는 트리거를 삭제합니다.
+     *
+     * @param triggerTypeCode 삭제할 트리거의 트리거 타입 코드
+     * @param couponId        삭제할 트리거의 쿠폰 아이디
+     */
     void deleteByTriggerTypeCodeAndCoupon_Id(
             TriggerTypeCode triggerTypeCode,
             long couponId
