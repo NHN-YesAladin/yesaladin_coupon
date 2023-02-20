@@ -34,7 +34,6 @@ public abstract class CouponRequestDto {
 
     private Boolean isUnlimited;
 
-    // TODO 최대 수량 제한하기
     @PositiveOrZero(message = "invalid coupon quantity")
     private Integer quantity;
 

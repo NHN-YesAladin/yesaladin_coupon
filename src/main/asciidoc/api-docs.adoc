@@ -120,6 +120,35 @@ include::{snippets}/issue-coupon-fail-cause-by-quantity-validation-fail/response
 
 include::{snippets}/issue-coupon-fail-cause-by-quantity-validation-fail/http-response.adoc[]
 
+== Suspend Coupon Issuance
+
+=== 쿠폰 발행 중단
+
+==== curl
+
+include::{snippets}/stop-issue-coupon-success/curl-request.adoc[]
+
+==== request
+
+==== Parameters
+
+include::{snippets}/stop-issue-coupon-success/request-parameters.adoc[]
+
+===== Example
+
+include::{snippets}/stop-issue-coupon-success/http-request.adoc[]
+
+==== response (Success)
+
+===== Body
+
+include::{snippets}/stop-issue-coupon-success/response-body.adoc[]
+include::{snippets}/stop-issue-coupon-success/response-fields-data.adoc[]
+
+===== Example
+
+include::{snippets}/stop-issue-coupon-success/http-response.adoc[]
+
 == Coupon Query
 
 === 발행 중인 쿠폰 페이지네이션 조회
