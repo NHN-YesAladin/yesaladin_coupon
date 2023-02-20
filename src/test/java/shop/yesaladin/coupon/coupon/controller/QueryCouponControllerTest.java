@@ -87,8 +87,7 @@ class QueryCouponControllerTest {
                 .thenReturn(couponSummaryDtoPage);
 
         // when
-        ResultActions actual = mockMvc.perform(get("/v1/coupons")
-                .contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc.perform(get("/v1/coupons").contentType(MediaType.APPLICATION_JSON)
                 .queryParam("page", "0")
                 .queryParam("size", "5"));
 
@@ -101,20 +100,17 @@ class QueryCouponControllerTest {
                 .andExpect(jsonPath("$.data.dataList[0].name").value(name));
 
         // docs
-        actual.andDo(document(
-                "get-paginated-triggered-coupon-summary-list-success",
+        actual.andDo(document("get-paginated-triggered-coupon-summary-list-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
-                requestParameters(
-                        parameterWithName("page").description("페이지네이션 페이지 번호")
+                requestParameters(parameterWithName("page").description("페이지네이션 페이지 번호")
                                 .optional()
                                 .attributes(defaultValue(0)),
                         parameterWithName("size").description("페이지네이션 사이즈")
                                 .optional()
                                 .attributes(defaultValue(10))
                 ),
-                responseFields(
-                        beneathPath("data").withSubsectionId("data"),
+                responseFields(beneathPath("data").withSubsectionId("data"),
                         fieldWithPath("currentPage").type(JsonFieldType.NUMBER)
                                 .description("현재 페이지 번호"),
                         fieldWithPath("totalPage").type(JsonFieldType.NUMBER)
@@ -165,7 +161,10 @@ class QueryCouponControllerTest {
                                 .description("조회된 정율할인 쿠폰의 할인율"),
                         fieldWithPath("dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
-                                .description("조회된 쿠폰의 무제한 여부")
+                                .description("조회된 쿠폰의 무제한 여부"),
+                        fieldWithPath("dataList.[].fileUri").type(JsonFieldType.STRING)
+                                .optional()
+                                .description("쿠폰의 이미지 URL")
                 )
         ));
     }
@@ -200,8 +199,7 @@ class QueryCouponControllerTest {
                 .thenReturn(memberCouponSummaryDtoList);
 
         // when
-        ResultActions resultActions = mockMvc.perform(get("/v1/coupons").queryParam(
-                "couponCodes",
+        ResultActions resultActions = mockMvc.perform(get("/v1/coupons").queryParam("couponCodes",
                 String.join(",", couponCodeList)
         ));
 
@@ -212,13 +210,11 @@ class QueryCouponControllerTest {
                 .andExpect(jsonPath("$.data.[0].couponCode").value(couponCodeList.get(0)));
 
         // docs
-        resultActions.andDo(document(
-                "get-member-coupon-summary-list-by-coupon-code-success",
+        resultActions.andDo(document("get-member-coupon-summary-list-by-coupon-code-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(parameterWithName("couponCodes").description("조회할 쿠폰 코드 리스트")),
-                responseFields(
-                        beneathPath("data").withSubsectionId("data"),
+                responseFields(beneathPath("data").withSubsectionId("data"),
                         fieldWithPath("name").type(JsonFieldType.STRING).description("쿠폰 이름"),
                         fieldWithPath("couponCode").type(JsonFieldType.STRING).description("쿠폰 코드"),
                         fieldWithPath("amount").type(JsonFieldType.NUMBER)
@@ -278,14 +274,12 @@ class QueryCouponControllerTest {
         List<CouponSummaryDto> couponSummaryDtoList = new ArrayList<>();
         couponSummaryDtoList.add(couponSummaryDto);
         PageImpl<CouponSummaryDto> couponSummaryDtoPage = new PageImpl<>(couponSummaryDtoList);
-        Mockito.when(queryCouponService.getCouponListByTriggerTypeCode(
-                Mockito.any(),
+        Mockito.when(queryCouponService.getCouponListByTriggerTypeCode(Mockito.any(),
                 Mockito.any()
         )).thenReturn(couponSummaryDtoPage);
 
         // when
-        ResultActions actual = mockMvc.perform(get("/v1/coupons").queryParam(
-                        "triggerType",
+        ResultActions actual = mockMvc.perform(get("/v1/coupons").queryParam("triggerType",
                         "MEMBER_GRADE_GOLD"
                 )
                 .queryParam("size", "10")
@@ -299,8 +293,7 @@ class QueryCouponControllerTest {
                 .andExpect(jsonPath("$.data.dataList[0].name").value(name));
 
         // docs
-        actual.andDo(document(
-                "get-triggered-coupons-success",
+        actual.andDo(document("get-triggered-coupons-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestParameters(
@@ -312,8 +305,7 @@ class QueryCouponControllerTest {
                                 .optional()
                                 .attributes(defaultValue(6))
                 ),
-                responseFields(
-                        beneathPath("data").withSubsectionId("data"),
+                responseFields(beneathPath("data").withSubsectionId("data"),
                         fieldWithPath("currentPage").type(JsonFieldType.NUMBER)
                                 .description("현재 페이지 번호"),
                         fieldWithPath("totalPage").type(JsonFieldType.NUMBER)
@@ -364,7 +356,10 @@ class QueryCouponControllerTest {
                                 .description("조회된 정율할인 쿠폰의 할인율"),
                         fieldWithPath("dataList.[].unlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
-                                .description("조회된 쿠폰의 무제한 여부")
+                                .description("조회된 쿠폰의 무제한 여부"),
+                        fieldWithPath("dataList.[].fileUri").type(JsonFieldType.STRING)
+                                .optional()
+                                .description("쿠폰의 이미지 URL")
                 )
         ));
     }
