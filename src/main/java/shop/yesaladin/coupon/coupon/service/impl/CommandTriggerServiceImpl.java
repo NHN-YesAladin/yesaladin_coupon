@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
-import shop.yesaladin.coupon.coupon.persistence.JpaCommandTriggerRepository;
+import shop.yesaladin.coupon.coupon.domain.repository.CommandTriggerRepository;
 import shop.yesaladin.coupon.coupon.service.inter.CommandTriggerService;
 
 /**
@@ -17,7 +17,7 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandTriggerService;
 @Service
 public class CommandTriggerServiceImpl implements CommandTriggerService {
 
-    private final JpaCommandTriggerRepository commandTriggerRepository;
+    private final CommandTriggerRepository commandTriggerRepository;
 
     /**
      * {@inheritDoc}
@@ -25,6 +25,6 @@ public class CommandTriggerServiceImpl implements CommandTriggerService {
     @Override
     @Transactional
     public void stopIssueCoupon(TriggerTypeCode triggerTypeCode, long couponId) {
-        commandTriggerRepository.deleteByTriggerTypeCodeAndCoupon_Id(triggerTypeCode, couponId);
+        commandTriggerRepository.deleteByTriggerTypeCodeAndCouponId(triggerTypeCode, couponId);
     }
 }

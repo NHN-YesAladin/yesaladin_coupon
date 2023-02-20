@@ -74,7 +74,7 @@ class JpaCommandTriggerRepositoryTest {
                 savedTrigger.getId()
         ));
 
-        triggerRepository.deleteByTriggerTypeCodeAndCoupon_Id(triggerTypeCode, savedCoupon.getId());
+        triggerRepository.deleteByTriggerTypeCodeAndCouponId(triggerTypeCode, savedCoupon.getId());
         Optional<Trigger> afterDelete = Optional.ofNullable(entityManager.find(
                 Trigger.class,
                 savedTrigger.getId()
