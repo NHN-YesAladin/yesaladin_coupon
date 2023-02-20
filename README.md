@@ -1,5 +1,5 @@
 # yesaladin_coupon
-YesAladin Coupon은 (설명 추가헤주세요.) ... 시스템 입니다.
+YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 메시지 기반 마이크로서비스입니다.
 
 ## Getting Started
 
@@ -11,25 +11,24 @@ YesAladin Coupon은 (설명 추가헤주세요.) ... 시스템 입니다.
 
 ### [@김홍대](https://github.com/mongmeo-dev)
 
-- Feature 설명 적어주세요.
+- MyBatis를 사용하여 쿠폰 Bulk Insert 구현
 - NHN Cloud Log & Crash를 연동하여 모니터링 환경 구축
 - Spring Cloud Config를 연동하여 설정 정보 외부화
 
 ### [@서민지](https://github.com/narangd0)
 
-- Feature 설명 적어주세요.
+- Spring Scheduler를 이용하여 선착순 발행 쿠폰의 발행 스케쥴링
+- NHN Cloud의 Object Storage를 이용하여 파일 업로드 기능 구현
+- Kafka를 이용하여 메시지 큐 기반의 비동기 시스템 구축
+- 마이크로서비스의 트랜잭션 보장을 위한 시스템 설계
 
 ## ERD
 
-![ERD]()
-
-// ERD 이미지 추가할 것
+![ERD](http://drive.google.com/uc?export=view&id=1CRsYklkKJeh9vKwkOX6h1xN9LX-Gp2JJ)
 
 ## Project Architecture
 
 ![Project Architecture]()
-
-// 이미지 추가할 것
 
 ## Technical Issue
 
@@ -79,5 +78,5 @@ YesAladin Coupon은 (설명 추가헤주세요.) ... 시스템 입니다.
 ## Contributors
 
 <a href="https://github.com/NHN-YesAladin/yesaladin_coupon/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=NHN-YesAladin/yesaladin_front" />
+  <img src="https://contrib.rocks/image?repo=NHN-YesAladin/yesaladin_coupon" />
 </a>
