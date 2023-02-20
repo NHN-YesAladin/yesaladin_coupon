@@ -27,6 +27,7 @@ public class CommandTriggerController {
         commandTriggerService.stopIssueCoupon(triggerTypeCode, couponId);
 
         return ResponseDto.<Void>builder()
+                .status(HttpStatus.OK)
                 .success(true)
                 .data(null)
                 .build();
