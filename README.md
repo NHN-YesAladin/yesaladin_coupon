@@ -21,6 +21,9 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 - NHN Cloud의 Object Storage를 이용하여 파일 업로드 기능 구현
 - Kafka를 이용하여 메시지 큐 기반의 비동기 시스템 구축
 - 마이크로서비스의 트랜잭션 보장을 위한 시스템 설계
+- Kafka를 이용하여 대량 트래픽에도 안정적인 서비스가 가능한 시스템 설계
+  - nGrinder를 사용한 부하테스트에서 쿠폰 발행 API기준 10분간 vUsers 1000 테스트 통과 (TPS 378.3, Error Rate 1.1)
+  - ![LoadTest](http://drive.google.com/uc?export=view&id=1eeqiLfIIXkIt-vP4BaLkKFt1dMwuX5Y4)
 
 ## ERD
 
