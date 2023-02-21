@@ -31,7 +31,7 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 
 ## Project Architecture
 
-![Project Architecture]()
+![스크린샷 2023-02-21 오후 11 33 40](https://user-images.githubusercontent.com/60968342/220374877-2b84e7e6-4687-4fd9-b112-a7947bfc1d83.png)
 
 ## Technical Issue
 
