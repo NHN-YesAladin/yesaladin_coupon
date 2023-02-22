@@ -1,4 +1,5 @@
 # yesaladin_coupon
+
 YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 메시지 기반 마이크로서비스입니다.
 
 ## Getting Started
@@ -22,8 +23,8 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 - Kafka를 이용하여 메시지 큐 기반의 비동기 시스템 구축
 - 마이크로서비스의 트랜잭션 보장을 위한 시스템 설계
 - Kafka를 이용하여 대량 트래픽에도 안정적인 서비스가 가능한 시스템 설계
-  - nGrinder를 사용한 부하테스트에서 쿠폰 발행 API기준 20분간 vUsers 6000 테스트 통과 (TPS 385.5, Error Rate 1.1)
-  - ![LoadTest](http://drive.google.com/uc?export=view&id=1hErAz6uTjnqRYCoOXA9EAKqJHDdMf4mA)
+    - nGrinder를 사용한 부하테스트에서 쿠폰 발행 API기준 20분간 vUsers 12,000 테스트 통과 (TPS 392, Error Rate 8.9)
+    - ![LoadTest](http://drive.google.com/uc?export=view&id=138cB2nRDh-Fie2xySDcGFL283JFV8pLW)
 
 ## ERD
 
