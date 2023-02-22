@@ -1,4 +1,5 @@
 # yesaladin_coupon
+
 YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 메시지 기반 마이크로서비스입니다.
 
 ## Getting Started
@@ -21,6 +22,9 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 - NHN Cloud의 Object Storage를 이용하여 파일 업로드 기능 구현
 - Kafka를 이용하여 메시지 큐 기반의 비동기 시스템 구축
 - 마이크로서비스의 트랜잭션 보장을 위한 시스템 설계
+- Kafka를 이용하여 대량 트래픽에도 안정적인 서비스가 가능한 시스템 설계
+    - nGrinder를 사용한 부하테스트에서 쿠폰 발행 API기준 20분간 vUsers 12,000 테스트 통과 (TPS 392, Error Rate 8.9)
+    - ![LoadTest](http://drive.google.com/uc?export=view&id=138cB2nRDh-Fie2xySDcGFL283JFV8pLW)
 
 ## ERD
 
@@ -28,7 +32,11 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 
 ## Project Architecture
 
-![Project Architecture]()
+<img width="1055" alt="스크린샷 2023-02-22 오전 10 15 46" src="https://user-images.githubusercontent.com/60968342/220495982-249799cb-4435-4637-ac91-548bb4ef4a89.png">
+
+## CI/CD
+
+<img width="1102" alt="스크린샷 2023-02-22 오후 7 24 08" src="https://user-images.githubusercontent.com/60968342/220593590-58f50bd3-302f-455d-bf99-78371b2a1ba7.png">
 
 ## Technical Issue
 
@@ -62,6 +70,11 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 ![NHN Cloud](https://img.shields.io/badge/-NHN%20Cloud-blue?style=flat&logo=iCloud&logoColor=white)
 ![Jenkins](http://img.shields.io/badge/Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)
 ![SonarQube](https://img.shields.io/badge/SonarQube-4E98CD?style=flat&logo=SonarQube&logoColor=white)
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat&logo=Grafana&logoColor=white)
+
+### Unit Test
+
+![Junit5](https://img.shields.io/badge/Junit5-25A162?style=flat&logo=Junit5&logoColor=white)
 
 ### 형상 관리 전략
 
