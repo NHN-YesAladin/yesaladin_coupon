@@ -34,6 +34,10 @@ YesAladin Coupon은 YesAladin 서비스의 쿠폰 관련 기능을 제공하는 
 
 <img width="1055" alt="스크린샷 2023-02-22 오전 10 15 46" src="https://user-images.githubusercontent.com/60968342/220495982-249799cb-4435-4637-ac91-548bb4ef4a89.png">
 
+## CI/CD
+
+<img width="1102" alt="스크린샷 2023-02-22 오후 7 24 08" src="https://user-images.githubusercontent.com/60968342/220593590-58f50bd3-302f-455d-bf99-78371b2a1ba7.png">
+
 ## Technical Issue
 
 ### (있다면 작성해주시고 없으면 Technical Issue는 지우셔도 됩니다.)
