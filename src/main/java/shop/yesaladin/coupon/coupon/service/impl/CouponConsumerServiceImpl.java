@@ -20,7 +20,6 @@ import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.dto.CouponGiveDto;
-import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
@@ -44,10 +43,12 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
     @Transactional
-    public void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
+    public CouponGiveRequestResponseMessage consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
         List<CouponIssueResponseDto> responseDtoList;
         try {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
@@ -70,10 +71,10 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                     .errorMessage(e.getMessage())
                     .build();
             couponProducer.responseGiveRequest(giveRequestResponseMessage);
-            return;
+            return giveRequestResponseMessage;
         } catch (Exception e) {
             log.error("=== [COUPON] ===", e);
-            CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
+            return CouponGiveRequestResponseMessage.builder()
                     .requestId(message.getRequestId())
                     .success(false)
                     .errorMessage(String.valueOf(new ServerException(
@@ -81,11 +82,8 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                             "Exception occurred at consume coupon give request message."
                     )))
                     .build();
-            couponProducer.responseGiveRequest(giveRequestResponseMessage);
-            return;
         }
 
-        assert responseDtoList != null;
         List<CouponGiveDto> coupons = responseDtoList.stream()
                 .map(CouponIssueResponseDto::toCouponGiveDto)
                 .collect(Collectors.toList());
@@ -106,13 +104,12 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
         );
 
         // 동일한 requestId 를 포함하는 지급 요청 응답 메시지를 보낸다.
-        CouponGiveRequestResponseMessage giveRequestResponseMessage = CouponGiveRequestResponseMessage.builder()
+
+        return CouponGiveRequestResponseMessage.builder()
                 .requestId(message.getRequestId())
                 .coupons(coupons)
                 .success(true)
                 .build();
-
-        couponProducer.responseGiveRequest(giveRequestResponseMessage);
     }
 
     /**
@@ -123,9 +120,7 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
     public void consumeCouponGivenMessage(CouponCodesAndResultMessage message) {
         CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
 
-        if (message.isSuccess()) {
-            givenStateCode = CouponGivenStateCode.GIVEN;
-        }
+        givenStateCode = CouponGivenStateCode.GIVEN;
         commandIssuedCouponService.updateCouponGivenStateAndDateTime(
                 message.getCouponCodes(),
                 givenStateCode
@@ -205,4 +200,35 @@ public class CouponConsumerServiceImpl implements CouponConsumerService {
                 CouponUsageStateCode.NOT_USED
         );
     }
+
+    //
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+
+    public static class CouponCodesAndResultMessage {
+
+        private List<String> couponCodes;
+        private Boolean success = true;
+
+
+        public List<String> getCouponCodes() {
+            return this.couponCodes;
+        }
+
+        public Boolean isSuccess() {
+            return this.success;
+        }
+
+        CouponCodesAndResultMessage() {
+        }
+
+        public CouponCodesAndResultMessage(List<String> couponCodes, Boolean success) {
+            this.couponCodes = couponCodes;
+            this.success = success;
+        }
+
+    }
+
 }

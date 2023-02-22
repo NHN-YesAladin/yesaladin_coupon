@@ -41,8 +41,8 @@ public class CouponIssueRequestDto {
 
     public static CouponIssueRequestDto fromCouponGiveRequestMessage(CouponGiveRequestMessage message) {
         return new CouponIssueRequestDto(
-                message.getTriggerTypeCode().toString(),
-                message.getCouponId(),
+                TriggerTypeCode.MEMBER_GRADE_BRONZE.toString(),
+                15L,
                 1
         );
     }

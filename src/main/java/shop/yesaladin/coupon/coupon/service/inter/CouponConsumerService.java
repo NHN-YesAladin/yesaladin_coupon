@@ -1,8 +1,9 @@
 package shop.yesaladin.coupon.coupon.service.inter;
 
-import shop.yesaladin.coupon.message.CouponCodesAndResultMessage;
+import shop.yesaladin.coupon.coupon.service.impl.CouponConsumerServiceImpl.CouponCodesAndResultMessage;
 import shop.yesaladin.coupon.message.CouponCodesMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
+import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 import shop.yesaladin.coupon.message.CouponUseRequestMessage;
 
 /**
@@ -18,8 +19,9 @@ public interface CouponConsumerService {
      * 존재하지 않는 경우 Client Exception 을 발생시킵니다.
      *
      * @param message 쿠폰 지급 요청 메시지
+     * @return
      */
-    void consumeCouponGiveRequestMessage(CouponGiveRequestMessage message);
+    CouponGiveRequestResponseMessage consumeCouponGiveRequestMessage(CouponGiveRequestMessage message);
 
     /**
      * Shop 서버에서 발행한 쿠폰 지급 결과 메시지를 처리합니다. 지급 성공시 발행쿠폰의 지급 상태(지급완료)와 지급 일시를 업데이트합니다. 지급 실패시 지급 상태를
