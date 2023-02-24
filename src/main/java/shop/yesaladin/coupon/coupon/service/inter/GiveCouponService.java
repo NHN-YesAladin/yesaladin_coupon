@@ -20,7 +20,7 @@ public interface GiveCouponService {
      * @param message 쿠폰 지급 요청 메시지
      * @return
      */
-    CouponGiveRequestResponseMessage consumeCouponGiveRequestMessage(CouponGiveRequestMessage message);
+    CouponGiveRequestResponseMessage giveCoupon(CouponGiveRequestMessage message);
 
     /**
      * Shop 서버에서 발행한 쿠폰 지급 결과 메시지를 처리합니다. 지급 성공시 발행쿠폰의 지급 상태(지급완료)와 지급 일시를 업데이트합니다. 지급 실패시 지급 상태를
@@ -28,12 +28,12 @@ public interface GiveCouponService {
      *
      * @param message 쿠폰 지급 결과 메시지
      */
-    void consumeCouponGivenMessage(CouponCodesAndResultMessage message);
+    void finishGiveCouponRequest(CouponCodesAndResultMessage message);
 
     /**
      * Shop 서버에서 발행한 쿠폰 지급 취소 메시지를 처리합니다. 발행쿠폰의 지급 상태(미지급)와 지급 일시(null)를 업데이트합니다.
      *
      * @param message 쿠폰 지급 취소 메시지
      */
-    void consumeCouponGiveRequestCancelMessage(CouponCodesMessage message);
+    void cancelGiveCoupon(CouponCodesMessage message);
 }

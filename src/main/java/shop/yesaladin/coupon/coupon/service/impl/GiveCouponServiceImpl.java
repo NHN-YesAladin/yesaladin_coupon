@@ -43,7 +43,7 @@ public class GiveCouponServiceImpl implements GiveCouponService {
      */
     @Override
     @Transactional
-    public CouponGiveRequestResponseMessage consumeCouponGiveRequestMessage(CouponGiveRequestMessage message) {
+    public CouponGiveRequestResponseMessage giveCoupon(CouponGiveRequestMessage message) {
         List<CouponIssueResponseDto> responseDtoList;
         try {
             responseDtoList = queryIssuedCouponService.getCouponIssueResponseDtoList(
@@ -110,7 +110,7 @@ public class GiveCouponServiceImpl implements GiveCouponService {
      */
     @Override
     @Transactional
-    public void consumeCouponGivenMessage(CouponCodesAndResultMessage message) {
+    public void finishGiveCouponRequest(CouponCodesAndResultMessage message) {
         CouponGivenStateCode givenStateCode = CouponGivenStateCode.NOT_GIVEN;
 
         if (message.isSuccess()) {
@@ -127,7 +127,7 @@ public class GiveCouponServiceImpl implements GiveCouponService {
      */
     @Override
     @Transactional
-    public void consumeCouponGiveRequestCancelMessage(CouponCodesMessage message) {
+    public void cancelGiveCoupon(CouponCodesMessage message) {
         commandIssuedCouponService.updateCouponGivenStateAndDateTime(
                 message.getCouponCodes(),
                 CouponGivenStateCode.NOT_GIVEN

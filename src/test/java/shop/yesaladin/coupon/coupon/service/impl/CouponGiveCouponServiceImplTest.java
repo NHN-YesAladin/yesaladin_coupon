@@ -63,7 +63,7 @@ class CouponGiveCouponServiceImplTest {
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenReturn(List.of(
                 couponIssueResponseDto));
-        service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
+        service.giveCoupon(couponGiveRequestMessage);
 
         // then
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
@@ -87,7 +87,7 @@ class CouponGiveCouponServiceImplTest {
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenThrow(new ClientException(
                 ErrorCode.ISSUED_COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
-        service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
+        service.giveCoupon(couponGiveRequestMessage);
 
         // then
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
