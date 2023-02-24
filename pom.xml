@@ -165,7 +165,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>yesaladin-coupon</finalName>
+        <finalName>yesaladin-coupon-kafka</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
