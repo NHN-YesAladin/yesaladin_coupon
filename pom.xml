@@ -165,7 +165,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>yesaladin-coupon</finalName>
+        <finalName>yesaladin-coupon-http</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
