@@ -2,7 +2,6 @@ package shop.yesaladin.coupon.coupon.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -12,40 +11,30 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
 import shop.yesaladin.common.code.ErrorCode;
 import shop.yesaladin.common.exception.ClientException;
 import shop.yesaladin.coupon.code.TriggerTypeCode;
-import shop.yesaladin.coupon.config.KafkaTopicProperties;
 import shop.yesaladin.coupon.coupon.dto.CouponIssueResponseDto;
-import shop.yesaladin.coupon.coupon.kafka.CouponProducer;
 import shop.yesaladin.coupon.coupon.service.inter.CommandIssuedCouponService;
-import shop.yesaladin.coupon.coupon.service.inter.CouponConsumerService;
+import shop.yesaladin.coupon.coupon.service.inter.GiveCouponService;
 import shop.yesaladin.coupon.coupon.service.inter.QueryIssuedCouponService;
 import shop.yesaladin.coupon.message.CouponGiveRequestMessage;
 import shop.yesaladin.coupon.message.CouponGiveRequestResponseMessage;
 
-class CouponCouponConsumerServiceImplTest {
+class CouponGiveCouponServiceImplTest {
 
-    private KafkaTopicProperties kafkaTopicProperties;
-    private CouponProducer couponProducer;
     private CommandIssuedCouponService commandIssuedCouponService;
     private QueryIssuedCouponService queryIssuedCouponService;
-    private CouponConsumerService service;
+    private GiveCouponService service;
     private List<String> createdCouponCodeList;
     private String couponGroupCode;
-    @Value("${coupon.topic.give-request-response}")
-    private String topic;
     private ArgumentCaptor<Object> argumentCaptor;
 
     @BeforeEach
     void setUp() {
-        kafkaTopicProperties = Mockito.mock(KafkaTopicProperties.class);
-        couponProducer = Mockito.mock(CouponProducer.class);
         commandIssuedCouponService = Mockito.mock(CommandIssuedCouponService.class);
         queryIssuedCouponService = Mockito.mock(QueryIssuedCouponServiceImpl.class);
-        service = new CouponConsumerServiceImpl(
-                couponProducer,
+        service = new GiveCouponServiceImpl(
                 commandIssuedCouponService,
                 queryIssuedCouponService
         );
@@ -74,12 +63,9 @@ class CouponCouponConsumerServiceImplTest {
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenReturn(List.of(
                 couponIssueResponseDto));
-        when(kafkaTopicProperties.getGiveRequestResponse()).thenReturn(topic);
         service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1))
-                .responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons().get(0).getCouponCodes()).isEqualTo(
@@ -101,12 +87,9 @@ class CouponCouponConsumerServiceImplTest {
         // when
         when(queryIssuedCouponService.getCouponIssueResponseDtoList(any())).thenThrow(new ClientException(
                 ErrorCode.ISSUED_COUPON_NOT_FOUND, ErrorCode.COUPON_NOT_FOUND.getDisplayName()));
-        when(kafkaTopicProperties.getGiveRequestResponse()).thenReturn(topic);
         service.consumeCouponGiveRequestMessage(couponGiveRequestMessage);
 
         // then
-        Mockito.verify(couponProducer, times(1))
-                .responseGiveRequest((CouponGiveRequestResponseMessage) argumentCaptor.capture());
         CouponGiveRequestResponseMessage responseMessage = (CouponGiveRequestResponseMessage) argumentCaptor.getValue();
         assertThat(responseMessage.getRequestId()).isEqualTo(requestId);
         assertThat(responseMessage.getCoupons()).isNull();
