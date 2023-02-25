@@ -156,7 +156,7 @@
     </dependencyManagement>
 
     <build>
-        <finalName>yesaladin-coupon-http</finalName>
+        <finalName>yesaladin-coupon-myqueue</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
