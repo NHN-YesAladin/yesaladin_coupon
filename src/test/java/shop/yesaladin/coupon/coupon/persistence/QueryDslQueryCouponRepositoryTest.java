@@ -77,6 +77,7 @@ class QueryDslQueryCouponRepositoryTest {
     void findCouponByTriggerTypeCodeTest() {
         // when
         Page<CouponSummaryDto> actual = repository.findCouponByTriggerCode(
+                true,
                 TriggerTypeCode.SIGN_UP,
                 PageRequest.of(0, 10)
         );

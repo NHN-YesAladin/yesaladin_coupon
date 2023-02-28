@@ -52,9 +52,14 @@ public class QueryCouponServiceImpl implements QueryCouponService {
     @Override
     @Transactional(readOnly = true)
     public Page<CouponSummaryDto> getCouponListByTriggerTypeCode(
+            boolean includeExpired,
             TriggerTypeCode triggerTypeCode,
             Pageable pageable
     ) {
-        return queryCouponRepository.findCouponByTriggerCode(triggerTypeCode, pageable);
+        return queryCouponRepository.findCouponByTriggerCode(
+                includeExpired,
+                triggerTypeCode,
+                pageable
+        );
     }
 }

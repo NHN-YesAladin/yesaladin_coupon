@@ -97,12 +97,14 @@ class QueryCouponServiceImplTest {
         Page<CouponSummaryDto> expectedReturnValue = Mockito.mock(Page.class);
         Pageable expectedPageable = PageRequest.of(0, 10);
         Mockito.when(queryCouponRepository.findCouponByTriggerCode(
+                true,
                 TriggerTypeCode.SIGN_UP,
                 expectedPageable
         )).thenReturn(expectedReturnValue);
 
         // when
         Page<CouponSummaryDto> actual = queryCouponService.getCouponListByTriggerTypeCode(
+                true,
                 TriggerTypeCode.SIGN_UP,
                 expectedPageable
         );
@@ -110,7 +112,7 @@ class QueryCouponServiceImplTest {
         // then
         Assertions.assertThat(actual).isEqualTo(expectedReturnValue);
         Mockito.verify(queryCouponRepository, Mockito.times(1))
-                .findCouponByTriggerCode(TriggerTypeCode.SIGN_UP, expectedPageable);
+                .findCouponByTriggerCode(true, TriggerTypeCode.SIGN_UP, expectedPageable);
     }
 
 }

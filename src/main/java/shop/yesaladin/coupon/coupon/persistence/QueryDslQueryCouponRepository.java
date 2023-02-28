@@ -2,6 +2,8 @@ package shop.yesaladin.coupon.coupon.persistence;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +30,7 @@ import shop.yesaladin.coupon.coupon.dto.CouponSummaryDto;
 public class QueryDslQueryCouponRepository implements QueryCouponRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final Clock clock;
 
     /**
      * {@inheritDoc}
@@ -46,13 +49,15 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
      */
     @Override
     public Page<CouponSummaryDto> findCouponByTriggerCode(
-            TriggerTypeCode triggerTypeCode, Pageable pageable
+            boolean includeExpired, TriggerTypeCode triggerTypeCode, Pageable pageable
     ) {
         QTrigger trigger = QTrigger.trigger;
 
         List<Coupon> couponList = queryFactory.select(trigger.coupon)
                 .from(trigger)
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
+                .where(includeExpired ? null
+                        : trigger.coupon.expirationDate.loe(LocalDate.now(clock)))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
