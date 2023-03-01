@@ -57,7 +57,7 @@ public class QueryDslQueryCouponRepository implements QueryCouponRepository {
                 .from(trigger)
                 .where(trigger.triggerTypeCode.eq(triggerTypeCode))
                 .where(includeExpired ? null
-                        : trigger.coupon.expirationDate.loe(LocalDate.now(clock)))
+                        : trigger.coupon.expirationDate.goe(LocalDate.now(clock)))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();

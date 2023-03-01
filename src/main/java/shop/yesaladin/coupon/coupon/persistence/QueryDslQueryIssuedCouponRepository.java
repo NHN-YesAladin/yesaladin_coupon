@@ -42,7 +42,7 @@ public class QueryDslQueryIssuedCouponRepository implements QueryIssuedCouponRep
         return Optional.ofNullable(queryFactory.selectFrom(issuedCoupon).where(
                 issuedCoupon.couponGroup.id.eq(groupCodeId),
                 issuedCoupon.couponGivenStateCode.eq(CouponGivenStateCode.NOT_GIVEN),
-                issuedCoupon.expirationDate.loe(LocalDate.now())
+                issuedCoupon.expirationDate.goe(LocalDate.now())
         ).fetchFirst());
     }
 
