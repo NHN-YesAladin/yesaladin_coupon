@@ -88,10 +88,12 @@ public class QueryCouponController {
      */
     @GetMapping(params = "triggerType")
     public ResponseDto<PaginatedResponseDto<CouponSummaryDto>> getCouponListByTriggerTypeCode(
+            @RequestParam(defaultValue = "true") boolean includeExpired,
             @RequestParam TriggerTypeCode triggerType,
             @PageableDefault(size = 6) Pageable pageable
     ) {
         Page<CouponSummaryDto> couponList = queryCouponService.getCouponListByTriggerTypeCode(
+                includeExpired,
                 triggerType,
                 pageable
         );

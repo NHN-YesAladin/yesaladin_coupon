@@ -34,11 +34,13 @@ public interface QueryCouponService {
     /**
      * 특정 트리거 코드로 발행되는 쿠폰 목록을 페이지네이션하여 조회합니다.
      *
+     * @param includeExpired  유효기간이 경과한 쿠폰 조회 여부
      * @param triggerTypeCode 조회할 쿠폰의 트리거 타입 코드
-     * @param pageable 페이지네이션 정보
+     * @param pageable        페이지네이션 정보
      * @return 페이지네이션 된 쿠폰 요약 정보
      */
     Page<CouponSummaryDto> getCouponListByTriggerTypeCode(
+            boolean includeExpired,
             TriggerTypeCode triggerTypeCode,
             Pageable pageable
     );
