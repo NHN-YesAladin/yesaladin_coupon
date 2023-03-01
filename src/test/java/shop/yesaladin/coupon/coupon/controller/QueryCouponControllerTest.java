@@ -113,7 +113,7 @@ class QueryCouponControllerTest {
                                 .optional()
                                 .attributes(defaultValue(10))
                 ),
-                responseFields(beneathPath("data").withSubsectionId("data")),
+//                responseFields(beneathPath("data").withSubsectionId("data")),
                 responseFields(
                         fieldWithPath("success").type(JsonFieldType.BOOLEAN)
                                 .description("응답 성공 여부"),
@@ -147,6 +147,9 @@ class QueryCouponControllerTest {
                         fieldWithPath("data.dataList.[].isUnlimited").type(JsonFieldType.BOOLEAN)
                                 .optional()
                                 .description("조회된 쿠폰의 무제한 여부"),
+                        fieldWithPath("data.dataList.[].fileUri").type(JsonFieldType.STRING)
+                                .optional()
+                                .description("쿠폰 이미지 경로"),
                         fieldWithPath("data.dataList.[].duration").type(JsonFieldType.NUMBER)
                                 .optional()
                                 .description("조회된 쿠폰의 유효기간"),
@@ -192,6 +195,9 @@ class QueryCouponControllerTest {
                     .name("test" + i)
                     .couponCode(couponCode)
                     .amount(i)
+                    .minOrderAmount(1000)
+                    .maxDiscountAmount(2000)
+                    .canBeOverlapped(false)
                     .couponTypeCode(CouponTypeCode.FIXED_RATE)
                     .expireDate(LocalDate.of(2023, 12, 20))
                     .isUsed(false)
@@ -229,6 +235,12 @@ class QueryCouponControllerTest {
                         fieldWithPath("couponCode").type(JsonFieldType.STRING).description("쿠폰 코드"),
                         fieldWithPath("amount").type(JsonFieldType.NUMBER)
                                 .description("쿠폰의 금액(할인금액/할인율/포인트충전액)"),
+                        fieldWithPath("minOrderAmount").type(JsonFieldType.NUMBER)
+                                .description("최소 주문 금액"),
+                        fieldWithPath("maxDiscountAmount").type(JsonFieldType.NUMBER)
+                                .description("최대 할인 금액"),
+                        fieldWithPath("canBeOverlapped").type(JsonFieldType.BOOLEAN)
+                                .description("중복 가능 여부"),
                         fieldWithPath("couponTypeCode").type(JsonFieldType.STRING)
                                 .description("쿠폰의 타입(정액할인/정율할인/포인트충전)"),
                         fieldWithPath("expireDate").type(JsonFieldType.STRING).description("만료일"),
